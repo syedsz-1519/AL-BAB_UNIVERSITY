@@ -376,6 +376,21 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
     res.json({ success: true, id, status, grade, feedback, source });
   });
 
+  // 5. LECTURES PROGRESS APIS (Persisted in-memory & fallback in local memory)
+  const localLectureProgress: Record<string, any> = {};
+
+  app.get("/api/lecture-progress/:email", (req, res) => {
+    const email = req.params.email.toLowerCase();
+    res.json({ data: localLectureProgress[email] || {}, source: "fallback-memory" });
+  });
+
+  app.post("/api/lecture-progress/:email", (req, res) => {
+    const email = req.params.email.toLowerCase();
+    const { completedLectures } = req.body;
+    localLectureProgress[email] = completedLectures || {};
+    res.json({ success: true, data: localLectureProgress[email], source: "fallback-memory" });
+  });
+
   // Vite development integration
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

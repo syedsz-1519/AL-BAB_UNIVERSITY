@@ -7,6 +7,7 @@ import {
   Database, Copy
 } from 'lucide-react';
 import { COURSES } from '../data';
+import D3ProgressChart from './D3ProgressChart';
 
 interface DashboardPortalProps {
   currentTheme: 'parchment' | 'space';
@@ -104,6 +105,28 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
 
   // Interactive Student Lectures completion map (local simulation for scholarship)
   const [completedLectures, setCompletedLectures] = useState<Record<string, boolean>>({});
+
+  // Student lecture view filter: 'all', 'completed', or 'pending'
+  const [lectureFilter, setLectureFilter] = useState<'all' | 'completed' | 'pending'>('all');
+
+  // Offline Simulation & Sync Manager States
+  const [offlineSimulated, setOfflineSimulated] = useState<boolean>(() => {
+    return localStorage.getItem('albab_offline_simulated') === 'true';
+  });
+  const [syncQueue, setSyncQueue] = useState<string[]>(() => {
+    try {
+      const q = localStorage.getItem('albab_sync_queue');
+      return q ? JSON.parse(q) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Gesture Touch & Mobile Swipe interaction tracking
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [swipingIdx, setSwipingIdx] = useState<number | null>(null);
+  const [swipeOffset, setSwipeOffset] = useState<number>(0);
 
   // Form Validation Refresher
   const [copiedNotification, setCopiedNotification] = useState<string | null>(null);
@@ -550,15 +573,112 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
     .catch(err => console.error('Error syncing grade feedback:', err));
   };
 
-  // Toggle dynamic lecture completes
+  // Fetch lecture progress from backend once verified
+  useEffect(() => {
+    if (role === 'student' && activeStudent) {
+      setIsSyncing(true);
+      fetch(`/api/lecture-progress/${activeStudent.email}`)
+        .then(res => res.json())
+        .then(response => {
+          if (response?.data && Object.keys(response.data).length > 0) {
+            setCompletedLectures(response.data);
+            localStorage.setItem('albab_completed_lectures', JSON.stringify(response.data));
+          } else {
+            // No backend storage yet, load existing local storage fallback
+            const saved = localStorage.getItem('albab_completed_lectures');
+            if (saved) {
+              const parsed = JSON.parse(saved);
+              setCompletedLectures(parsed);
+              // Post current local configuration to sync backend init
+              fetch(`/api/lecture-progress/${activeStudent.email}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ completedLectures: parsed })
+              }).catch(() => {});
+            }
+          }
+          setIsSyncing(false);
+        })
+        .catch(err => {
+          console.warn('Silent backend load fail, using local storage fallback:', err);
+          setIsSyncing(false);
+          const saved = localStorage.getItem('albab_completed_lectures');
+          if (saved) setCompletedLectures(JSON.parse(saved));
+        });
+    }
+  }, [role, activeStudent]);
+
+  // Flush sync queue to database
+  const triggerFlushSyncQueue = () => {
+    if (!activeStudent) return;
+    setIsSyncing(true);
+    
+    fetch(`/api/lecture-progress/${activeStudent.email}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ completedLectures })
+    })
+    .then(res => res.json())
+    .then(() => {
+      setIsSyncing(false);
+      setSyncQueue([]);
+      localStorage.setItem('albab_sync_queue', JSON.stringify([]));
+      showNotification('Success! Unsynced offline queue flushed to academic archives database.');
+    })
+    .catch(err => {
+      console.error('Failed to flush offline queue:', err);
+      setIsSyncing(false);
+      showNotification('Sync fail! Could not reach academic database server.');
+    });
+  };
+
+  // Toggle dynamic lecture completes with Sync-Status engine
   const toggleLecture = (courseId: string, lectureIndex: number) => {
     const key = `${courseId}_lec_${lectureIndex}`;
+    const nextVal = !completedLectures[key];
     const updated = {
       ...completedLectures,
-      [key]: !completedLectures[key]
+      [key]: nextVal
     };
+    
     setCompletedLectures(updated);
     localStorage.setItem('albab_completed_lectures', JSON.stringify(updated));
+
+    if (activeStudent) {
+      if (offlineSimulated) {
+        // Enqueue sync item
+        const queueKey = `${courseId}_lec_${lectureIndex}:${nextVal}`;
+        const nextQueue = [queueKey, ...syncQueue.filter(q => !q.startsWith(`${courseId}_lec_${lectureIndex}:`))];
+        setSyncQueue(nextQueue);
+        localStorage.setItem('albab_sync_queue', JSON.stringify(nextQueue));
+        showNotification('Lecture saved offline in local queue. Restoring database connection will sync progress.');
+      } else {
+        setIsSyncing(true);
+        fetch(`/api/lecture-progress/${activeStudent.email}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ completedLectures: updated })
+        })
+        .then(res => res.json())
+        .then(() => {
+          setIsSyncing(false);
+          // If any queue matches, clear it
+          const nextQueue = syncQueue.filter(q => !q.startsWith(`${courseId}_lec_${lectureIndex}:`));
+          setSyncQueue(nextQueue);
+          localStorage.setItem('albab_sync_queue', JSON.stringify(nextQueue));
+          showNotification('Lecture status updated and synced with database.');
+        })
+        .catch(err => {
+          console.warn('Sync failed, queuing offline:', err);
+          setIsSyncing(false);
+          const queueKey = `${courseId}_lec_${lectureIndex}:${nextVal}`;
+          const nextQueue = [queueKey, ...syncQueue.filter(q => !q.startsWith(`${courseId}_lec_${lectureIndex}:`))];
+          setSyncQueue(nextQueue);
+          localStorage.setItem('albab_sync_queue', JSON.stringify(nextQueue));
+          showNotification('Network offline. Progress saved to unsynced local queue.');
+        });
+      }
+    }
   };
 
   // Calc progress rate of a course
@@ -950,9 +1070,9 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                 <div className={`p-6 sm:p-8 rounded border shadow-sm
                   ${isSpace ? 'bg-space border-gold/15' : 'bg-white border-stone-200'}
                 `}>
-                  <div className="flex items-center justify-between mb-6 border-b border-stone-200/10 pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-stone-200/10 pb-4">
                     <div className="flex items-center gap-2.5">
-                      <BookMarked className={`h-6 w-6 ${isSpace ? 'text-gold-light' : 'text-crimson'}`} />
+                      <BookMarked className={`h-6 w-6 shrink-0 ${isSpace ? 'text-gold-light' : 'text-crimson'}`} />
                       <div>
                         <h4 className="font-serif font-black text-lg">My Study Chapters</h4>
                         <span className="text-[9px] font-mono tracking-widest text-stone-400 uppercase">Interactive study module tracker</span>
@@ -960,7 +1080,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                     </div>
                     
                     {/* Progress Bar Badge */}
-                    <div className="text-right">
+                    <div className="text-left sm:text-right">
                       <span className="text-xl font-bold font-mono">
                         {getCourseProgress(activeStudent.selectedCourse)}%
                       </span>
@@ -976,51 +1096,255 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                     />
                   </div>
 
+                  {/* Dynamic Database Sync & Offline Control Bar */}
+                  <div className={`p-3.5 rounded border mb-6 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors duration-300
+                    ${isSpace 
+                      ? 'bg-black/25 border-gold/15' 
+                      : 'bg-stone-50 border-stone-200'
+                    }
+                  `}>
+                    {/* Left: Indicator pulse light & pending queue feedback */}
+                    <div className="flex items-center gap-2.5 text-left">
+                      <div className={`h-2.5 w-2.5 rounded-full shrink-0 relative
+                        ${offlineSimulated 
+                          ? 'bg-amber-500 shadow-sm' 
+                          : isSyncing 
+                            ? 'bg-blue-400 shadow-sm animate-ping'
+                            : 'bg-green-500 shadow-sm'
+                        }
+                      `}>
+                        {(!offlineSimulated && isSyncing) && (
+                          <div className="absolute inset-0 bg-blue-400 rounded-full animate-ping" />
+                        )}
+                        {(offlineSimulated && syncQueue.length > 0) && (
+                          <div className="absolute inset-0 bg-amber-500 rounded-full animate-ping opacity-75" />
+                        )}
+                      </div>
+                      <div className="font-mono text-[10px] leading-tight text-stone-700 dark:text-stone-300">
+                        <span className="font-bold block tracking-wider uppercase">
+                          {offlineSimulated ? 'Offline Sync Queueing' : isSyncing ? 'Synchronizing Current Trace...' : 'Database Secured & Connected'}
+                        </span>
+                        <span className="text-[9px] text-stone-400 font-normal">
+                          {offlineSimulated 
+                            ? `${syncQueue.length} unsynced progress marks pending in browser cache`
+                            : 'All study chapters backed up in high-security academic records.'
+                          }
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Right: Actions, Force Flush & Sandbox Switch toggle */}
+                    <div className="flex flex-wrap items-center gap-3">
+                      {offlineSimulated && syncQueue.length > 0 && (
+                        <button
+                          onClick={triggerFlushSyncQueue}
+                          disabled={isSyncing}
+                          className="font-mono text-[8.5px] font-bold uppercase tracking-widest bg-amber-600 hover:bg-black hover:text-[#C9933A] text-white px-2 py-1 rounded inline-flex items-center gap-1 cursor-pointer transition-all border border-transparent hover:border-amber-500"
+                        >
+                          <RefreshCw className={`h-2.5 w-2.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                          Force Sync ({syncQueue.length})
+                        </button>
+                      )}
+                      
+                      <label className="inline-flex items-center gap-2 cursor-pointer text-[9px] font-mono text-stone-400 select-none">
+                        <input 
+                          type="checkbox"
+                          checked={offlineSimulated}
+                          onChange={(e) => {
+                            const nextState = e.target.checked;
+                            setOfflineSimulated(nextState);
+                            localStorage.setItem('albab_offline_simulated', String(nextState));
+                            if (!nextState) {
+                              // Trigger automatic sync flush when turning offline mode OFF
+                              triggerFlushSyncQueue();
+                            } else {
+                              showNotification('Academic portal offline mode enabled. Mark a lesson to test local caching!');
+                            }
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="relative w-7 h-4 bg-stone-300 dark:bg-stone-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-amber-500"></div>
+                        <span className="ml-1 uppercase tracking-wider font-bold">Simulate Offline</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Lecture Filter Toggles */}
+                  <div className="flex flex-wrap gap-2 mb-6 justify-center sm:justify-start">
+                    <button
+                      onClick={() => setLectureFilter('all')}
+                      className={`px-3 py-1 text-[10px] font-mono uppercase tracking-wider rounded-sm transition-all border duration-300 cursor-pointer
+                        ${lectureFilter === 'all'
+                          ? isSpace 
+                            ? 'bg-gold/10 text-gold-light border-gold/45' 
+                            : 'bg-crimson/10 text-crimson border-crimson/30 font-bold'
+                          : isSpace 
+                            ? 'bg-transparent text-stone-400 border-stone-800 hover:text-gold hover:border-gold/30' 
+                            : 'bg-transparent text-stone-500 border-stone-200 hover:text-crimson hover:border-crimson/30'
+                        }
+                      `}
+                    >
+                      All Lectures
+                    </button>
+                    <button
+                      onClick={() => setLectureFilter('completed')}
+                      className={`px-3 py-1 text-[10px] font-mono uppercase tracking-wider rounded-sm transition-all border duration-300 cursor-pointer
+                        ${lectureFilter === 'completed'
+                          ? 'bg-green-500/10 text-green-500 border-green-500/40 font-bold'
+                          : isSpace 
+                            ? 'bg-transparent text-stone-400 border-stone-800 hover:text-[#4ade80] hover:border-[#4ade80]/20' 
+                            : 'bg-transparent text-stone-500 border-stone-200 hover:text-[#16a34a] hover:border-[#16a34a]/20'
+                        }
+                      `}
+                    >
+                      Completed Only
+                    </button>
+                    <button
+                      onClick={() => setLectureFilter('pending')}
+                      className={`px-3 py-1 text-[10px] font-mono uppercase tracking-wider rounded-sm transition-all border duration-300 cursor-pointer
+                        ${lectureFilter === 'pending'
+                          ? isSpace 
+                            ? 'bg-[#fbbf24]/10 text-[#f59e0b] border-[#fbbf24]/30 font-bold'
+                            : 'bg-[#b45309]/10 text-[#b45309] border-[#b45309]/20 font-bold'
+                          : isSpace 
+                            ? 'bg-transparent text-stone-400 border-stone-800 hover:text-[#fbbf24] hover:border-[#fbbf24]/20' 
+                            : 'bg-transparent text-stone-500 border-stone-200 hover:text-[#b45309] hover:border-[#b45309]/20'
+                        }
+                      `}
+                    >
+                      Pending Only
+                    </button>
+                  </div>
+
                   {/* Core Lectures Simulated */}
                   <div className="space-y-4">
-                    {[
-                      { title: 'Tradition Recalibration Principles', ref: 'Chapter I - Structural Definitions' },
-                      { title: 'The Archetype of Sincere Purpose', ref: 'Chapter II - Ethical Codes' },
-                      { title: 'Syllogism Analysis of Text Interpretations', ref: 'Chapter III - Logic Syllogisms' },
-                      { title: 'Deciphering Modern Ideological Paradigm Shifts', ref: 'Chapter IV - Synthesis' }
-                    ].map((item, idx) => {
-                      const isChecked = !!completedLectures[`${activeStudent.selectedCourse}_lec_${idx}`];
-                      return (
-                        <div 
-                          key={idx}
-                          className={`flex items-center justify-between p-4 rounded border transition-all duration-200
-                            ${isChecked 
-                              ? 'border-green-500/35 bg-green-500/[0.02]' 
-                              : isSpace ? 'border-gold/10 hover:border-gold/30 hover:bg-gold/[0.01]' : 'border-stone-200 hover:border-crimson/15 hover:bg-stone-50'
-                            }
-                          `}
-                        >
-                          <div>
-                            <span className="text-[9px] font-mono uppercase text-[#C9933A] block font-semibold leading-none mb-1">
-                              {item.ref}
-                            </span>
-                            <h5 className="font-serif font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100">
-                              {item.title}
-                            </h5>
-                          </div>
+                    {(() => {
+                      const allLectures = [
+                        { title: 'Tradition Recalibration Principles', ref: 'Chapter I - Structural Definitions' },
+                        { title: 'The Archetype of Sincere Purpose', ref: 'Chapter II - Ethical Codes' },
+                        { title: 'Syllogism Analysis of Text Interpretations', ref: 'Chapter III - Logic Syllogisms' },
+                        { title: 'Deciphering Modern Ideological Paradigm Shifts', ref: 'Chapter IV - Synthesis' }
+                      ];
 
-                          <button 
-                            onClick={() => toggleLecture(activeStudent.selectedCourse, idx)}
-                            className={`flex items-center gap-1.5 py-1.5 px-3 rounded-sm text-[10px] font-mono uppercase tracking-wider transition-all border
-                              ${isChecked 
-                                ? 'bg-green-500/10 text-green-500 border-green-500/30' 
-                                : isSpace 
-                                  ? 'bg-transparent text-stone-400 border-stone-700 hover:text-gold hover:border-gold' 
-                                  : 'bg-transparent text-stone-600 border-stone-300 hover:text-crimson hover:border-crimson'
+                      const filteredLectures = allLectures
+                        .map((item, idx) => ({ ...item, originalIdx: idx }))
+                        .filter(item => {
+                          const isChecked = !!completedLectures[`${activeStudent.selectedCourse}_lec_${item.originalIdx}`];
+                          if (lectureFilter === 'completed') return isChecked;
+                          if (lectureFilter === 'pending') return !isChecked;
+                          return true;
+                        });
+
+                      if (filteredLectures.length === 0) {
+                        return (
+                          <div className="text-center py-8 rounded border border-dashed border-stone-200 dark:border-stone-800/40 opacity-75">
+                            <p className="text-xs font-serif italic text-stone-500 dark:text-stone-400">
+                              No {lectureFilter === 'completed' ? 'completed' : 'pending'} study chapters found in this module.
+                            </p>
+                          </div>
+                        );
+                      }
+
+                      return filteredLectures.map((item) => {
+                        const isChecked = !!completedLectures[`${activeStudent.selectedCourse}_lec_${item.originalIdx}`];
+                        const isSwipingThis = swipingIdx === item.originalIdx;
+                        
+                        return (
+                          <div 
+                            key={item.originalIdx}
+                            className="relative overflow-hidden rounded border border-dashed border-stone-200/50 dark:border-stone-800/40 select-none"
+                            onTouchStart={(e) => {
+                              setTouchStartX(e.touches[0].clientX);
+                              setSwipingIdx(item.originalIdx);
+                              setSwipeOffset(0);
+                            }}
+                            onTouchMove={(e) => {
+                              if (touchStartX !== null) {
+                                const currentX = e.touches[0].clientX;
+                                const diffX = currentX - touchStartX;
+                                if (diffX > 0) {
+                                  setSwipeOffset(Math.min(diffX, 150));
+                                }
                               }
-                            `}
+                            }}
+                            onTouchEnd={() => {
+                              if (touchStartX !== null && swipingIdx === item.originalIdx) {
+                                if (swipeOffset > 80) {
+                                  toggleLecture(activeStudent.selectedCourse, item.originalIdx);
+                                }
+                              }
+                              setTouchStartX(null);
+                              setSwipingIdx(null);
+                              setSwipeOffset(0);
+                            }}
                           >
-                            <Check className={`h-3.5 w-3.5 ${isChecked ? 'opacity-100' : 'opacity-40'}`} />
-                            {isChecked ? 'Completed' : 'Complete Lesson'}
-                          </button>
-                        </div>
-                      );
-                    })}
+                            {/* Hidden Reveal Completion Track Behind Card Swipe */}
+                            <div className="absolute inset-0 bg-green-500/10 flex items-center pl-5 text-green-600 dark:text-green-400 font-mono text-[9px] uppercase font-bold tracking-widest pointer-events-none transition-all">
+                              <span>→ Swipe to togggle completion mark</span>
+                            </div>
+
+                            <div 
+                              style={{
+                                transform: isSwipingThis ? `translateX(${swipeOffset}px)` : 'none',
+                                transition: isSwipingThis ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                              }}
+                              className={`relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded border transition-colors duration-205 animate-fade-in
+                                ${isChecked 
+                                  ? 'border-green-500/35 bg-green-500/[0.02]' 
+                                  : isSpace ? 'border-gold/10 hover:border-gold/30 hover:bg-gold/[0.01]' : 'border-stone-200 hover:border-crimson/15 hover:bg-stone-50'
+                                }
+                                ${isSpace ? 'bg-space' : 'bg-white'}
+                              `}
+                            >
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[9px] font-mono uppercase text-[#C9933A] block font-semibold leading-none mb-1">
+                                    {item.ref}
+                                  </span>
+                                  <span className="text-[7.5px] font-mono text-stone-400 sm:hidden uppercase tracking-wider">
+                                    (Swipe Right →)
+                                  </span>
+                                </div>
+                                <h5 className="font-serif font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+                                  {item.title}
+                                </h5>
+                              </div>
+
+                              <button 
+                                onClick={() => toggleLecture(activeStudent.selectedCourse, item.originalIdx)}
+                                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 w-full sm:w-auto rounded-sm text-[10px] font-mono uppercase tracking-wider transition-all border cursor-pointer
+                                  ${isChecked 
+                                    ? 'bg-green-500/10 text-green-500 border-green-500/30 font-bold' 
+                                    : isSpace 
+                                      ? 'bg-transparent text-stone-400 border-stone-700 hover:text-gold hover:border-gold' 
+                                      : 'bg-transparent text-stone-600 border-stone-300 hover:text-crimson hover:border-crimson'
+                                  }
+                                `}
+                              >
+                                <Check className={`h-3.5 w-3.5 ${isChecked ? 'opacity-100' : 'opacity-40'}`} />
+                                {isChecked ? 'Completed' : 'Complete Lesson'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+
+                  {/* D3 Progress Timeline Performance Chart */}
+                  <div className="mt-8 pt-6 border-t border-dashed border-stone-200 dark:border-stone-800/50">
+                    <D3ProgressChart 
+                      currentTheme={currentTheme}
+                      completedCount={(() => {
+                        let completedCount = 0;
+                        for (let i = 0; i < 4; i++) {
+                          if (completedLectures[`${activeStudent.selectedCourse}_lec_${i}`]) {
+                            completedCount++;
+                          }
+                        }
+                        return completedCount;
+                      })()}
+                    />
                   </div>
                 </div>
 
