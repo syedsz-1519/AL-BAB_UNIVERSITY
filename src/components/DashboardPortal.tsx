@@ -693,6 +693,43 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
     return Math.round((completedCount / 4) * 100);
   };
 
+  // Experience and Knowledge level tracker
+  const getExperiencePointsAndLevel = () => {
+    let totalCompleted = 0;
+    Object.entries(completedLectures).forEach(([key, isDone]) => {
+      if (isDone) {
+        totalCompleted++;
+      }
+    });
+
+    const xp = totalCompleted * 250;
+    
+    let levelName = 'Initiate Neophyte';
+    let levelColor = 'text-stone-400 border-stone-800';
+    let badgeBg = 'bg-stone-500/10';
+    if (xp >= 1000) {
+      levelName = 'Hermetic Master';
+      levelColor = 'text-purple-400 border-purple-500/30';
+      badgeBg = 'bg-purple-500/20';
+    } else if (xp >= 750) {
+      levelName = 'Sage Philosopher';
+      levelColor = 'text-amber-400 border-amber-500/30';
+      badgeBg = 'bg-amber-500/20';
+    } else if (xp >= 500) {
+      levelName = 'Scribe Scholar';
+      levelColor = 'text-blue-400 border-blue-500/30';
+      badgeBg = 'bg-blue-500/20';
+    } else if (xp >= 250) {
+      levelName = 'Acolyte Disciple';
+      levelColor = 'text-amber-600 dark:text-[#C9933A] border-[#C9933A]/30';
+      badgeBg = 'bg-[#C9933A]/20';
+    }
+    
+    return { xp, levelName, levelColor, badgeBg, totalCompleted };
+  };
+
+  const scholarXP = getExperiencePointsAndLevel();
+
   return (
     <section 
       id="portal" 
@@ -1058,6 +1095,105 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                   Sign Out
                 </button>
               </div>
+            </div>
+
+            {/* SCHOLAR PERFORMANCE STATS ROW */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              
+              {/* Card 1: Ancient Academic Title / Knowledge Rank */}
+              <div className={`p-4 sm:p-5 rounded border flex items-center gap-4 shadow-sm transition-all duration-300 hover:scale-[1.01]
+                ${isSpace 
+                  ? 'bg-space border-gold/15 hover:border-gold/30' 
+                  : 'bg-white border-stone-200 hover:border-crimson/15'
+                }
+              `}>
+                <div className={`p-3 rounded-full border shrink-0
+                  ${isSpace 
+                    ? 'bg-gold/5 border-gold/15 text-gold-light' 
+                    : 'bg-[#C9933A]/10 border-[#C9933A]/25 text-[#C9933A]'
+                  }
+                `}>
+                  <Award className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-[9px] font-mono tracking-wider opacity-60 block uppercase leading-none mb-1.5">
+                    Knowledge Rank
+                  </span>
+                  <div className={`text-sm sm:text-md font-serif font-black uppercase tracking-wide ${scholarXP.levelColor}`}>
+                    {scholarXP.levelName}
+                  </div>
+                  <span className="text-[9px] font-mono text-stone-400 mt-1 block">
+                    Grown with authentic scriptural trace
+                  </span>
+                </div>
+              </div>
+
+              {/* Card 2: Cumulative Experience Points */}
+              <div className={`p-4 sm:p-5 rounded border flex items-center gap-4 shadow-sm transition-all duration-300 hover:scale-[1.01]
+                ${isSpace 
+                  ? 'bg-space border-gold/15 hover:border-gold/30' 
+                  : 'bg-white border-stone-200 hover:border-crimson/15'
+                }
+              `}>
+                <div className={`p-3 rounded-full border shrink-0
+                  ${isSpace 
+                    ? 'bg-green-400/5 border-green-500/10 text-green-400' 
+                    : 'bg-green-500/10 border-green-500/20 text-green-600'
+                  }
+                `}>
+                  <GraduationCap className="h-5 w-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-baseline mb-2">
+                    <span className="text-[9px] font-mono tracking-wider opacity-60 block uppercase leading-none">
+                      Academic XP
+                    </span>
+                    <span className="text-sm font-mono font-black text-stone-900 dark:text-stone-100">
+                      {scholarXP.xp} XP
+                    </span>
+                  </div>
+                  
+                  {/* Subtle progress indicator to next level bounds */}
+                  <div className="h-1.5 w-full bg-stone-150 dark:bg-stone-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-green-500 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.max(5, (scholarXP.xp % 1000) / 10)}%` }}
+                    />
+                  </div>
+                  <span className="text-[8px] font-mono text-stone-400 mt-1.5 block">
+                    {1000 - (scholarXP.xp % 1000)} XP to Next Scholarly Honor
+                  </span>
+                </div>
+              </div>
+
+              {/* Card 3: Deep Completion Count */}
+              <div className={`p-4 sm:p-5 rounded border flex items-center gap-4 shadow-sm transition-all duration-300 hover:scale-[1.01]
+                ${isSpace 
+                  ? 'bg-space border-gold/15 hover:border-gold/30' 
+                  : 'bg-white border-stone-200 hover:border-crimson/15'
+                }
+              `}>
+                <div className={`p-3 rounded-full border shrink-0
+                  ${isSpace 
+                    ? 'bg-sky-400/5 border-sky-400/10 text-sky-450' 
+                    : 'bg-blue-500/10 border-blue-500/20 text-blue-600'
+                  }
+                `}>
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-[9px] font-mono tracking-wider opacity-60 block uppercase leading-none mb-1.5">
+                    Completed Chapters
+                  </span>
+                  <div className="text-sm font-mono font-black text-stone-900 dark:text-stone-100 uppercase tracking-widest leading-none">
+                    {scholarXP.totalCompleted} Modules Marked
+                  </div>
+                  <span className="text-[9px] font-mono text-stone-400 mt-1.5 block">
+                    Incremental progress recorded instantly
+                  </span>
+                </div>
+              </div>
+
             </div>
 
             {/* DUAL COLUMN GRID LAYOUT */}
