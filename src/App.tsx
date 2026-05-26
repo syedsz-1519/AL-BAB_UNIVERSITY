@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { GraduationCap } from 'lucide-react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import GlobeSection from './components/GlobeSection';
 import EditorialSection from './components/EditorialSection';
 import CurriculumInspector from './components/CurriculumInspector';
+import DashboardPortal from './components/DashboardPortal';
 import HadithDisplay from './components/HadithDisplay';
 import AdmissionPortal from './components/AdmissionPortal';
 import Footer from './components/Footer';
+import FloatingContacts from './components/FloatingContacts';
 import { Course } from './types';
 import { COURSES } from './data';
 
@@ -15,6 +18,12 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal'>('landing');
+
+  // Scroll to top upon section changes
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [currentSection]);
 
   // Sync theme with root HTML class for scrollbar/theme color compliance
   useEffect(() => {
@@ -38,12 +47,15 @@ export default function App() {
 
   const handleSearch = (term: string) => {
     setSearchText(term);
-    // If we're searching, also scroll cleanly down to scientific curriculum inspector sector!
+    // If we're searching, reset to landing page first then scroll cleanly down to scientific curriculum inspector sector!
     if (term) {
-      const el = document.getElementById('curriculum');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
+      setCurrentSection('landing');
+      setTimeout(() => {
+        const el = document.getElementById('curriculum');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 50);
     }
   };
 
@@ -62,40 +74,98 @@ export default function App() {
         onToggleTheme={handleToggleTheme}
         onSearch={handleSearch}
         onOpenAdmission={() => setAdmissionOpen(true)}
+        onOpenPortal={() => setCurrentSection('portal')}
+        onGoToLanding={() => setCurrentSection('landing')}
       />
 
-      {/* EDITORIAL BANNER SECTION */}
-      <HeroSection 
-        currentTheme={currentTheme}
-        onApplyNow={() => setAdmissionOpen(true)}
-      />
+      {currentSection === 'portal' ? (
+        <div className="pt-24 min-h-[85vh] transition-all duration-500 animate-fade-in">
+          {/* SECURE STUDENT AND ADMINISTRATION PORTAL SECTION */}
+          <DashboardPortal 
+            currentTheme={currentTheme} 
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      ) : (
+        <div className="transition-all duration-500 animate-fade-in">
+          {/* EDITORIAL BANNER SECTION */}
+          <HeroSection 
+            currentTheme={currentTheme}
+            onApplyNow={() => setAdmissionOpen(true)}
+          />
 
-      {/* SPACE CELESTIAL EARTH & 8 FLOATING ORBITS DISPATCHER */}
-      <GlobeSection 
-        currentTheme={currentTheme}
-        selectedCourseId={selectedCourseId}
-        onSelectCourse={handleSelectCourse}
-      />
+          {/* SPACE CELESTIAL EARTH & 8 FLOATING ORBITS DISPATCHER */}
+          <GlobeSection 
+            currentTheme={currentTheme}
+            selectedCourseId={selectedCourseId}
+            onSelectCourse={handleSelectCourse}
+          />
 
-      {/* ARABESQUE & MINIMALIST EDITORIAL CONTENT OVERVIEW SHEET */}
-      <EditorialSection 
-        currentTheme={currentTheme}
-        onFindMore={() => {
-          const el = document.getElementById('curriculum');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}
-      />
+          {/* ARABESQUE & MINIMALIST EDITORIAL CONTENT OVERVIEW SHEET */}
+          <EditorialSection 
+            currentTheme={currentTheme}
+            onFindMore={() => {
+              const el = document.getElementById('curriculum');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+          />
 
-      {/* DETAILED INTERACTIVE CURRICULUM SEARCH & LIST INSPECTOR */}
-      <CurriculumInspector 
-        currentTheme={currentTheme}
-        selectedCourseId={selectedCourseId}
-        onSelectCourse={handleSelectCourse}
-        searchText={searchText}
-      />
+          {/* DETAILED INTERACTIVE CURRICULUM SEARCH & LIST INSPECTOR */}
+          <CurriculumInspector 
+            currentTheme={currentTheme}
+            selectedCourseId={selectedCourseId}
+            onSelectCourse={handleSelectCourse}
+            searchText={searchText}
+          />
 
-      {/* SHIELDED HADITH EXPLETIVES ACCENTS */}
-      <HadithDisplay currentTheme={currentTheme} />
+          {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}
+          <section className={`py-16 px-6 md:px-12 border-t relative overflow-hidden text-center
+            ${currentTheme === 'space' 
+              ? 'bg-space-dark/20 border-gold/10 text-gold-light' 
+              : 'bg-white border-stone-200 text-charcoal'
+            }
+          `}>
+            <div className="max-w-4xl mx-auto space-y-6 relative z-10 py-4">
+              <div className="inline-flex items-center gap-2 mb-1 px-3 py-1 rounded-full border text-[10px] font-mono tracking-[0.2em] uppercase
+                dark:border-gold/20 dark:bg-gold/5 dark:text-gold-light border-crimson/15 bg-crimson/5 text-crimson
+              ">
+                <GraduationCap className="h-3.5 w-3.5 animate-pulse" />
+                Scholastic Campus Hub
+              </div>
+              
+              <h2 className="font-serif font-black text-2xl sm:text-3xl md:text-4xl tracking-wide max-w-2xl mx-auto">
+                University Portals Gate
+              </h2>
+              
+              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-xl mx-auto leading-relaxed font-serif">
+                Access your official student covenant progress maps, download certificates, submit critique theses, or log into the administrative scribes audit panel.
+              </p>
+
+              <div className="flex flex-wrap justify-center gap-4 pt-4">
+                <button
+                  onClick={() => setCurrentSection('portal')}
+                  className="font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#8B0000] border border-transparent font-bold tracking-widest px-6 py-3 rounded-sm shadow-md transition-all duration-300 cursor-pointer hover:scale-[1.01]"
+                >
+                  Enter Scholar Student Portal
+                </button>
+                
+                <button
+                  onClick={() => setCurrentSection('portal')}
+                  className="font-mono text-xs uppercase bg-transparent hover:bg-black/5 dark:hover:bg-white/5 text-stone-700 dark:text-gold-light border border-stone-300 dark:border-gold/30 font-bold tracking-widest px-6 py-3 rounded-sm transition-all duration-300 cursor-pointer hover:border-crimson dark:hover:border-gold"
+                >
+                  Access Scribes Audits
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* SHIELDED HADITH EXPLETIVES ACCENTS */}
+          <HadithDisplay currentTheme={currentTheme} />
+
+          {/* ALUMNI & ASSOCIATE SCHOLASTIC FOOTER FOOTPRINTS */}
+          <Footer currentTheme={currentTheme} />
+        </div>
+      )}
 
       {/* SECURE SCHOLAR INSCRIPTION PORTAL MODAL */}
       {admissionOpen && (
@@ -105,8 +175,8 @@ export default function App() {
         />
       )}
 
-      {/* ALUMNI & ASSOCIATE SCHOLASTIC FOOTER FOOTPRINTS */}
-      <Footer currentTheme={currentTheme} />
+      {/* FLOATING SOCIAL & DIRECT ADMISSIONS CHANNELS */}
+      <FloatingContacts currentTheme={currentTheme} />
     </div>
   );
 }

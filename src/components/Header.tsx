@@ -6,9 +6,11 @@ interface HeaderProps {
   onToggleTheme: () => void;
   onSearch: (term: string) => void;
   onOpenAdmission: () => void;
+  onOpenPortal: () => void;
+  onGoToLanding?: () => void;
 }
 
-export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAdmission }: HeaderProps) {
+export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAdmission, onOpenPortal, onGoToLanding }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,7 +35,7 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* LOGO */}
         <div className="flex items-center gap-3">
-          <div className="relative group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="relative group cursor-pointer" onClick={() => { if (onGoToLanding) onGoToLanding(); else window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
             <div className={`absolute -inset-1 blur-sm rounded-full opacity-30 group-hover:opacity-75 transition duration-300
               ${isSpace ? 'bg-gold' : 'bg-crimson'}
             `}></div>
@@ -59,10 +61,16 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
 
         {/* DESKTOP NAV LINKS */}
         <div className="hidden md:flex gap-8 items-center font-serif text-base font-medium">
-          <a href="#hero" className="hover:text-gold transition-colors duration-200">Celestial Globe</a>
-          <a href="#scholarly" className="hover:text-gold transition-colors duration-200">Mission</a>
-          <a href="#curriculum" className="hover:text-gold transition-colors duration-200">Curriculum</a>
-          <a href="#partners" className="hover:text-gold transition-colors duration-200">Partners Team</a>
+          <a href="#hero" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-200">Celestial Globe</a>
+          <a href="#scholarly" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-200">Mission</a>
+          <a href="#curriculum" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-200">Curriculum</a>
+          <button 
+            onClick={onOpenPortal} 
+            className="hover:text-gold transition-colors duration-200 cursor-pointer bg-transparent border-0 font-serif text-base font-medium p-0 focus:outline-none"
+          >
+            Scholastic Portal
+          </button>
+          <a href="#partners" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-205">Partners Team</a>
         </div>
 
         {/* CONTROLS */}
@@ -146,10 +154,19 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
             : 'bg-[#FAF8F5] border-crimson/10 text-charcoal'
           }
         `}>
-          <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors">Celestial Globe</a>
-          <a href="#scholarly" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors">Mission & Ethics</a>
-          <a href="#curriculum" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors">Branches of Study</a>
-          <a href="#partners" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors">Strategic Partners</a>
+          <a href="#hero" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Celestial Globe</a>
+          <a href="#scholarly" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Mission & Ethics</a>
+          <a href="#curriculum" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Branches of Study</a>
+          <button 
+            onClick={() => {
+              setMobileMenuOpen(false);
+              onOpenPortal();
+            }} 
+            className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left bg-transparent border-0 font-serif text-lg p-0 focus:outline-none w-full"
+          >
+            Scholastic Portal
+          </button>
+          <a href="#partners" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Strategic Partners</a>
           <button 
             onClick={() => {
               setMobileMenuOpen(false);

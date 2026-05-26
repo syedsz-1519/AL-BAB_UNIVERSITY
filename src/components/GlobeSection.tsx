@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import * as LucideIcons from 'lucide-react';
 import { COURSES, HADITHS } from '../data';
 import { Course } from '../types';
@@ -29,6 +29,73 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
   const starsList = useMemo(() => generateStars(), []);
   const isSpace = currentTheme === 'space';
 
+  const [zoomScale, setZoomScale] = useState(1);
+  const globeContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = globeContainerRef.current;
+    if (!container) return;
+
+    const handleWheelNative = (e: WheelEvent) => {
+      const zoomIntensity = 0.08;
+      const delta = -e.deltaY * zoomIntensity * 0.012;
+      
+      setZoomScale((prev) => {
+        const next = prev + delta;
+        const clamped = Math.min(Math.max(next, 1), 2.5);
+        if (clamped !== prev) {
+          e.preventDefault();
+        }
+        return clamped;
+      });
+    };
+
+    container.addEventListener('wheel', handleWheelNative, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheelNative);
+    };
+  }, []);
+
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Compute a slow, subtle parallax offset.
+  const parallaxOffset = scrollY * 0.08;
+
+  // Continuous rotation angle state to calculate shifting radial-gradient light sources
+  const [rotationAngle, setRotationAngle] = useState(0);
+
+  useEffect(() => {
+    let frameId: number;
+    const startTime = Date.now();
+    const update = () => {
+      // 18 seconds for full rotation (matching the planet's rotation animation)
+      const elapsed = (Date.now() - startTime) / 1000;
+      const angle = (elapsed * (360 / 18)) % 360;
+      setRotationAngle(angle);
+      frameId = requestAnimationFrame(update);
+    };
+    frameId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(frameId);
+  }, []);
+
+  // Subtle orbit calculations for shifting light source coordinates (mimic moving sun)
+  const rad = (rotationAngle * Math.PI) / 180;
+  // Shift center points from nominal 30% or 180x, 160y
+  const bgLightX = 30 + Math.cos(rad) * 4;
+  const bgLightY = 30 + Math.sin(rad) * 4;
+  const svgLightX = 200 + Math.cos(rad) * 16;
+  const svgLightY = 180 + Math.sin(rad) * 16;
+
   // Interactive Hadith overlay state
   const [showHadithModal, setShowHadithModal] = useState(false);
   const [hadithIndex, setHadithIndex] = useState(0);
@@ -47,31 +114,25 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
   // Helper to map string to Lucid Icon
   const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'BookOpen': return <LucideIcons.BookOpen className="h-5 w-5" />;
-      case 'MessageSquareText': return <LucideIcons.MessageSquareText className="h-5 w-5" />;
-      case 'Scale': return <LucideIcons.Scale className="h-5 w-5" />;
-      case 'Binary': return <LucideIcons.Binary className="h-5 w-5" />;
-      case 'Compass': return <LucideIcons.Compass className="h-5 w-5" />;
-      case 'Brain': return <LucideIcons.Brain className="h-5 w-5" />;
-      case 'TriangleAlert': return <LucideIcons.TriangleAlert className="h-5 w-5" />;
-      case 'Globe': return <LucideIcons.Globe className="h-5 w-5" />;
-      default: return <LucideIcons.BookOpen className="h-5 w-5" />;
+    const IconComponent = (LucideIcons as any)[iconName];
+    if (IconComponent) {
+      return <IconComponent className="h-5 w-5" />;
     }
+    return <LucideIcons.BookOpen className="h-5 w-5" />;
   };
 
-  // Positions on clock for the 8 cards (around a circular perimeter centered in the view)
-  // Highly balanced, symmetrical coordinates
-  const cardPositions = [
-    { name: "Qur'an", top: '5%', left: '50%' },         // 12 o'clock
-    { name: 'Hadith', top: '18%', left: '82%' },       // 1:30
-    { name: 'Fiqh', top: '50%', left: '92%' },          // 3 o'clock
-    { name: 'Logic', top: '82%', left: '82%' },         // 4:30
-    { name: 'Philosophy', top: '95%', left: '50%' },   // 6 o'clock
-    { name: 'Psychology', top: '82%', left: '18%' },     // 7:30
-    { name: 'Challenges', top: '50%', left: '8%' },    // 9 o'clock
-    { name: 'Modernity', top: '18%', left: '18%' },      // 10:30
-  ];
+  // Symmetrically position elements in an ellipse around the central globe
+  const computeCardPosition = (index: number, total: number) => {
+    const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
+    const rx = 41; // horizontal radius in %
+    const ry = 43; // vertical radius in %
+    const left = 50 + Math.cos(angle) * rx;
+    const top = 50 + Math.sin(angle) * ry;
+    return {
+      left: `${left.toFixed(2)}%`,
+      top: `${top.toFixed(2)}%`
+    };
+  };
 
   return (
     <section 
@@ -133,116 +194,489 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
         </h2>
         <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-md mx-auto leading-relaxed">
           Hover over fields to preview scholastic branches. Click <strong className="text-gold font-medium dark:text-gold-light pointer-events-auto cursor-pointer underline" onClick={triggerHadithPopup}>Hadith</strong> or the <strong className="font-medium">Globe Center</strong> to query authentic prophetic wisdom.
+          <span className="block mt-1.5 text-[10px] sm:text-xs tracking-wider opacity-75 font-mono">
+            💡 Scroll wheel over globe or click buttons to zoom and inspect centers
+          </span>
         </p>
       </div>
 
       {/* CENTRALIZED EARTH GLOBE ORBIT DISPLAY */}
-      <div className="relative w-full max-w-5xl h-[550px] sm:h-[650px] flex justify-center items-center select-none">
+      <div className="relative w-full max-w-5xl h-[280px] xs:h-[340px] sm:h-[450px] md:h-[650px] flex justify-center items-center select-none">
         
         {/* Concentric Orbit Rings (Desktop only) */}
         <div className="absolute inset-0 pointer-events-none hidden md:block">
           {/* Ring 1 - Outer */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full border border-gold/15 animate-slow-rotate" style={{ transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(15deg) rotateY(10deg)' }}>
+          <div className="absolute top-1/2 left-1/2 w-[420px] h-[420px] rounded-full border border-gold/15 animate-wobble-orbit-1" style={{ transformStyle: 'preserve-3d' }}>
             <div className="absolute top-0 left-1/2 -ml-1 w-2.5 h-2.5 rounded-full bg-gold/80 animate-pulse duration-700" />
           </div>
           
           {/* Ring 2 with Crescent Moon traveling */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-gold/25 animate-slow-rotate" style={{ animationDirection: 'reverse', transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(-25deg) rotateY(20deg)', animationDuration: '24s' }}>
+          <div className="absolute top-1/2 left-1/2 w-[540px] h-[540px] rounded-full border border-gold/25 animate-wobble-orbit-2" style={{ animationDirection: 'reverse', transformStyle: 'preserve-3d' }}>
             <div className="absolute -top-1.5 left-1/2 -ml-2 text-gold font-sans text-xs select-none">🌙</div>
           </div>
 
           {/* Ring 3 */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[660px] h-[660px] rounded-full border border-crimson/10 animate-slow-rotate" style={{ transformStyle: 'preserve-3d', transform: 'translate(-50%, -50%) rotateX(45deg) rotateY(-15deg)', animationDuration: '32s' }} />
+          <div className="absolute top-1/2 left-1/2 w-[660px] h-[660px] rounded-full border border-crimson/10 animate-wobble-orbit-3" style={{ transformStyle: 'preserve-3d' }} />
         </div>
 
-        {/* Central HTML 3D Globe with Click Handler for Hadith */}
+        {/* Parallax Container for the Globe */}
         <div 
-          onClick={triggerHadithPopup}
-          className={`relative w-64 h-64 sm:w-80 sm:h-80 rounded-full flex justify-center items-center overflow-hidden border border-gold/40 z-20 cursor-pointer shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 group/globe ${!isSpace ? 'bg-[#0F1E36] glow-halo' : ''}`}
+          className="relative w-36 h-36 xs:w-48 xs:h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 z-20"
           style={{
-            background: isSpace ? 'radial-gradient(circle at 30% 30%, #2D6A4F 0%, #1A6B9A 40%, #060D1F 100%)' : undefined,
-            boxShadow: isSpace ? 'inset -20px -20px 50px rgba(0,0,0,0.8), 0 0 60px 15px rgba(232,184,109,0.15)' : undefined
+            transform: `translateY(${parallaxOffset}px)`,
+            willChange: 'transform'
           }}
-          title="Click to receive Prophetic Wisdom in center"
         >
-          {/* Specular Highlight glare */}
+          {/* Central HTML 3D Globe with Click Handler for Hadith */}
           <div 
-            className="absolute top-2 left-6 w-36 h-20 rounded-full pointer-events-none z-35 opacity-70"
+            ref={globeContainerRef}
+            onClick={triggerHadithPopup}
+            className={`relative w-full h-full rounded-full flex justify-center items-center overflow-hidden border border-gold/40 cursor-pointer shadow-2xl transition-all duration-500 hover:scale-[1.03] active:scale-95 group/globe ${!isSpace ? 'glow-halo' : ''}`}
             style={{
-              background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 80%)',
-              transform: 'rotate(-25deg)'
+              background: `radial-gradient(circle at ${bgLightX}% ${bgLightY}%, ${
+                isSpace 
+                  ? '#2D6A4F 0%, #1A6B9A 40%, #060D1F 100%' 
+                  : '#1B6CA8 0%, #0D4F8C 45%, #083A6B 80%, #041F3D 100%'
+              })`,
+              boxShadow: isSpace 
+                ? 'inset -20px -20px 50px rgba(0,0,0,0.8), 0 0 60px 15px rgba(232,184,109,0.15)' 
+                : 'inset -20px -20px 50px rgba(0,0,0,0.85), 0 0 60px 15px rgba(72,144,241,0.22)',
+              willChange: 'background'
             }}
-          />
+            title="Click to receive Prophetic Wisdom in center"
+          >
+            {/* HYPER-REALISTIC SVG EARTH ILLUSTRATION */}
+            <svg 
+              className="absolute inset-0 w-full h-full pointer-events-none select-none" 
+              viewBox="0 0 500 500"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{
+                transform: `scale(${zoomScale})`,
+                transformOrigin: '250px 250px',
+                transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
+                willChange: 'transform'
+              }}
+            >
+              <defs>
+                {/* LAYER 1 — Deep Space Glow Gradient */}
+                <radialGradient id="spaceGlow" cx="250" cy="250" r="240" fx="250" fy="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#1e50a0" stopOpacity="0"/>
+                  <stop offset="50%" stopColor="#143c8c" stopOpacity="0.15"/>
+                  <stop offset="100%" stopColor="#000a1e" stopOpacity="0"/>
+                </radialGradient>
 
-          {/* Map Continent Vector Layer 1 (Realistic world map scrolling seamlessly) */}
-          <div className="absolute w-[200%] h-full flex flex-row pointer-events-none animate-map-scroll">
-            <svg className="w-1/2 h-full fill-emerald-800/80 stroke-gold/10" viewBox="0 0 400 200" preserveAspectRatio="none">
-              <path d="M 0,185 Q 200,180 400,185 L 400,195 L 0,195 Z" />
-              <path d="M 30,35 C 45,38 60,32 75,48 C 80,58 70,72 65,82 C 55,87 40,84 35,72 C 25,62 15,52 15,42 C 15,34 25,30 30,35 Z" />
-              <path d="M 100,22 C 110,20 120,24 118,37 C 110,47 95,42 92,32 C 92,27 96,24 100,22 Z" />
-              <path d="M 65,88 C 75,93 82,103 80,118 C 75,133 68,148 60,168 C 55,163 52,151 56,133 C 60,118 55,103 58,98 C 60,95 63,91 65,88 Z" />
-              <path d="M 170,78 C 185,76 210,83 215,98 C 218,113 210,128 205,138 C 198,153 190,163 184,158 C 178,143 174,131 171,121 C 165,111 160,103 160,93 C 160,85 165,80 170,78 Z" />
-              <path d="M 150,42 C 160,32 200,27 240,27 C 280,27 320,32 330,44 C 320,62 300,77 285,82 C 270,77 250,72 230,87 C 210,90 190,84 180,77 C 170,72 155,57 150,42 Z" />
-              <path d="M 290,128 C 310,125 325,133 322,145 C 315,155 295,153 285,143 C 280,138 285,131 290,128 Z" />
-              <path d="M 235,70 C 242,77 248,87 245,92 C 240,94 235,82 230,84 C 228,77 232,72 235,70 Z" />
-              <path d="M 260,87 C 265,92 270,107 268,112 C 262,112 258,100 258,92 Z" />
+                {/* LAYER 2 — Atmosphere Gradient */}
+                <radialGradient id="atmosphereGlow" cx="250" cy="250" r="195" fx="250" fy="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="85%" stopColor="#64b4ff" stopOpacity="0"/>
+                  <stop offset="100%" stopColor="#64b4ff" stopOpacity="0.35"/>
+                </radialGradient>
+
+                {/* LAYER 3 — Ocean Gradient with dynamic shifting light source */}
+                <radialGradient id="oceanGrad" cx={svgLightX} cy={svgLightY} r="230" fx={svgLightX} fy={svgLightY} gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#1B6CA8" />
+                  <stop offset="30%" stopColor="#0D4F8C" />
+                  <stop offset="70%" stopColor="#083A6B" />
+                  <stop offset="100%" stopColor="#041F3D" />
+                </radialGradient>
+
+                {/* LAYER 4 — Continent Gradient */}
+                <linearGradient id="continentGrad" x1="160" y1="140" x2="340" y2="340" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#2D6A4F" />
+                  <stop offset="100%" stopColor="#1A4A30" />
+                </linearGradient>
+
+                {/* LAYER 8 — Terminator Shade Gradient */}
+                <linearGradient id="terminatorGrad" x1="0" y1="250" x2="500" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="25%" stopColor="#000514" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#000514" stopOpacity="0.15" />
+                  <stop offset="75%" stopColor="#00020a" stopOpacity="0.65" />
+                  <stop offset="100%" stopColor="#000005" stopOpacity="0.94" />
+                </linearGradient>
+
+                {/* Globe Clipping Path */}
+                <clipPath id="globeClip">
+                  <circle cx="250" cy="250" r="180" />
+                </clipPath>
+
+                {/* Filters for photorealistic softening */}
+                <filter id="globeShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blurTarget" />
+                  <feMerge>
+                    <feMergeNode in="blurTarget" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+
+                <filter id="atmosphereBlur" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
+                </filter>
+
+                <filter id="oceanDetailBlur" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
+                </filter>
+
+                <filter id="cloudBlur" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+                </filter>
+
+                <filter id="specularBlur" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="12" />
+                </filter>
+
+                <filter id="brightSpotBlur" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+                </filter>
+
+                <filter id="iceBlur" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+                </filter>
+
+                <filter id="markerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {/* LAYER 1 — Deep Space Glow behind globe */}
+              <circle cx="250" cy="250" r="240" fill="url(#spaceGlow)" />
+
+              {/* LAYER 2 — Soft Blue Atmospheric Rings */}
+              <circle cx="250" cy="250" r="200" fill="rgba(80,160,255,0.12)" filter="url(#atmosphereBlur)" />
+              <circle cx="250" cy="250" r="195" fill="url(#atmosphereGlow)" />
+
+              {/* Main Globe Area (Clipped Group) */}
+              <g clipPath="url(#globeClip)">
+                {/* LAYER 3 — Ocean Base */}
+                <circle cx="250" cy="250" r="180" fill="url(#oceanGrad)" />
+
+                {/* LAYER 5 — Ocean Surface Details (Light reflection ellipses) */}
+                <g filter="url(#oceanDetailBlur)">
+                  <ellipse cx="180" cy="220" rx="40" ry="25" fill="rgba(255,255,255,0.06)" />
+                  <ellipse cx="320" cy="180" rx="60" ry="30" fill="rgba(255,255,255,0.04)" />
+                  <ellipse cx="220" cy="300" rx="35" ry="15" fill="rgba(255,255,255,0.05)" />
+                  <ellipse cx="280" cy="270" rx="55" ry="22" fill="rgba(255,255,255,0.04)" />
+                </g>
+
+                {/* ROTATING GROUP (LAYER 4 — Geography and LAYER 6 — Grid Line Layer) */}
+                <g style={{ transformOrigin: '250px 250px', willChange: 'transform' }}>
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0 250 250"
+                    to="360 250 250"
+                    dur="18s"
+                    repeatCount="indefinite"
+                  />
+
+                  {/* Continent Shapes with Coastlines & Soft shadow filter */}
+                  <g fill="url(#continentGrad)" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" filter="url(#globeShadow)">
+                    {/* Africa */}
+                    <path d="M 255,195 Q 270,185 285,190 Q 305,200 308,230 Q 312,265 295,295 Q 278,325 260,330 Q 242,330 232,310 Q 218,285 220,255 Q 222,225 235,208 Z" />
+                    
+                    {/* Europe */}
+                    <path d="M 248,155 Q 262,148 275,152 Q 288,158 290,170 Q 288,182 275,186 Q 262,188 252,182 Q 242,172 248,155 Z" />
+                    
+                    {/* Asia (partial) */}
+                    <path d="M 290,145 Q 320,135 355,140 Q 380,148 385,168 Q 382,190 360,198 Q 335,202 312,192 Q 292,180 288,162 Z" />
+                    
+                    {/* South America */}
+                    <path d="M 210,240 Q 222,232 232,238 Q 242,250 238,275 Q 232,300 220,312 Q 208,318 198,308 Q 188,292 190,268 Q 192,248 210,240 Z" />
+                    
+                    {/* North America */}
+                    <path d="M 168,168 Q 185,155 205,160 Q 218,168 215,188 Q 210,208 195,215 Q 178,218 165,205 Q 155,190 168,168 Z" />
+                  </g>
+
+                  {/* LAYER 6 — Latitude and Longitude Graticule grid overlay inside rotation */}
+                  <g stroke="rgba(255,255,255,0.06)" strokeWidth="0.6" fill="none">
+                    <ellipse cx="250" cy="250" rx="178" ry="30" />
+                    <ellipse cx="250" cy="250" rx="168" ry="60" />
+                    <ellipse cx="250" cy="250" rx="146" ry="90" />
+                    <ellipse cx="250" cy="250" rx="112" ry="120" />
+                    <ellipse cx="250" cy="250" rx="70" ry="150" />
+                    
+                    <ellipse cx="250" cy="250" rx="30" ry="178" />
+                    <ellipse cx="250" cy="250" rx="60" ry="178" />
+                    <ellipse cx="250" cy="250" rx="90" ry="178" />
+                    <ellipse cx="250" cy="250" rx="120" ry="178" />
+                    <ellipse cx="250" cy="250" rx="150" ry="178" />
+                  </g>
+
+                  {/* Historical markers overlay moved outside to prevent clipping of floating labels */}
+                </g>
+
+                {/* LAYER 7 — Cloud Layer (Rotating slightly faster at 14s) */}
+                <g style={{ transformOrigin: '250px 250px', willChange: 'transform' }}>
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0 250 250"
+                    to="360 250 250"
+                    dur="14s"
+                    repeatCount="indefinite"
+                  />
+                  
+                  <g filter="url(#cloudBlur)" fill="rgba(255,255,255,0.22)">
+                    <ellipse cx="210" cy="180" rx="45" ry="15" />
+                    <ellipse cx="310" cy="220" rx="55" ry="18" />
+                    <ellipse cx="160" cy="280" rx="35" ry="12" />
+                    <ellipse cx="280" cy="310" rx="50" ry="20" />
+                    <ellipse cx="230" cy="130" rx="40" ry="14" />
+                    <ellipse cx="340" cy="150" rx="30" ry="10" />
+                    <ellipse cx="140" cy="200" rx="42" ry="16" />
+                    <ellipse cx="200" cy="350" rx="38" ry="14" />
+                    <ellipse cx="290" cy="110" rx="25" ry="10" />
+                  </g>
+                </g>
+
+                {/* LAYER 10 — Polar Ice Caps */}
+                <ellipse cx="250" cy="72" rx="38" ry="14" fill="rgba(220,235,255,0.85)" filter="url(#iceBlur)" />
+                <ellipse cx="250" cy="428" rx="42" ry="16" fill="rgba(220,235,255,0.80)" filter="url(#iceBlur)" />
+
+                {/* LAYER 8 — Terminator Line (Day/Night Shadow) */}
+                <ellipse cx="310" cy="250" rx="180" ry="180" fill="url(#terminatorGrad)" />
+              </g>
+
+              {/* LAYER 9 — Specular Highlight (Sunlight Reflection) that shifts with moving light source */}
+              <ellipse 
+                cx={155 + Math.cos(rad) * 12} 
+                cy={145 + Math.sin(rad) * 12} 
+                rx="55" 
+                ry="38" 
+                fill="rgba(255,255,255,0.09)" 
+                transform={`rotate(-30 ${155 + Math.cos(rad) * 12} ${145 + Math.sin(rad) * 12})`} 
+                filter="url(#specularBlur)" 
+              />
+              <ellipse 
+                cx={148 + Math.cos(rad) * 12} 
+                cy={140 + Math.sin(rad) * 12} 
+                rx="18" 
+                ry="12" 
+                fill="rgba(255,255,255,0.16)" 
+                filter="url(#brightSpotBlur)" 
+              />
+
+              {/* UNCLIPPED ROTATING MARKERS WITH GORGEOUS FLOATING HOVER CARD ON TOUR */}
+              <g style={{ transformOrigin: '250px 250px', willChange: 'transform' }}>
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  from="0 250 250"
+                  to="360 250 250"
+                  dur="18s"
+                  repeatCount="indefinite"
+                />
+
+                <g>
+                  {/* Baghdad */}
+                  <g className="pointer-events-auto group/marker cursor-pointer">
+                    <circle cx="285" cy="182" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
+                    <circle cx="285" cy="182" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
+                      <animate attributeName="r" values="3;9;3" dur="2.4s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.4s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="285" cy="182" r="2.5" fill="#E8B86D" className="group-hover/marker:fill-white transition-all duration-300" />
+                    
+                    {/* Subtle micro label always visible next to dot when not hovered */}
+                    <text x="295" y="185" fill="#E8B86D" fontSize="6.5" fontFamily="Georgia, serif" fontWeight="bold" opacity="0.65" className="group-hover/marker:opacity-0 transition-opacity duration-200 pointer-events-none tracking-wide text-shadow">Baghdad</text>
+
+                    <g className="opacity-0 group-hover/marker:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <rect x="296" y="152" width="180" height="52" rx="4" fill="rgba(6, 11, 20, 0.98)" stroke="#C9933A" strokeWidth="1.2" />
+                      <text x="304" y="166" fill="#E8B86D" fontSize="8.5" fontFamily="Georgia, serif" fontWeight="black">Baghdad</text>
+                      <text x="304" y="179" fill="rgba(255,255,255,0.95)" fontSize="7" fontFamily="sans-serif" fontWeight="bold">House of Wisdom (Bayt al-Hikma)</text>
+                      <text x="304" y="191" fill="rgba(255,255,255,0.6)" fontSize="6" fontFamily="sans-serif">Preserved Greek lore, birthed algebra &amp; astronomy.</text>
+                    </g>
+                    <title>Baghdad: House of Wisdom (Bayt al-Hikma)</title>
+                  </g>
+
+                  {/* Cairo */}
+                  <g className="pointer-events-auto group/marker cursor-pointer">
+                    <circle cx="268" cy="198" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
+                    <circle cx="268" cy="198" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
+                      <animate attributeName="r" values="3;9;3" dur="2.1s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.1s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="268" cy="198" r="2.5" fill="#E8B86D" className="group-hover/marker:fill-white transition-all duration-300" />
+                    
+                    {/* Subtle micro label always visible next to dot when not hovered */}
+                    <text x="278" y="201" fill="#E8B86D" fontSize="6.5" fontFamily="Georgia, serif" fontWeight="bold" opacity="0.65" className="group-hover/marker:opacity-0 transition-opacity duration-200 pointer-events-none tracking-wide text-shadow">Cairo</text>
+
+                    <g className="opacity-0 group-hover/marker:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <rect x="279" y="168" width="180" height="52" rx="4" fill="rgba(6, 11, 20, 0.98)" stroke="#C9933A" strokeWidth="1.2" />
+                      <text x="287" y="182" fill="#E8B86D" fontSize="8.5" fontFamily="Georgia, serif" fontWeight="black">Cairo</text>
+                      <text x="287" y="195" fill="rgba(255,255,255,0.95)" fontSize="7" fontFamily="sans-serif" fontWeight="bold">Al-Azhar &amp; Dar al-Hikma (970 CE)</text>
+                      <text x="287" y="207" fill="rgba(255,255,255,0.6)" fontSize="6" fontFamily="sans-serif">Epicenter of Arabic grammar, logic, &amp; law.</text>
+                    </g>
+                    <title>Cairo: Al-Azhar &amp; Dar al-Hikma</title>
+                  </g>
+
+                  {/* Cordoba */}
+                  <g className="pointer-events-auto group/marker cursor-pointer">
+                    <circle cx="247" cy="172" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
+                    <circle cx="247" cy="172" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
+                      <animate attributeName="r" values="3;9;3" dur="2.5s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.5s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="247" cy="172" r="2.5" fill="#E8B86D" className="group-hover/marker:fill-white transition-all duration-300" />
+                    
+                    {/* Subtle micro label always visible next to dot when not hovered */}
+                    <text x="257" y="175" fill="#E8B86D" fontSize="6.5" fontFamily="Georgia, serif" fontWeight="bold" opacity="0.65" className="group-hover/marker:opacity-0 transition-opacity duration-200 pointer-events-none tracking-wide text-shadow">Cordoba</text>
+
+                    <g className="opacity-0 group-hover/marker:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <rect x="258" y="142" width="180" height="52" rx="4" fill="rgba(6, 11, 20, 0.98)" stroke="#C9933A" strokeWidth="1.2" />
+                      <text x="266" y="156" fill="#E8B86D" fontSize="8.5" fontFamily="Georgia, serif" fontWeight="black">Cordoba</text>
+                      <text x="266" y="169" fill="rgba(255,255,255,0.95)" fontSize="7" fontFamily="sans-serif" fontWeight="bold">Caliphate Libraries (Al-Andalus)</text>
+                      <text x="266" y="181" fill="rgba(255,255,255,0.6)" fontSize="6" fontFamily="sans-serif">400K+ manuscripts; interfaith science oasis.</text>
+                    </g>
+                    <title>Cordoba: Beacon of Andalusian Learning</title>
+                  </g>
+
+                  {/* Medina */}
+                  <g className="pointer-events-auto group/marker cursor-pointer">
+                    <circle cx="278" cy="215" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
+                    <circle cx="278" cy="215" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
+                      <animate attributeName="r" values="3;9;3" dur="2.2s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="278" cy="215" r="2.5" fill="#E8B86D" className="group-hover/marker:fill-white transition-all duration-300" />
+                    
+                    {/* Subtle micro label always visible next to dot when not hovered */}
+                    <text x="288" y="218" fill="#E8B86D" fontSize="6.5" fontFamily="Georgia, serif" fontWeight="bold" opacity="0.65" className="group-hover/marker:opacity-0 transition-opacity duration-200 pointer-events-none tracking-wide text-shadow">Medina</text>
+
+                    <g className="opacity-0 group-hover/marker:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <rect x="289" y="185" width="180" height="52" rx="4" fill="rgba(6, 11, 20, 0.98)" stroke="#C9933A" strokeWidth="1.2" />
+                      <text x="297" y="199" fill="#E8B86D" fontSize="8.5" fontFamily="Georgia, serif" fontWeight="black">Medina</text>
+                      <text x="297" y="212" fill="rgba(255,255,255,0.95)" fontSize="7" fontFamily="sans-serif" fontWeight="bold">Prophetic Science Cradle</text>
+                      <text x="297" y="224" fill="rgba(255,255,255,0.6)" fontSize="6" fontFamily="sans-serif">Birthplace of sacred law &amp; pristine Hadith.</text>
+                    </g>
+                    <title>Medina: Center of Qur'anic &amp; Prophetic Sciences</title>
+                  </g>
+
+                  {/* Fez */}
+                  <g className="pointer-events-auto group/marker cursor-pointer">
+                    <circle cx="234" cy="206" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
+                    <circle cx="234" cy="206" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
+                      <animate attributeName="r" values="3;9;3" dur="2.3s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.3s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="234" cy="206" r="2.5" fill="#E8B86D" className="group-hover/marker:fill-white transition-all duration-300" />
+                    
+                    {/* Subtle micro label always visible next to dot when not hovered */}
+                    <text x="202" y="209" fill="#E8B86D" fontSize="6.5" fontFamily="Georgia, serif" fontWeight="bold" opacity="0.65" className="group-hover/marker:opacity-0 transition-opacity duration-200 pointer-events-none tracking-wide text-shadow">Fez</text>
+
+                    <g className="opacity-0 group-hover/marker:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <rect x="45" y="176" width="180" height="52" rx="4" fill="rgba(6, 11, 20, 0.98)" stroke="#C9933A" strokeWidth="1.2" />
+                      <text x="53" y="190" fill="#E8B86D" fontSize="8.5" fontFamily="Georgia, serif" fontWeight="black">Fez</text>
+                      <text x="53" y="203" fill="rgba(255,255,255,0.95)" fontSize="7" fontFamily="sans-serif" fontWeight="bold">University of al-Qarawiyyin (859 CE)</text>
+                      <text x="53" y="215" fill="rgba(255,255,255,0.6)" fontSize="6" fontFamily="sans-serif">Oldest continuous university, founded by Fatima al-Fihri.</text>
+                    </g>
+                    <title>Fez: University of al-Qarawiyyin</title>
+                  </g>
+
+                  {/* Bukhara */}
+                  <g className="pointer-events-auto group/marker cursor-pointer">
+                    <circle cx="308" cy="162" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
+                    <circle cx="308" cy="162" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
+                      <animate attributeName="r" values="3;9;3" dur="2.6s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.6s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="308" cy="162" r="2.5" fill="#E8B86D" className="group-hover/marker:fill-white transition-all duration-300" />
+                    
+                    {/* Subtle micro label always visible next to dot when not hovered */}
+                    <text x="318" y="165" fill="#E8B86D" fontSize="6.5" fontFamily="Georgia, serif" fontWeight="bold" opacity="0.65" className="group-hover/marker:opacity-0 transition-opacity duration-200 pointer-events-none tracking-wide text-shadow">Bukhara</text>
+
+                    <g className="opacity-0 group-hover/marker:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <rect x="319" y="132" width="170" height="52" rx="4" fill="rgba(6, 11, 20, 0.98)" stroke="#C9933A" strokeWidth="1.2" />
+                      <text x="327" y="146" fill="#E8B86D" fontSize="8.5" fontFamily="Georgia, serif" fontWeight="black">Bukhara</text>
+                      <text x="327" y="159" fill="rgba(255,255,255,0.95)" fontSize="7" fontFamily="sans-serif" fontWeight="bold">Academy of Sciences</text>
+                      <text x="327" y="171" fill="rgba(255,255,255,0.6)" fontSize="6" fontFamily="sans-serif">Thrived with Ibn Sina &amp; Hadith giants.</text>
+                    </g>
+                    <title>Bukhara: Academy of advanced sciences</title>
+                  </g>
+                </g>
+              </g>
             </svg>
-            <svg className="w-1/2 h-full fill-emerald-800/80 stroke-gold/10" viewBox="0 0 400 200" preserveAspectRatio="none">
-              <path d="M 0,185 Q 200,180 400,185 L 400,195 L 0,195 Z" />
-              <path d="M 30,35 C 45,38 60,32 75,48 C 80,58 70,72 65,82 C 55,87 40,84 35,72 C 25,62 15,52 15,42 C 15,34 25,30 30,35 Z" />
-              <path d="M 100,22 C 110,20 120,24 118,37 C 110,47 95,42 92,32 C 92,27 96,24 100,22 Z" />
-              <path d="M 65,88 C 75,93 82,103 80,118 C 75,133 68,148 60,168 C 55,163 52,151 56,133 C 60,118 55,103 58,98 C 60,95 63,91 65,88 Z" />
-              <path d="M 170,78 C 185,76 210,83 215,98 C 218,113 210,128 205,138 C 198,153 190,163 184,158 C 178,143 174,131 171,121 C 165,111 160,103 160,93 C 160,85 165,80 170,78 Z" />
-              <path d="M 150,42 C 160,32 200,27 240,27 C 280,27 320,32 330,44 C 320,62 300,77 285,82 C 270,77 250,72 230,87 C 210,90 190,84 180,77 C 170,72 155,57 150,42 Z" />
-              <path d="M 290,128 C 310,125 325,133 322,145 C 315,155 295,153 285,143 C 280,138 285,131 290,128 Z" />
-              <path d="M 235,70 C 242,77 248,87 245,92 C 240,94 235,82 230,84 C 228,77 232,72 235,70 Z" />
-              <path d="M 260,87 C 265,92 270,107 268,112 C 262,112 258,100 258,92 Z" />
-            </svg>
+
+            {/* Center Arabic Text Watermark */}
+            <div className="absolute z-30 flex flex-col justify-center items-center pointer-events-none text-center p-2 max-w-full">
+              <span 
+                className="font-arabic text-[#C9933A] text-xl sm:text-2xl md:text-3xl group-hover/globe:text-gold-light group-hover/globe:scale-110 transition-all duration-300 select-none font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
+                style={{ fontFamily: "'Amiri', serif" }}
+              >
+                الْبَاب
+              </span>
+              <span 
+                className="text-[8px] sm:text-[9px] md:text-[11px] tracking-[3px] sm:tracking-[6px] text-[#C9933A]/85 font-sans select-none group-hover/globe:text-white transition-all duration-300 uppercase mt-0.5 sm:mt-1 pl-[3px] sm:pl-[6px]"
+                style={{ fontFamily: "'Lato', sans-serif" }}
+              >
+                ALBAB
+              </span>
+              <span className="text-[7px] sm:text-[8px] md:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-[#E8B86D] font-sans opacity-0 group-hover/globe:opacity-100 transition-all duration-300 mt-1.5 sm:mt-2 uppercase bg-black/40 px-1.5 sm:px-2 py-0.5 rounded border border-gold/20 shadow-md">
+                GET HADITH
+              </span>
+            </div>
           </div>
 
-          {/* Latitude and Longitude Graticule grid overlay */}
-          <svg className="absolute inset-0 w-full h-full stroke-white/10 fill-none pointer-events-none z-15" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <ellipse cx="50" cy="50" rx="46" ry="12" />
-            <ellipse cx="50" cy="50" rx="48" ry="26" />
-            <ellipse cx="50" cy="50" rx="49" ry="38" />
-            <line x1="2" y1="50" x2="98" y2="50" />
-            <ellipse cx="50" cy="50" rx="14" ry="49" />
-            <ellipse cx="50" cy="50" rx="31" ry="49" />
-          </svg>
+          {/* Custom Floating Zoom Controls on the Right side of the globe */}
+          <div className="absolute -right-8 sm:-right-12 md:-right-14 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-30 pointer-events-auto select-none">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setZoomScale(prev => Math.min(prev + 0.25, 2.5));
+              }}
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95
+                ${isSpace 
+                  ? 'bg-space/90 text-gold border-gold/45 hover:border-gold hover:text-white hover:shadow-[0_0_8px_rgba(232,184,109,0.3)]' 
+                  : 'bg-white/95 text-crimson border-crimson/30 hover:border-crimson hover:bg-[#FAF8F5] hover:shadow-[0_2px_8px_rgba(139,0,0,0.12)]'
+                }
+              `}
+              title="Zoom In"
+            >
+              <LucideIcons.ZoomIn className="h-4 w-4" />
+            </button>
+            
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setZoomScale(prev => Math.max(prev - 0.25, 1));
+              }}
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95
+                ${isSpace 
+                  ? 'bg-space/90 text-gold border-gold/45 hover:border-gold hover:text-white hover:shadow-[0_0_8px_rgba(232,184,109,0.3)]' 
+                  : 'bg-white/95 text-crimson border-crimson/30 hover:border-crimson hover:bg-[#FAF8F5] hover:shadow-[0_2px_8px_rgba(139,0,0,0.12)]'
+                }
+              `}
+              title="Zoom Out"
+            >
+              <LucideIcons.ZoomOut className="h-4 w-4" />
+            </button>
 
-          {/* Clouds Overlay revolving slightly faster */}
-          <div className="absolute w-[200%] h-full flex flex-row pointer-events-none animate-cloud-scroll opacity-25 z-10">
-            <svg className="w-1/2 h-full fill-white" viewBox="0 0 400 200" preserveAspectRatio="none">
-              <ellipse cx="60" cy="50" rx="40" ry="12" />
-              <ellipse cx="180" cy="90" rx="60" ry="16" />
-              <ellipse cx="280" cy="140" rx="70" ry="24" />
-              <ellipse cx="320" cy="40" rx="35" ry="10" />
-              <ellipse cx="110" cy="150" rx="45" ry="14" />
-            </svg>
-            <svg className="w-1/2 h-full fill-white" viewBox="0 0 400 200" preserveAspectRatio="none">
-              <ellipse cx="60" cy="50" rx="40" ry="12" />
-              <ellipse cx="180" cy="90" rx="60" ry="16" />
-              <ellipse cx="280" cy="140" rx="70" ry="24" />
-              <ellipse cx="320" cy="40" rx="35" ry="10" />
-              <ellipse cx="110" cy="150" rx="45" ry="14" />
-            </svg>
-          </div>
-
-          {/* Globe Atmosphere Shadow Gradients */}
-          <div className="absolute inset-0 z-20 pointer-events-none rounded-full" style={{ boxShadow: 'inset -25px -25px 50px rgba(0,0,0,0.85), inset 15px 15px 35px rgba(255,255,255,0.1)' }} />
-          
-          {/* Center Arabic Text Watermark */}
-          <div className="absolute z-20 flex flex-col justify-center items-center pointer-events-none text-center">
-            <span className="font-arabic text-gold text-2xl group-hover/globe:text-gold-light group-hover/globe:scale-110 transition-all duration-300 select-none font-bold">الْبَاب</span>
-            <span className="text-[9px] tracking-[0.2em] text-white/55 font-mono select-none group-hover/globe:text-white/80 transition-all duration-300">ALBAB</span>
-            <span className="text-[8px] tracking-widest text-[#E8B86D] font-sans opacity-0 group-hover/globe:opacity-100 transition-all duration-300 mt-1 uppercase">Get Hadith</span>
+            {zoomScale > 1 && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomScale(1);
+                }}
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95 animate-fade-in
+                  ${isSpace 
+                    ? 'bg-space/90 text-gold border-gold/50 hover:border-gold hover:text-white hover:shadow-[0_0_8px_rgba(232,184,109,0.3)]' 
+                    : 'bg-white/95 text-crimson border-crimson/35 hover:border-crimson hover:bg-[#FAF8F5] hover:shadow-[0_2px_8px_rgba(139,0,0,0.12)]'
+                  }
+                `}
+                title="Reset Zoom"
+              >
+                <LucideIcons.RefreshCw className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* DESKTOP: 8 Centered Floating Course Cards */}
+        {/* DESKTOP: Centered Floating Course Cards */}
         <div className="absolute inset-0 pointer-events-none hidden md:block">
           {COURSES.map((course, idx) => {
-            const pos = cardPositions[idx];
+            const pos = computeCardPosition(idx, COURSES.length);
             const isSelected = selectedCourseId === course.id;
 
             const handleCardClick = (e: React.MouseEvent) => {

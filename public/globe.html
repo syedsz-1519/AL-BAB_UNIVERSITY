@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Rotating Earth Globe</title>
+  <style>
+    body {
+      background-color: #000; /* Pitch-black space background */
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #fff;
+    }
+
+    /* Video Background (Atmosphere / Stars overlay) - optional */
+    .video-bg {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      object-fit: cover;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    /* Container to center and house the earth */
+    .earth-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+
+    #earth {
+      width: 300px;
+      height: 300px;
+      /* Using a reliable high-quality seamless equirectangular Earth texture from Wikimedia Commons */
+      background: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earthmap1000x500compac.jpg') repeat-x;
+      background-size: cover;
+      border-radius: 50%;
+      
+      /* Inner and outer shadows creating 3D depth and atmosphere glow */
+      box-shadow: 
+        0 0 50px rgba(72, 144, 241, 0.45),      /* Outer atmospheric blue glow */
+        inset 10px 0 20px rgba(0, 0, 0, 0.8),    /* Subtle right sphere shadow */
+        inset -10px 0 20px rgba(255, 255, 255, 0.2), /* Subtle left highlight */
+        inset 20px 0 80px rgba(0, 0, 0, 1);     /* Deep inner terminator day/night shadow */
+        
+      /* The rotation animation */
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { background-position: 0 0; }
+      to { background-position: 630px 0; } /* Perfect width wrapping offset for seamless loop */
+    }
+
+    /* Modern control overlay */
+    .overlay-hud {
+      position: absolute;
+      top: 30px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .overlay-title {
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 300;
+      margin: 0 0 6px 0;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .overlay-subtitle {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      position: absolute;
+      bottom: 40px;
+      display: flex;
+      gap: 15px;
+      z-index: 10;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 30px;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn:hover {
+      border-color: rgba(255, 255, 255, 0.75);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 20px rgba(72, 144, 241, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Optional Video background overlay to simulate deep cosmic field -->
+  <video class="video-bg" autoplay loop muted playsinline>
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-space-stars-background-animation-31952-large.mp4" type="video/mp4">
+  </video>
+
+  <div class="overlay-hud">
+    <div class="overlay-title">3D Rotating Earth Sphere</div>
+    <div class="overlay-subtitle">HTML5 / CSS3 Standalone Component</div>
+  </div>
+
+  <div class="earth-container">
+    <div id="earth"></div>
+  </div>
+
+  <div class="nav-links">
+    <a href="/" class="btn">Return to App</a>
+  </div>
+
+</body>
+</html>

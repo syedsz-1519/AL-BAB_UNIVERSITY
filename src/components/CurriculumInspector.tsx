@@ -19,17 +19,11 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
 
   // Helper to map string to Lucid Icon
   const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'BookOpen': return <LucideIcons.BookOpen className="h-7 w-7" />;
-      case 'MessageSquareText': return <LucideIcons.MessageSquareText className="h-7 w-7" />;
-      case 'Scale': return <LucideIcons.Scale className="h-7 w-7" />;
-      case 'Binary': return <LucideIcons.Binary className="h-7 w-7" />;
-      case 'Compass': return <LucideIcons.Compass className="h-7 w-7" />;
-      case 'Brain': return <LucideIcons.Brain className="h-7 w-7" />;
-      case 'TriangleAlert': return <LucideIcons.TriangleAlert className="h-7 w-7" />;
-      case 'Globe': return <LucideIcons.Globe className="h-7 w-7" />;
-      default: return <LucideIcons.BookOpen className="h-7 w-7" />;
+    const IconComponent = (LucideIcons as any)[iconName];
+    if (IconComponent) {
+      return <IconComponent className="h-7 w-7" />;
     }
+    return <LucideIcons.BookOpen className="h-7 w-7" />;
   };
 
   // Find course matching searched branch/topic
@@ -79,6 +73,23 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
           <p className="text-sm md:text-base text-stone-400 dark:text-stone-500 font-sans">
             Filter our eight major disciplines or search directly for critical subjects—be it modern capitalism, jurisprudence of Usul, or critical thinking ethics.
           </p>
+
+          {/* SMOTH SCROLL TO CELESTIAL GLOBE TRIGGER */}
+          <button
+            onClick={() => {
+              const el = document.getElementById('scholarly');
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            className={`mt-4 inline-flex items-center gap-1.5 text-[10px] font-mono tracking-wider uppercase transition-all duration-300 border-b pb-0.5 hover:scale-105
+              ${isSpace 
+                ? 'text-gold/90 border-gold/20 hover:text-white hover:border-gold' 
+                : 'text-crimson/90 border-crimson/20 hover:text-stone-700 hover:border-crimson'
+              }
+            `}
+          >
+            <LucideIcons.Globe className="h-3.5 w-3.5 animate-spin-slow" />
+            Revisit Celestial Globe Orbits
+          </button>
 
           {/* INTERNAL ARCHIVAL SEARCH BAR */}
           <div className="mt-8 relative max-w-md mx-auto">

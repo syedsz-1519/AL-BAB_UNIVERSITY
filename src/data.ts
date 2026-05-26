@@ -1,6 +1,6 @@
 import { Course, Hadith, Partner } from './types';
 
-export const COURSES: Course[] = [
+const COURSES_BASE: Course[] = [
   {
     id: 'quran',
     name: "Qur'an",
@@ -74,6 +74,56 @@ export const COURSES: Course[] = [
     accentColor: 'cyan-500'
   }
 ];
+
+export const NEW_COURSES: Course[] = [
+  {
+    id: 'history',
+    name: 'History',
+    count: '5 Branches',
+    icon: 'History',
+    branches: ['Islamic History', 'World History', 'Ancient Civilizations', 'Historiography', 'Political History'],
+    description: 'Relive the great eras and intellectual trajectories. Trace divine patterns through Islamic annals, ancient rises and falls, and historiographical frameworks.',
+    accentColor: 'amber-600'
+  },
+  {
+    id: 'politics',
+    name: 'Politics',
+    count: '5 Branches',
+    icon: 'Landmark',
+    branches: ['Political Theory', 'Islamic Governance', 'International Relations', 'Geopolitics', 'Public Administration'],
+    description: 'Analyze governance models and global systems. Investigate classical theory, Islamic treaties, diplomatic frameworks, and modern geopolitics.',
+    accentColor: 'teal-600'
+  },
+  {
+    id: 'poetry',
+    name: 'Poetry',
+    count: '5 Branches',
+    icon: 'Feather',
+    branches: ['Arabic Poetry', 'Urdu Poetry', 'Persian Poetry', 'Literary Criticism', 'Spiritual Poetry'],
+    description: 'The soul of eloquence. Explore classical odes, mystical couplets, structural rhetorical criticism, and the linguistic genius of legendary poets.',
+    accentColor: 'rose-600'
+  },
+  {
+    id: 'islamic-studies',
+    name: 'Islamic Studies',
+    count: '5 Branches',
+    icon: 'BookType',
+    branches: ['Aqeedah', 'Seerah', 'Tasawwuf', 'Comparative Religion', 'Dawah Studies'],
+    description: 'Roots of conviction and practice. Unveil theological foundations, prophetic biography, spiritual purification, and global comparative dialogues.',
+    accentColor: 'emerald-700'
+  },
+  {
+    id: 'economic-studies',
+    name: 'Economic Studies',
+    count: '5 Branches',
+    icon: 'Coins',
+    branches: ['Islamic Economics', 'Microeconomics', 'Macroeconomics', 'Behavioral Economics', 'Finance & Trade'],
+    description: 'Ethics in commerce and capital. Review micro and macro systems, behavioral incentives, global trading structures, and interest-free solutions.',
+    accentColor: 'yellow-600'
+  }
+];
+
+export const COURSES: Course[] = [...COURSES_BASE, ...NEW_COURSES];
 
 export const HADITHS: Hadith[] = [
   {
