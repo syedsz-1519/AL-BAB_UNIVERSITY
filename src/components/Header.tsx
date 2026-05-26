@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap } from 'lucide-react';
+import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle } from 'lucide-react';
+import { Language, LIST_TRANSLATIONS } from '../i18n';
 
 interface HeaderProps {
   currentTheme: 'parchment' | 'space';
@@ -8,9 +9,26 @@ interface HeaderProps {
   onOpenAdmission: () => void;
   onOpenPortal: () => void;
   onGoToLanding?: () => void;
+  
+  // Custom scholarly navigation coordinates
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+  language?: Language;
+  onLanguageChange?: (lang: Language) => void;
 }
 
-export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAdmission, onOpenPortal, onGoToLanding }: HeaderProps) {
+export default function Header({ 
+  currentTheme, 
+  onToggleTheme, 
+  onSearch, 
+  onOpenAdmission, 
+  onOpenPortal, 
+  onGoToLanding,
+  activeTab = 'landing',
+  onTabChange,
+  language = 'en',
+  onLanguageChange
+}: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,10 +39,21 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
   };
 
   const isSpace = currentTheme === 'space';
+  const t = LIST_TRANSLATIONS[language];
+  const isRTL = language === 'ar' || language === 'ur';
+
+  const navItems = [
+    { id: 'landing', label: t.celestialGlobe },
+    { id: 'debate', label: t.debateArena, icon: Sparkles },
+    { id: 'quran-explorer', label: t.quranExplorer, icon: BookOpen },
+    { id: 'fiqh-ruling', label: t.fiqhRuling, icon: HelpCircle },
+    { id: 'portal', label: t.scholasticPortal, icon: GraduationCap }
+  ];
 
   return (
     <nav 
       id="navbar" 
+      dir={isRTL ? 'rtl' : 'ltr'}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6 md:px-12 backdrop-blur-md border-b
         ${isSpace 
           ? 'bg-space/85 border-gold/15 text-white' 
@@ -32,10 +61,10 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
         }
       `}
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+      <div className="max-w-7xl mx-auto flex justify-between items-center gap-4">
         {/* LOGO */}
-        <div className="flex items-center gap-3">
-          <div className="relative group cursor-pointer" onClick={() => { if (onGoToLanding) onGoToLanding(); else window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="relative group cursor-pointer" onClick={() => { if (onTabChange) onTabChange('landing'); else if (onGoToLanding) onGoToLanding(); }}>
             <div className={`absolute -inset-1 blur-sm rounded-full opacity-30 group-hover:opacity-75 transition duration-300
               ${isSpace ? 'bg-gold' : 'bg-crimson'}
             `}></div>
@@ -46,100 +75,86 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
             />
           </div>
           <div>
-            <h1 className={`font-serif font-bold text-base md:text-lg leading-none tracking-wide
+            <h1 className={`font-serif font-black text-sm md:text-base leading-none tracking-wide
               ${isSpace ? 'text-amber-500' : 'text-crimson'}
             `}>
-              ALBAB ISLAMIC
+              {t.title}
             </h1>
-            <p className={`text-[10px] tracking-[0.25em] uppercase opacity-75 font-mono
+            <p className={`text-[9px] tracking-[0.2em] font-mono font-bold mt-0.5 opacity-80
               ${isSpace ? 'text-gold-light' : 'text-stone-500'}
             `}>
-              UNIVERSITY
+              {t.subtitle}
             </p>
           </div>
         </div>
 
         {/* DESKTOP NAV LINKS */}
-        <div className="hidden md:flex gap-8 items-center font-serif text-base font-medium">
-          <a href="#hero" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-200">Celestial Globe</a>
-          <a href="#scholarly" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-200">Mission</a>
-          <a href="#curriculum" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-200">Curriculum</a>
-          <button 
-            onClick={onOpenPortal} 
-            className="hover:text-gold transition-colors duration-200 cursor-pointer bg-transparent border-0 font-serif text-base font-medium p-0 focus:outline-none"
-          >
-            Scholastic Portal
-          </button>
-          <a href="#partners" onClick={() => onGoToLanding?.()} className="hover:text-gold transition-colors duration-205">Partners Team</a>
+        <div className="hidden lg:flex gap-6 items-center font-serif text-sm font-medium">
+          {navItems.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  if (onTabChange) {
+                    onTabChange(item.id);
+                  } else {
+                    if (item.id === 'portal') onOpenPortal();
+                    else onGoToLanding?.();
+                  }
+                }}
+                className={`flex items-center gap-1.5 py-1 px-2.5 rounded transition-all cursor-pointer bg-transparent border-none font-serif text-sm font-semibold focus:outline-none
+                  ${isActive 
+                    ? (isSpace ? 'text-gold font-bold border-b border-gold/40' : 'text-crimson font-bold border-b border-crimson/40')
+                    : 'text-stone-500 hover:text-stone-800 dark:hover:text-gold-light'
+                  }
+                `}
+              >
+                {item.icon && <item.icon className="h-3.5 w-3.5 shrink-0" />}
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* CONTROLS */}
-        <div className="flex items-center gap-2 md:gap-4">
-          {/* SEARCH BAR */}
-          <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-            <button 
-              type="button"
-              onClick={() => setSearchOpen(!searchOpen)} 
-              className={`p-2 rounded-full focus:outline-none transition-colors
-                ${isSpace ? 'hover:bg-white/10 text-gold-light' : 'hover:bg-crimson/5 text-stone-600'}
-              `}
-              title="Search curriculum"
-            >
-              <Search className="h-5 w-5" />
-            </button>
-            {searchOpen && (
-              <input 
-                type="text" 
-                placeholder="Search branches..." 
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  onSearch(e.target.value);
-                }}
-                className={`absolute right-10 top-1/2 -translate-y-1/2 w-36 md:w-48 px-3 py-1 text-xs rounded border bg-transparent font-sans focus:outline-none transition-all
-                  ${isSpace 
-                    ? 'border-gold/30 text-white placeholder-white/40 focus:border-gold' 
-                    : 'border-crimson/20 text-charcoal placeholder-stone-400 focus:border-crimson'
-                  }
-                `}
-              />
-            )}
-          </form>
+        <div className="flex items-center gap-2 md:gap-3 shrink-0">
+          
+          {/* LANGUAGE PICKER */}
+          <div className="flex items-center gap-1 border border-stone-200 dark:border-gold/25 p-1 rounded bg-white/40 dark:bg-space-dark/40 font-mono text-[10px]">
+            <LanguageButton lang="en" cur={language} onClick={onLanguageChange} />
+            <LanguageButton lang="ar" cur={language} label="عربي" onClick={onLanguageChange} />
+            <LanguageButton lang="ur" cur={language} label="اردو" onClick={onLanguageChange} />
+          </div>
 
           {/* THEME TOGGLE */}
           <button 
             onClick={onToggleTheme} 
             className={`p-2 rounded-full transition-all duration-300 relative group
-              ${isSpace ? 'bg-amber-950/40 text-amber-300 border border-amber-900/50' : 'bg-stone-200/50 text-stone-700 border border-stone-300/30'}
+              ${isSpace ? 'bg-[#2F2113]/30 text-[#EBC15A] border border-gold/15' : 'bg-stone-200/50 text-stone-700 border border-stone-300/30'}
             `}
-            title={isSpace ? "Switch to light scholarly mode" : "Switch to dark celestial mode"}
+            title={isSpace ? t.toggleThemeLight : t.toggleThemeDark}
           >
-            <div className="relative h-5 w-5 transition-transform duration-500 group-hover:rotate-12">
-              {isSpace ? (
-                <Sun className="absolute inset-0 h-5 w-5" />
-              ) : (
-                <Moon className="absolute inset-0 h-5 w-5" />
-              )}
+            <div className="relative h-4.5 w-4.5 transition-transform duration-500 group-hover:rotate-12">
+              {isSpace ? <Sun className="absolute inset-0 h-4.5 w-4.5" /> : <Moon className="absolute inset-0 h-4.5 w-4.5" />}
             </div>
-            <span className="sr-only">Toggle Theme</span>
           </button>
 
           {/* ENROLL BUTTON */}
           <button 
             onClick={onOpenAdmission}
-            className="hidden sm:flex items-center gap-1 text-xs font-bold tracking-widest uppercase py-2 px-5 border rounded-sm transition-all duration-300 shadow-sm
+            className="hidden sm:flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase py-2 px-4 border rounded-sm transition-all duration-300 shadow-sm cursor-pointer
               bg-crimson text-white hover:bg-black hover:border-black active:translate-y-px border-crimson
               dark:bg-gold dark:text-space dark:hover:bg-white dark:hover:border-white dark:border-gold
             "
           >
-            <GraduationCap className="h-3.5 w-3.5" />
-            Apply Now
+            {t.applyNow}
           </button>
 
           {/* MOBILE MENU TOGGLE */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 hover:bg-black/5 rounded-full"
+            className="lg:hidden p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -154,19 +169,23 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
             : 'bg-[#FAF8F5] border-crimson/10 text-charcoal'
           }
         `}>
-          <a href="#hero" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Celestial Globe</a>
-          <a href="#scholarly" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Mission & Ethics</a>
-          <a href="#curriculum" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Branches of Study</a>
-          <button 
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onOpenPortal();
-            }} 
-            className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left bg-transparent border-0 font-serif text-lg p-0 focus:outline-none w-full"
-          >
-            Scholastic Portal
-          </button>
-          <a href="#partners" onClick={() => { setMobileMenuOpen(false); onGoToLanding?.(); }} className="py-2 border-b border-stone-200/10 hover:text-gold transition-colors text-left">Strategic Partners</a>
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (onTabChange) {
+                  onTabChange(item.id);
+                } else {
+                  if (item.id === 'portal') onOpenPortal();
+                  else onGoToLanding?.();
+                }
+              }}
+              className="py-2 border-b border-stone-200/5 hover:text-gold transition-colors text-left font-serif text-base font-semibold bg-transparent border-0 w-full focus:outline-none"
+            >
+              {item.label}
+            </button>
+          ))}
           <button 
             onClick={() => {
               setMobileMenuOpen(false);
@@ -174,11 +193,35 @@ export default function Header({ currentTheme, onToggleTheme, onSearch, onOpenAd
             }}
             className="mt-4 flex justify-center items-center gap-2 py-3 bg-crimson dark:bg-gold text-white dark:text-space font-bold tracking-widest text-xs uppercase rounded-sm"
           >
-            <GraduationCap className="h-4 w-4" />
-            Enrollment Application
+            {t.applyNow}
           </button>
         </div>
       )}
     </nav>
+  );
+}
+
+interface LanguageBtnProps {
+  lang: Language;
+  cur: Language;
+  label?: string;
+  onClick?: (lang: Language) => void;
+}
+
+function LanguageButton({ lang, cur, label, onClick }: LanguageBtnProps) {
+  const active = cur === lang;
+  return (
+    <button
+      type="button"
+      onClick={() => onClick?.(lang)}
+      className={`px-1.5 py-0.5 rounded text-[10px] font-mono tracking-tighter cursor-pointer transition-all uppercase
+        ${active 
+          ? 'bg-crimson dark:bg-gold text-white dark:text-space font-bold' 
+          : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-300'
+        }
+      `}
+    >
+      {label || lang}
+    </button>
   );
 }

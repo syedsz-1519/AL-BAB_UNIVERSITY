@@ -10,6 +10,10 @@ import HadithDisplay from './components/HadithDisplay';
 import AdmissionPortal from './components/AdmissionPortal';
 import Footer from './components/Footer';
 import FloatingContacts from './components/FloatingContacts';
+import DebateArena from './components/DebateArena';
+import QuranExplorer from './components/QuranExplorer';
+import FiqhRuling from './components/FiqhRuling';
+import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
 
@@ -18,7 +22,42 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal'>('landing');
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling'>('landing');
+
+  // Multi-Language State (English, Arabic, Urdu)
+  const [language, setLanguage] = useState<Language>(() => {
+    const saved = localStorage.getItem('albab_language');
+    return (saved as Language) || 'en';
+  });
+
+  // Track bookmarked Qur'an Verses
+  const [bookmarkedKeys, setBookmarkedKeys] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('albab_bookmarks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const handleAddBookmark = (key: string, label: string) => {
+    setBookmarkedKeys(prev => {
+      const next = prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key];
+      localStorage.setItem('albab_bookmarks', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  // Sync language selection direction attributes with HTML root body
+  useEffect(() => {
+    const root = document.documentElement;
+    localStorage.setItem('albab_language', language);
+    if (language === 'ar' || language === 'ur') {
+      root.setAttribute('dir', 'rtl');
+    } else {
+      root.setAttribute('dir', 'ltr');
+    }
+  }, [language]);
 
   // Scroll to top upon section changes
   useEffect(() => {
@@ -76,9 +115,13 @@ export default function App() {
         onOpenAdmission={() => setAdmissionOpen(true)}
         onOpenPortal={() => setCurrentSection('portal')}
         onGoToLanding={() => setCurrentSection('landing')}
+        activeTab={currentSection}
+        onTabChange={(tab) => setCurrentSection(tab as any)}
+        language={language}
+        onLanguageChange={setLanguage}
       />
 
-      {currentSection === 'portal' ? (
+      {currentSection === 'portal' && (
         <div className="pt-24 min-h-[85vh] transition-all duration-500 animate-fade-in">
           {/* SECURE STUDENT AND ADMINISTRATION PORTAL SECTION */}
           <DashboardPortal 
@@ -86,7 +129,31 @@ export default function App() {
             onBackToLanding={() => setCurrentSection('landing')}
           />
         </div>
-      ) : (
+      )}
+
+      {currentSection === 'debate' && (
+        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+          <DebateArena currentTheme={currentTheme} />
+        </div>
+      )}
+
+      {currentSection === 'quran-explorer' && (
+        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+          <QuranExplorer 
+            currentTheme={currentTheme} 
+            onBookmarkAdd={handleAddBookmark} 
+            bookmarkedKeys={bookmarkedKeys} 
+          />
+        </div>
+      )}
+
+      {currentSection === 'fiqh-ruling' && (
+        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+          <FiqhRuling currentTheme={currentTheme} />
+        </div>
+      )}
+
+      {currentSection === 'landing' && (
         <div className="transition-all duration-500 animate-fade-in">
           {/* EDITORIAL BANNER SECTION */}
           <HeroSection 
