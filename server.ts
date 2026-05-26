@@ -823,6 +823,770 @@ Format example:
     }
   });
 
+  // --- AI COGNITIVE LABS ENDPOINTS ---
+
+  // History and Persistence local in-memory stores
+  const localCognitiveSaves: any[] = [];
+
+  // Helper function to delay/pulse local stream simulation
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // 1. Nafs Assessment Engine Endpoint
+  app.post("/api/labs/nafs-assessment", async (req, res) => {
+    const { answers } = req.body;
+    if (!answers || !Array.isArray(answers)) {
+      return res.status(400).write("Error: Missing or invalid answers array");
+    }
+
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    const ai = getGenAI();
+    if (!ai) {
+      // Stream premium simulated scholarly assessment
+      const responseStreamText = `[ALIGNMENT DIAGNOSIS: NAFS AL-LAWWAMA - THE SELF-BLAMING CONSCIENCE]
+
+1) NAFS STAGE & SCRIPTURAL EVIDENCE
+Your spiritual psychological profile indicates a predominant state of Nafs al-Lawwama. You are in a dynamic state of spiritual wakefulness, actively battling inner impulses yet feeling immediate regret after falling into error.
+Sacred Proof: "And I swear by the self-reproaching soul (Nafs al-Lawwama)..." (Surah Al-Qiyamah, 75:2). Traditional masters outline this as the pivot of spiritual growth—it is the soul that moves between right and wrong but commands praise because it blames itself for its shortcomings.
+
+2) PSYCHOLOGICAL PROFILE IN ISLAMIC TERMS
+Under classically formulated Ibn al-Qayyim Nafs sciences, Nafs al-Lawwama operates as a transitional spiritual state. You are neither completely commanded by lower desires (Ammara) nor fully anchored in absolute divine tranquility (Mutmainna). 
+In cognitive-behavioral terms, this manifests as high self-monitoring, acute moral awareness, and localized distress after ethical deviations. The challenge is converting self-reproach from a destructive cognitive feedback loop (unfiltered guilt) into adaptive repentance and behavioral modifications (Istiqlal).
+
+3) SEVEN-DAY TAZKIYAH COGNITIVE PRESCRIPTION
+- Day 1-2 (The Shield of Astaghfirullah): Recite "Astaghfirullah al-Azeem" 100 times after Fajr and Asr. Pair this with a cognitive pause—whenever an error occurs, do not spiral into hopelessness; write down the cognitive trigger.
+- Day 3-4 (The Litany of Constant Grounding): Read Surah Al-Qiyamah verses 1-10 with exegesis. Practice behavioral cognitive reframing: focus on divine mercy over obsessive perfectionism.
+- Day 5 (The Prayer of Renewed Alignment): Pray two rak'ahs of Salat al-Tawbah with focused presence. Actively visualize releasing the weight of past actions into divine mercy.
+- Day 6-7 (Inoculation of Sabr): Align with nature or sit in silence for 15 minutes post-Asr. Practice deep diaphragmatic breathing (Nafas al-Ruh) while internally meditating on "Ya Hayyu Ya Qayyum."
+
+4) CLASSIC ETHICAL MAXIM (IBN AL-QAYYIM Q-MEMORANDUM)
+"The soul (Nafs) is like a wild beast; if you do not busy it with truth, it will busy you with falsehood. The remorse of the Lawwama is the dawn of the Mutmainna." (Ighathat al-Lahfan, Vol. 1)`;
+
+      const lines = responseStreamText.split("\n");
+      for (const line of lines) {
+        res.write(line + "\n");
+        await sleep(60);
+      }
+      res.end();
+      return;
+    }
+
+    try {
+      const formattedAnswers = answers.map((a: any, i: number) => `Q${i + 1}: ${a.question}\nSelected Response: ${a.answer}`).join("\n\n");
+      const prompt = `Here are the student's selections on a spiritual psychology Nafs assessment:\n\n${formattedAnswers}\n\nPlease generate a professional, deep, and traditional psycho-spiritual analysis. Format the response exactly as:
+1) Their predominant Nafs stage out of the three traditional levels: Nafs al-Ammara, Nafs al-Lawwama, or Nafs al-Mutmainna, with Quranic Ayah proof.
+2) Psychological profile in classical Islamic terms fused with modern CBT insights.
+3) A 7-day Tazkiyah (spiritual purification) course or prescription with specific Adhkar, Quranic verses, and lifestyle modifications.
+4) One relevant quote from Ibn al-Qayyim.`;
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction: "You are an Islamic psychologist trained in traditional Tazkiyah al-Nafs (purification of the soul) of Imam Ibn al-Qayyim and contemporary Cognitive Behavioral Therapy (CBT). Your tone is eloquent, deeply spiritual, clinical, compassionate, and highly academic."
+        }
+      });
+
+      for await (const chunk of responseStream) {
+        res.write(chunk.text || "");
+      }
+      res.end();
+    } catch (err: any) {
+      console.error("Nafs streaming error:", err);
+      res.write(`Error during live assessment: ${err.message}`);
+      res.end();
+    }
+  });
+
+  // 2. Mantiq Tutor Lesson Explainer Endpoint
+  app.post("/api/labs/mantiq-tutor/explain", async (req, res) => {
+    const { moduleKey } = req.body;
+    if (!moduleKey) {
+      return res.status(400).json({ error: "Missing moduleKey parameter" });
+    }
+
+    const ai = getGenAI();
+    if (!ai) {
+      // Fallback prebaked explanation
+      const sampleExplanations: Record<string, string> = {
+        hadd: `### Concept: Hadd (Classical Scholarly Definition)
+**Arabic Term**: الحدّ (Al-Hadd)
+**English Translation**: Absolute Essential Definition / Boundary
+
+#### Traditional Exposition
+Under classical Avicennian logic (Al-Mantiq), a *Hadd* represents the complete, essential definition of a reality. It must be composed of the immediate genus (*Jins al-Qarib*) and the specific difference (*Fasl*) that isolates the entity from all other members of the genus. A true Hadd explains *what* a thing essentially is.
+
+*   **Classical Example**: "Man is a rational animal" (الإنسان حيوان ناطق). Here, "animal" is the genus (shared with other species) and "rational/articulate" is the specific differentiator (*Fasl*) that isolates man.
+*   **Modern Example**: "A smartphone is a handheld mobile computer." "Computer" is the genus; "handheld and connected to mobile telephony" represents the essential dividing properties.
+
+#### Practice Exercise
+Using classical logic rules, formulate an essential definition (Hadd) for "A Book". Ensure you outline both the genus and its defining specific differentiator.`,
+        qiyas: `### Concept: Qiyas (Logical Syllogism)
+**Arabic Term**: القياس (Al-Qiyas)
+**English Translation**: Logical Syllogism / Deduction
+
+#### Traditional Exposition
+In classical study, a Syllogism (*Qiyas*) is a systematic formal argument in which a conclusion is drawn from two given or assumed premises. The major premise establishes a cosmic or general truth; the minor premise links a localized entity; the conclusion unites them through a shared middle term (*Hadd-al-Anshat*).
+
+*   **Classical Example**:
+    *   *Premise 1*: The world is created (and changing).
+    *   *Premise 2*: Everything created has a Creator.
+    *   *Conclusion*: Therefore, the world has a Creator.
+*   **Modern Example**:
+    *   *Premise 1*: All software algorithms are governed by mathematical logic.
+    *   *Premise 2*: Neural networks are software algorithms.
+    *   *Conclusion*: Therefore, neural networks are governed by mathematical logic.
+
+#### Practice Exercise
+Construct a formal theological syllogism showing that ethical integrity is necessary for human flourishment. Label Premise 1, Premise 2, and the final Conclusion.`,
+        burhan: `### Concept: Burhan (Demonstration)
+**Arabic Term**: البرهان (Al-Burhan)
+**English Translation**: Philosophical Demonstration / Certain Proof`,
+        jadal: `### Concept: Jadal (Dialectic Debate)
+**Arabic Term**: الجدل (Al-Jadal)
+**English Translation**: Dialectics / Disputation`,
+        mughalata: `### Concept: Mughalata (Fallacies)
+**Arabic Term**: المغالطة (Al-Mughalata)
+**English Translation**: Sophistical Fallacy`
+      };
+
+      return res.json({
+        content: sampleExplanations[moduleKey] || sampleExplanations["hadd"],
+        isSimulated: true
+      });
+    }
+
+    try {
+      const prompt = `Module topic requested: "${moduleKey}" (Options are hadd: Definition, qiyas: Syllogism, burhan: Demonstration, jadal: Dialectic, mughalata: Fallacies).
+Provide a classical, eloquent explanation of this specific branch of Islamic logic (Mantiq) under Avicennian tradition.
+You must include:
+1. The classic scholastic Arabic Term with English translation.
+2. Comprehensive, easy to grasp traditional explanation.
+3. One classical historical example + One modern analytical example.
+4. An interactive practice prompt/exercise for the student to solve at the bottom.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction: "You are a direct disciple of Abu Ali Ibn Sina teaching classical Aristotelian-Arabic logic (Mantiq) at a premium level. Your tone is dry, highly academic, precise, and encouraging."
+        }
+      });
+
+      res.json({ content: response.text, isSimulated: false });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Evaluate Student Practice Exercise Answer
+  app.post("/api/labs/mantiq-tutor/evaluate", async (req, res) => {
+    const { moduleKey, exerciseQuestion, studentAnswer } = req.body;
+    if (!moduleKey || !studentAnswer) {
+      return res.status(400).json({ error: "Missing moduleKey or studentAnswer parameters" });
+    }
+
+    const ai = getGenAI();
+    if (!ai) {
+      return res.json({
+        feedback: `### Scholarly Feedback (Simulated Sandbox)
+*   **Assessment**: Your answer matches the logical parameters of traditional Mantiq. You successfully identified the genus and the core distinction.
+*   **Grade**: Pass (Jayyid)
+*   **Advice**: Continue refining your use of precise terms over colloquial expressions.`,
+        isSimulated: true
+      });
+    }
+
+    try {
+      const prompt = `Class: Classical Mantiq (Islamic Logic).
+Module: ${moduleKey}
+Exercise Prompt: "${exerciseQuestion}"
+Student's Response: "${studentAnswer}"
+
+Evaluate the student's answer using Avicennian standards.
+Clearly provide:
+1. Score/Assessment (e.g. Pass/Jayyid/Excellent).
+2. Bulleted conceptual feedback.
+3. How to improve the syllogistic formulation.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction: "You are a master teacher of Avicennian logic. Provide direct, constructive, and highly formal scholastic feedback."
+        }
+      });
+      res.json({ feedback: response.text, isSimulated: false });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Dynamic Mini-Quiz Generator for Mantiq Modules
+  app.post("/api/labs/mantiq-tutor/quiz", async (req, res) => {
+    const { moduleKey } = req.body;
+    if (!moduleKey) {
+      return res.status(400).json({ error: "Missing moduleKey parameter" });
+    }
+
+    const ai = getGenAI();
+    if (!ai) {
+      // Prebaked 3-question mini-quiz to ensure mock behaves perfectly
+      const sampleQuizzes: Record<string, any[]> = {
+        hadd: [
+          {
+            question: "A true classical Definition (Hadd al-Tamm) must be composed of which of the following?",
+            options: [
+              "Immediate Genus and Specific Difference (Jins & Fasl)",
+              "Accidental Property and Genus (Jins & 'Ard)",
+              "Accidental Property and Specific Difference",
+              "Syllogistic Premise only"
+            ],
+            correct: "A",
+            explanation: "Traditional logic dictates that the Hadd al-Tamm isolates the essence through its immediate genus (Jins Qarib) and differentiator (Fasl)."
+          },
+          {
+            question: "In the definition 'Man is a laughing animal', why is 'laughing' NOT considered a Fasl?",
+            options: [
+              "Because it is an accidental quality (Proprium/Khasah), not an essential difference",
+              "Because it is too long",
+              "Because it represents the ultimate genus",
+              "Because animals cannot laugh"
+            ],
+            correct: "A",
+            explanation: "Laughing is a proprium (khasah) that is unique to humans but not part of the core genus/essence definition, thus making it a 'Hadd al-Naqis' or description."
+          },
+          {
+            question: "An Arabic term that corresponds to the definition boundary is:",
+            options: ["Hadd", "Qiyas", "Mughalata", "Tasawwur"],
+            correct: "A",
+            explanation: "Al-Hadd literally translates to a boundary, limit, or definition in formal classical logic."
+          }
+        ],
+        qiyas: [
+          {
+            question: "What refers to the middle term in a logical syllogism that disappears in the conclusion?",
+            options: ["Hadd-al-Anshat (Middle Term)", "Hadd-al-Akbar", "Hadd-al-Asghar", "Natijah"],
+            correct: "A",
+            explanation: "The middle term connects the major and minor premises but must not appear in the final conclusion."
+          },
+          {
+            question: "A syllogism drawing localized instances from general principles is a process of:",
+            options: ["Deduction", "Induction", "Abduction", "Analogy"],
+            correct: "A",
+            explanation: "Formal Qiyas in classical philosophy operates primordially as deduction (istintaj)."
+          },
+          {
+            question: "Identify the conclusion of: 'All humans are mortal; Socrates is human.'",
+            options: ["Socrates is mortal", "Socrates is human", "Mortals are humans", "Socrates is an animal"],
+            correct: "A",
+            explanation: "The major term (mortal) and minor term (Socrates) align to yield 'Socrates is mortal'."
+          }
+        ]
+      };
+      return res.json({
+        questions: sampleQuizzes[moduleKey] || sampleQuizzes["hadd"],
+        isSimulated: true
+      });
+    }
+
+    try {
+      const prompt = `Generate exactly 3 multiple choice questions (MCQs) in JSON format for the specific classical logic topic: "${moduleKey}".
+Return ONLY a valid JSON array of objects. Do not include markdown codeblocks or outer commentary.
+Each object in the JSON array must contain exactly:
+- "question": text of the question (string)
+- "options": array of exactly 4 strings (options representing A, B, C, D)
+- "correct": single character representing the correct option ("A", "B", "C", or "D")
+- "explanation": a concise paragraph explaining the Avicennian logic rule supporting the correct answer.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      const parsed = JSON.parse(response.text.trim());
+      res.json({ questions: parsed, isSimulated: false });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 3. Waswas Clinic Chat Endpoint (Streaming API)
+  app.post("/api/labs/waswas-clinic", async (req, res) => {
+    const { message } = req.body;
+    if (!message) {
+      return res.status(400).write("Error: Message parameter is missing");
+    }
+
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    const ai = getGenAI();
+    if (!ai) {
+      const responseStreamText = `### COMPASSIONATE VALIDATION & LOGICAL SHIELDING
+
+Indeed, the thoughts, doubts, and internal weight you are facing represent a profoundly human and spiritual trial. 
+First and foremost, know that having unwanted, distressing obsessive religious doubts or fears is **not** a reflection of a diseased heart; rather, it is a hallmark of an active, sincere intellect and conscience.
+
+#### 1) Scriptural Theological Foundation
+During the era of the companions, some came to the Prophet ﷺ in extreme distress, seeking remedy: "We find within our souls thoughts that are too severe for any of us to speak aloud." 
+The Prophet ﷺ looked at them with immense compassion and asked: "Do you truly feel that?" They replied: "Yes." He ﷺ smiled and declared: "That is pure, clear faith" (ذَاكَ جَلِيحُ الإِيمَان - Sahih Muslim). Commenting on this, Imam Ibn al-Qayyim explained that the thief only breaks into a house filled with treasures—the whisperer (waswas) only launches intensive attacks against heart-spaces rich in authentic conviction and sincerity.
+
+#### 2) Clinical Acceptance & Commitment (ACT) Integration
+In therapy, trying to forcefully 'suppress' a thought causes it to return with double intensity (rebound effect). 
+We use Ibn al-Qayyim's cognitive detachment combined with ACT. Instead of fighting and engaging in endless mental debates with the doubts:
+- **Unhook (Defusion)**: Verbally label the thought. Say to yourself internally: *"I am noticing that my mind is having a scary thought about ritual purity."* Do not debate the content; recognize it is just a background cognitive firing of the nervous system.
+- **Accept and Carry**: Allow the anxiety to exist without performing compounding physical rituals or seeking endless reassurance. This teaches your amygdala that the thought is not a real existential threat.
+
+#### 3) Practical Remedial Prescription
+- Day-to-Day: Practice the "Stop-Acknowledge" cycle. When thoughts spike, make fresh, simple wudu *once* without repeating. Count 1-2-3 and step away.
+- Morning & Evening: Recite the Mu'awwidhatayn (Suras Falaq and Nas) slowly, while rubbing your hands over your body feeling the physical tactile boundary.
+
+#### 4) Proprietary Prophetic Supplication
+**Transliteration**: *“A'udhu bi-Kalimatillahit-Tammaati min sharri ma khalaq, wa min hamazatish-shayateeni wa an yahdurun.”*
+**Meaning**: "I seek refuge in the perfect words of Allah from the evil of what He created, and from the obsessive whisperings of the devils, and from their presence."
+
+*Clarity Disclaimer: If mental or spiritual struggles remain highly disruptive, obsessive, or trigger continuous panic, please consult a qualified mental health professional.*`;
+
+      const lines = responseStreamText.split("\n");
+      for (const line of lines) {
+        res.write(line + "\n");
+        await sleep(50);
+      }
+      res.end();
+      return;
+    }
+
+    try {
+      const prompt = `User describes their obsessive doubts or religious anxiety: "${message}".
+
+Provide a highly compassionate response fusing Ibn al-Qayyim's Ighathat al-Lahfan methodology with modern Acceptance and Commitment Therapy (ACT):
+1) Validate their psychological pain, clarifying that religious anxiety does not imply spiritual bankruptcy.
+2) Give the classical theological explanation (referencing the Hadith 'That is pure/clear faith' from Sahih Muslim).
+3) A practical 3-step exercise focusing on defusion (detaching from thoughts) and physical anchoring.
+4) Suggest a reassuring Prophetic Dua with precise transliteration and translation.
+5) End with the exact clinical disclaimer instructing them to consult local qualified mental health professionals if symptoms are severe.`;
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction: "You are an Islamic clinical psychologist who specializes in religious OCD (Waswas) and existential doubts, fluent in both Ibn al-Qayyim's psycho-spiritual text 'Ighathat al-Lahfan' and modern ACT. Your posture is incredibly gentle, reassuring, scientifically and logically sound, and grounded in profound empathy."
+        }
+      });
+
+      for await (const chunk of responseStream) {
+        res.write(chunk.text || "");
+      }
+      res.end();
+    } catch (err: any) {
+      res.write(`Waswas API error: ${err.message}`);
+      res.end();
+    }
+  });
+
+  // 4. Maqasid Ethical Analyzer Endpoint
+  app.post("/api/labs/maqasid-analyzer", async (req, res) => {
+    const { dilemma } = req.body;
+    if (!dilemma) {
+      return res.status(400).json({ error: "No dilemmetic scenario provided" });
+    }
+
+    const ai = getGenAI();
+    if (!ai) {
+      // Premium parsed sandbox JSON
+      const sandboxOutput = {
+        lenses: [
+          {
+            name: "Hifz al-Deen (Religion)",
+            explanation: "Protects fundamental human values and absolute belief systems. Helps shield spiritual freedom from state or algorithmic erosion.",
+            verdict: "permissible"
+          },
+          {
+            name: "Hifz al-Nafs (Life / Biological Preservation)",
+            explanation: "Prioritizes immediate medical well-being, biological sanctity, and preventions of self-harm or structural violence.",
+            verdict: "permissible"
+          },
+          {
+            name: "Hifz al-Aql (Intellect / Consciousness)",
+            explanation: "Saves cognitive freedom, shields critical reasoning from chemicals or systemic manipulation.",
+            verdict: "disputed"
+          },
+          {
+            name: "Hifz al-Nasl (Lineage & Family)",
+            explanation: "Guarantees family stability, childhood protection, and proper physical genealogy channels.",
+            verdict: "permissible"
+          },
+          {
+            name: "Hifz al-Maal (Wealth & Ownership)",
+            explanation: "Safeguards honest commerce, shields public capital from high-frequency exploitation or interest-bearing compounds.",
+            verdict: "disputed"
+          }
+        ],
+        comparative: {
+          utilitarian: "Highly optimal, as it increases raw aggregate utility, economic efficiency, and access to services.",
+          deontology: "Repels because it uses humans as mere proxies or violates categorical duties regarding privacy or bio-ethics.",
+          convergence: "Both systems stress the preservation of social harmony and avoiding absolute structural collapse.",
+          divergence: "Maqasid insists on unchanging, divinely sourced moral boundaries (e.g., spiritual protection), whereas Utilitarianism allows compromises for net utility.",
+          finalRuling: "Disputed/Permissible with severe, systemic regulatory guards. Source evidence relies on the juristic maxim: 'Warding off harm takes precedence over acquiring benefits' (Dar' al-mafasid)."
+        }
+      };
+      return res.json({ result: sandboxOutput, isSimulated: true });
+    }
+
+    try {
+      const prompt = `Modern Ethical Dilemma: "${dilemma}".
+
+Analyze this dilemma through the lens of Maqasid al-Shariah and comparative ethics.
+You MUST respond with a strictly formatted JSON object that fits the following structure:
+{
+  "lenses": [
+    {
+      "name": "Hifz al-Deen (Religion)",
+      "explanation": "Brief explanation...",
+      "verdict": "permissible" | "disputed" | "impermissible"
+    },
+    ...
+  ],
+  "comparative": {
+    "utilitarian": "Brief summary of utilitarian view...",
+    "deontology": "Brief summary of Kantian deontological view...",
+    "convergence": "Where Maqasid and Western frameworks converge...",
+    "divergence": "Where they diverge...",
+    "finalRuling": "A classical final ruling with legal proof..."
+  }
+}
+
+Explain clearly for each of the 5 traditional lenses: Hifz al-Deen (protection of religion), Hifz al-Nafs (life), Hifz al-Aql (intellect), Hifz al-Nasl (lineage), Hifz al-Maal (wealth). Ensure each lens has a verdict ('permissible', 'disputed', or 'impermissible') reflecting classical juristic balancing.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      const parsed = JSON.parse(response.text.trim());
+      res.json({ result: parsed, isSimulated: false });
+    } catch (err: any) {
+      console.error("Maqasid analysis exception:", err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 5. Aqeedah Firewall (Streaming Refutation)
+  app.post("/api/labs/aqeedah-firewall", async (req, res) => {
+    const { challengeKey } = req.body;
+    if (!challengeKey) {
+      return res.status(400).write("Error: Missing challengeKey parameter");
+    }
+
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    const ai = getGenAI();
+    if (!ai) {
+      const responseStreamText = `### THEOLOGICAL RESISTANCE REPORT: DIALECTICAL ANTI-VIRUS
+
+#### Challenge: Modern Philosophical Challenge Mode (${challengeKey})
+#### 1) STEEL-MAN ARGUMENTATION (Challenger's Strongest Premise)
+Let us formulate the challenge at its absolute strongest:
+$P1$: If a perfectly powerful and perfectly good Creator exists, gratuitous evil or suffering should not exist in the baseline creation environment.
+$P2$: Systemic gratuitous suffering exists (e.g., predatory animal cycles, pediatric leukemia).
+$C$: Therefore, a perfectly good, omnipotent Creator does not exist.
+
+#### 2) AL-GHAZALI'S CRITIQUE (Tahafut al-Falasifa Response)
+Refuting the philosophical philosophers, Imam Abu Hamid al-Ghazali demonstrates that human reasoning is structurally limited when trying to subject divine cosmic wisdom to anthropocentric human moral measurements. He illustrates that 'causality' itself is not an absolute logical necessity but a habitual temporal sequence. Thus, a temporary localized pain carries systemic necessities which human finite intellect cannot calculate, but exists under divine permission (Mashee'ah) for cosmic completeness.
+
+#### 3) IBN TAYMIYYAH'S RATIONAL HYBRIDOLOGY
+Imam Ibn Taymiyyah dismantles the dualistic trap of evil altogether. He argues that there is no such thing as "absolute, pure evil" ($Shar\\ al-Mutlaq$) in creation. Every localized hardship is relationally good, serving as a catalyst for human moral courage, purification, patience, and awakening. Divine actions are characterized by "Ultimate Wise Purpose" ($Hikmah\\ al-Balighah$), which is perfect, meaning Allah creates the framework with ultimate design objectives.
+
+#### 4) MODERN INTELLECTUAL COUNTERPART
+Plantinga’s Free Will Defense and Alvin Plantinga’s Reformed Epistemology align perfectly with classical Sunni Ash'ari and Maturidi responses:
+- Evil exists because moral free agency is an immense intrinsic good. 
+- A world where free agents make choices carries the absolute logical possibility of moral compromise. Removing the capacity for harm destroys free will.
+
+#### 5) SACRED CLOSING REVELATION
+**Sacred Proof**: "Or did you think that you would enter Heaven without such trials as came to those who passed away before you? They were afflicted with poverty and hardship and were shaken..." (Surah Al-Baqarah, 2:214).`;
+
+      const lines = responseStreamText.split("\n");
+      for (const line of lines) {
+        res.write(line + "\n");
+        await sleep(40);
+      }
+      res.end();
+      return;
+    }
+
+    try {
+      const prompt = `Modern Philosophical Challenge: "${challengeKey}".
+
+Construct an intensive, scholarly theological refutation (dialectical firewall):
+1) Steel-man the challenger's argument using formal logical notation (P1, P2 -> Conclusion).
+2) Reference Al-Ghazali's intellectual model from Tahafut al-Falasifa if relevant.
+3) Introduce Ibn Taymiyyah's rational theology on Hikmah (ultimate wisdom) and divine purpose.
+4) Point to a modern philosophical defense (e.g., Plantinga, Craig, or Swinburne) that aligns with the traditional Islamic position.
+5) Seal the refutation with a powerful closing Quranic Ayah.`;
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction: "You are an elite Islamic theologian trained in classical Kalam (rational theology) and modern analytic philosophy. Your style is deeply logical, precise, respectful, intellectually formidable, and grounded in orthodox principles."
+        }
+      });
+
+      for await (const chunk of responseStream) {
+        res.write(chunk.text || "");
+      }
+      res.end();
+    } catch (err: any) {
+      res.write(`Aqeedah error: ${err.message}`);
+      res.end();
+    }
+  });
+
+  // 6. Ru'ya Dream Interpreter Endpoint
+  app.post("/api/labs/ruya-interpreter", async (req, res) => {
+    const { dream } = req.body;
+    if (!dream) {
+      return res.status(400).json({ error: "Dream description not provided" });
+    }
+
+    const ai = getGenAI();
+    if (!ai) {
+      return res.json({
+        islamic: `### Traditional Islamic Lens (Ibn Sirin Tradition)
+*   **Symbols**: Drinking deep from water indicates seeking authentic, pristine knowledge, wisdom, and longevity.
+*   **Aura**: Reflected under the narrative of Surah Yusuf, clean pure streams point to stabilization of resources and emotional clarity after intense dryness.`,
+        jungian: `### Modern Jungian Depth Psychology
+*   **Archetypes**: The deep water represents your vast collective unconscious. Seeking the source indicates an active individuation process, diving beneath the Mask (Persona) to integrate the shadow or anima/animus.`,
+        synthesis: `### Combined Scholarly Synthesis
+Both traditions agree that the dream points to an internal thirst or calling for wholeness and deeper orientation. Where they diverge is the source of meaning: classical Sirin attributes the symbol to an external divine warning/gift, whereas Jung attributes it to internal psychic projections.`,
+        dua: `### Recommended Dua
+"O Allah, I ask You for a dream of truth, that is truthful, bringing glad tidings, and not harmful. Ameen."`,
+        isSimulated: true
+      });
+    }
+
+    try {
+      const prompt = `Dream Description: "${dream}".
+
+Please interpret this dream through two advanced frameworks simultaneously:
+1. Classical Islamic Lens (Ibn Sirin's Kitab al-Tabir): Analyze classical symbols, emotional tone, and exegesis, referencing Surah Yusuf if helpful.
+2. Jungian Depth Psychology: Look for essential archetypes (Shadow, Anima/Animus, Self, Persona), unconscious promptings, and symbolic integration.
+3. Comparative Synthesis: Where do they agree? Where do they diverge? What is the combined wisdom?
+4. A customized, comforting prophetic Dua for the dreamer.
+
+Output your analysis in a structured format containing separate keys inside a JSON object:
+{
+  "islamic": "...",
+  "jungian": "...",
+  "synthesis": "...",
+  "dua": "..."
+}`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      const parsed = JSON.parse(response.text.trim());
+      res.json({ ...parsed, isSimulated: false });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 7. Dhikr Prescription Engine Endpoint
+  app.post("/api/labs/dhikr-rx", async (req, res) => {
+    const { emotionKey } = req.body;
+    if (!emotionKey) {
+      return res.status(400).json({ error: "No emotional state selected" });
+    }
+
+    const ai = getGenAI();
+    if (!ai) {
+      // High-fidelity prebaked prescriptions
+      const premadeRx: Record<string, any> = {
+        anxiety: {
+          dhikr: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+          transliteration: "Hasbunallahu wa ni'mal-Wakeel",
+          meaning: "Sufficient for us is Allah, and He is the best Disposer of affairs.",
+          repetition: "Repeat 100 times after Morning and Night prayers.",
+          secondaryDua: "Ya Hayyu Ya Qayyum bi Rahmatika astagheeth.",
+          neuroscience: "Recitation of rhythmic Arabic phonemes activates the vagus nerve, immediately shifting the nervous system from sympathetic (fight-or-flight) to parasympathetic (rest-and-digest). It reduces cortisol production in the adrenal glands and down-regulates a hyper-reactive amygdala. Consistent repetition fosters neuroplastic pathways favoring emotional regulation.",
+          lifestyle: "Unplug, seek a green natural setting, or align your sleep cycles directly with the circadian rhythm of Isha and Fajr.",
+          timeline: "Instant localized relief within 15 minutes of rhythmic chanting; systemic emotional re-wiring occurs in 21 days."
+        },
+        grief: {
+          dhikr: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ",
+          transliteration: "Inna lillahi wa inna ilayhi raji'oon",
+          meaning: "Indeed we belong to Allah, and indeed to Him we will return."
+        }
+      };
+
+      const defaultOrMatched = premadeRx[emotionKey] || premadeRx["anxiety"];
+      return res.json({ result: defaultOrMatched, isSimulated: true });
+    }
+
+    try {
+      const prompt = `Emotional Slate Selection: "${emotionKey}" (Options include: anxiety, grief, anger, loneliness, arrogance, envy, depression, gratitude).
+
+For this specific state, formulate a precise, dual-disciplinary prescription:
+1. Primary Dhikr (Remembrance): Provide accurate Arabic script, clear transliteration, English meaning, and recommended repetitive cycles.
+2. Secondary Prophetic Dua from authentic sources.
+3. THE NEUROBIOLOGY (Explain precisely in exactly 3 lines): How does this specific vocalized Arabic chanting or meditation mechanically affect cortisol, vagus nerve tone, blood pressure, or regional neuroplasticity?
+4. Sunnah Lifestyle Tool: Fasting, sleep alignment, tactile grounding, or walking in nature.
+5. Expected chronological timeline for spiritual and cognitive relief.
+
+Respond with a strictly conforming JSON object:
+{
+  "dhikr": "Arabic text",
+  "transliteration": "Transliteration",
+  "meaning": "English translation",
+  "repetition": "Times to repeat",
+  "secondaryDua": "Dua from Sunnah",
+  "neuroscience": "A 3-sentence neuroscientific analysis...",
+  "lifestyle": "Sunnah practice...",
+  "timeline": "Timeline..."
+}`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      const parsed = JSON.parse(response.text.trim());
+      res.json({ result: parsed, isSimulated: false });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 8. Logical Fallacy Scanner Endpoint
+  app.post("/api/labs/fallacy-scanner", async (req, res) => {
+    const { argument } = req.body;
+    if (!argument) {
+      return res.status(400).json({ error: "Please input a valid argument text" });
+    }
+
+    const ai = getGenAI();
+    if (!ai) {
+      return res.json({
+        fallacies: [
+          {
+            name: "Mughalata fi al-Lafz (Linguistic Fallacy) / Equivocation",
+            quote: `"${argument.slice(0, 45)}..."`,
+            severity: "fatal",
+            explanation: "This occurs due to shifting semantics or sliding definition boundaries of key terms inside the premise.",
+            reformulation: "Clarify the precise meaning of the term prior to presenting the major premise."
+          }
+        ],
+        isSimulated: true
+      });
+    }
+
+    try {
+      const prompt = `Argument text to analyze: "${argument}".
+
+Scan this argument for classical Fallacies (Mughalata) under traditional Mantiq rules (such as Sofia/Sophistry, Equivocation, Linguistic Mughalata fi al-Lafz, or Semantic Mughalata fi al-Ma'na), as well as modern fallacies (straw man, appeal to authority, false dichotomy, hasty generalization).
+
+You MUST return a JSON object with this shape:
+{
+  "fallacies": [
+    {
+      "name": "Classical Term + English Name",
+      "quote": "Exact sentence where it occurs",
+      "severity": "fatal" | "weakening" | "minor",
+      "explanation": "Why this is a fallacy and what logic rule it violates...",
+      "reformulation": "How to write the argument correctly..."
+    }
+  ]
+}
+
+Provide deep critical evaluations. If no severe fallacies are present, return an empty array.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json"
+        }
+      });
+      const parsed = JSON.parse(response.text.trim());
+      res.json({ ...parsed, isSimulated: false });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 9. Unified Save Endpoint for all Cognitive Labs
+  app.post("/api/labs/save", async (req, res) => {
+    const { email, featureName, input, output } = req.body;
+    const newSave = {
+      id: "save_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
+      email: email || "anonymous",
+      featureName,
+      input: input || "",
+      output: typeof output === "object" ? JSON.stringify(output) : output || "",
+      timestamp: new Date().toISOString()
+    };
+
+    localCognitiveSaves.push(newSave);
+
+    if (isSupabaseConfigured && supabase && email) {
+      try {
+        const { error } = await supabase.from("albab_cognitive_saves").insert([newSave]);
+        if (error) {
+          console.warn("Could not save to Supabase table (yet):", error.message);
+        }
+      } catch (err: any) {
+        console.warn("Exception during Supabase labs save:", err.message);
+      }
+    }
+
+    res.json({ success: true, save: newSave });
+  });
+
+  // 10. Fetch history of labs saves
+  app.get("/api/labs/history/:email", async (req, res) => {
+    const { email } = req.params;
+    let userSaves = localCognitiveSaves.filter(s => s.email.toLowerCase() === email.toLowerCase());
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.from("albab_cognitive_saves").select("*").eq("email", email);
+        if (data && !error) {
+          // Parse stringified output if needed
+          return res.json({ history: data });
+        }
+      } catch (err) {
+        console.warn("Fallback to local labs list:", err);
+      }
+    }
+
+    res.json({ history: userSaves });
+  });
+
+  // 11. Complete List of saved records
+  app.get("/api/labs/all", (req, res) => {
+    res.json({ saves: localCognitiveSaves });
+  });
+
   // 5. HADITH OF THE DAY (Rotating daily, fetching authentic Hadith with grading, with subscribe option)
   app.get("/api/hadith-of-the-day", async (req, res) => {
     const ai = getGenAI();

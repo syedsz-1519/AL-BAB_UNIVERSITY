@@ -403,6 +403,8 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
     // Success Authentication! (Bypass password check for friendly evaluation)
     setActiveStudent(student);
     setRole('student');
+    localStorage.setItem('albab_logged_in_email', student.email);
+    localStorage.setItem('albab_logged_in_name', student.fullName);
     showNotification(`Welcome back, Scholar ${student.fullName}!`);
   };
 
@@ -425,6 +427,8 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
     setActiveStudent(null);
     setIsAdminLoggedIn(false);
     setAuthError('');
+    localStorage.removeItem('albab_logged_in_email');
+    localStorage.removeItem('albab_logged_in_name');
   };
 
   // Admin approval decisions

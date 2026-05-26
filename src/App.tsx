@@ -13,6 +13,7 @@ import FloatingContacts from './components/FloatingContacts';
 import DebateArena from './components/DebateArena';
 import QuranExplorer from './components/QuranExplorer';
 import FiqhRuling from './components/FiqhRuling';
+import CognitiveLabs from './components/CognitiveLabs';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -22,7 +23,7 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling'>('landing');
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs'>('landing');
 
   // Multi-Language State (English, Arabic, Urdu)
   const [language, setLanguage] = useState<Language>(() => {
@@ -153,6 +154,15 @@ export default function App() {
         </div>
       )}
 
+      {currentSection === 'cognitive-labs' && (
+        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+          <CognitiveLabs 
+            currentTheme={currentTheme} 
+            onNavigateToPortal={() => setCurrentSection('portal')}
+          />
+        </div>
+      )}
+
       {currentSection === 'landing' && (
         <div className="transition-all duration-500 animate-fade-in">
           {/* EDITORIAL BANNER SECTION */}
@@ -183,6 +193,12 @@ export default function App() {
             selectedCourseId={selectedCourseId}
             onSelectCourse={handleSelectCourse}
             searchText={searchText}
+          />
+
+          {/* AI COGNITIVE LABS SECTION UNDER CURRICULUM DESIGN */}
+          <CognitiveLabs 
+            currentTheme={currentTheme} 
+            onNavigateToPortal={() => setCurrentSection('portal')}
           />
 
           {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}
