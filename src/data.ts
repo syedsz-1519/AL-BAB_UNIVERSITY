@@ -1,0 +1,125 @@
+import { Course, Hadith, Partner } from './types';
+
+export const COURSES: Course[] = [
+  {
+    id: 'quran',
+    name: "Qur'an",
+    count: '5 Branches',
+    icon: 'BookOpen',
+    branches: ['Tafseer', 'Uloom al-Qur\'an', 'Qira\'at', 'Hifz & Tajweed', 'Qur\'anic Arabic'],
+    description: 'The fountainhead of revelation. Deep dive into exegesis, structural rules, rhetorical miracles, historic context, and precise preservation methodology.',
+    accentColor: '--color-gold'
+  },
+  {
+    id: 'hadith',
+    name: 'Hadith',
+    count: '5 Branches',
+    icon: 'MessageSquareText',
+    branches: ['Mustalah of Hadith', 'Ilm al-Rijal', 'Sharh al-Hadith', 'Takhrij', 'Hadith Collections Study'],
+    description: 'The prophetic path. Study the scientific principles of narrations, the critical biography of narrators, chain authenticity verification, and application.',
+    accentColor: '--color-crimson'
+  },
+  {
+    id: 'fiqh',
+    name: 'Fiqh',
+    count: '5 Branches',
+    icon: 'Scale',
+    branches: ['Usul al-Fiqh', 'Comparative Fiqh', 'Muamalat', 'Ibadat', 'Judiciary & Fatwa'],
+    description: 'Islamic jurisprudence and systematic execution. Grasp legal principles, comparative school methods, contracts of modern commerce, and ethical decree generation.',
+    accentColor: 'emerald-600'
+  },
+  {
+    id: 'logic',
+    name: 'Logic',
+    count: '5 Branches',
+    icon: 'Binary',
+    branches: ['Deductive Logic', 'Inductive Logic', 'Symbolic Logic', 'Informal Fallacies', 'Critical Thinking'],
+    description: 'The standard of sound reasoning. Master deductive synergetic systems, inductive research, formal notation of arguments, and identification of intellectual fallacies.',
+    accentColor: 'blue-500'
+  },
+  {
+    id: 'philosophy',
+    name: 'Philosophy',
+    count: '5 Branches',
+    icon: 'Compass',
+    branches: ['Metaphysics', 'Epistemology', 'Ethics', 'Political Philosophy', 'Philosophy of Religion'],
+    description: 'The analytical arena. Reconstruct core paradigms, evaluate theories of knowing, study classic morals, and critique secular political thought framework.',
+    accentColor: 'purple-500'
+  },
+  {
+    id: 'psychology',
+    name: 'Psychology',
+    count: '5 Branches',
+    icon: 'Brain',
+    branches: ['Cognitive Psychology', 'Behavioral Psychology', 'Clinical Psychology', 'Social Psychology', 'Neuropsychology'],
+    description: 'Mind, soul, and motivation. Juxtapose historical theories of Nafs (the soul/psyche) with state-of-the-art cognitive neuroscience and behavioral therapy.',
+    accentColor: 'pink-500'
+  },
+  {
+    id: 'challenges',
+    name: 'Challenges',
+    count: '5 Branches',
+    icon: 'TriangleAlert',
+    branches: ['Atheism', 'Liberalism', 'Feminism', 'Materialism', 'Secularism'],
+    description: 'Scholarly critique of contemporary ideologies. Undertake a rigorous, respectful academic breakdown of current sociopolitical and theological challenges.',
+    accentColor: 'red-600'
+  },
+  {
+    id: 'modernity',
+    name: 'Modernity',
+    count: '5 Branches',
+    icon: 'Globe',
+    branches: ['Artificial Intelligence', 'Capitalism', 'Globalization', 'Postmodernism', 'Digital Culture'],
+    description: 'Mapping the now. Navigate technology ethics, absolute automation, hyper-connected commerce, critical theory of postmodern age, and societal consequences.',
+    accentColor: 'cyan-500'
+  }
+];
+
+export const HADITHS: Hadith[] = [
+  {
+    id: 'knowledge-obligation',
+    arabic: 'طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ',
+    translation: 'Seeking knowledge is an obligation upon every Muslim.',
+    source: 'Sunan Ibn Majah, Hadith No. 224 | Graded: Sahih by Al-Albani ✓',
+    context: 'This core statement underscores that learning is not a privilege, but a foundational moral and spiritual duty for every single believer.'
+  },
+  {
+    id: 'jannah-path',
+    arabic: 'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ',
+    translation: 'Whoever treads a path in search of knowledge, Allah will facilitate for him a path to Paradise.',
+    source: 'Sahih Muslim, Book 35, Hadith 6518 | Graded: Sahih ✓',
+    context: 'The intellectual struggle and focus required to understand truths is itself a continuous act of worship, paving the cosmic road to eternity.'
+  },
+  {
+    id: 'wisdom-lost',
+    arabic: 'الْكَلِمَةُ الْحِكْمَةُ ضَالَّةُ الْمُؤْمِنِ فَحَيْثُ وَجَدَهَا فَهُوَ أَحَقُّ بِهَا',
+    translation: 'The word of wisdom is the lost property of the believer, so wherever he finds it, he has a better right to it.',
+    source: 'Sunan al-Tirmidhi, Hadith No. 2687 | Graded: Hasan ✓',
+    context: 'Instructs the People of Understanding (Ulul Albab) to receive truth and objective knowledge with open arms, regardless of where or who it comes from.'
+  },
+  {
+    id: 'wish-good',
+    arabic: 'مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ',
+    translation: 'When Allah wishes good for someone, He bestows upon him profound understanding of the religion.',
+    source: 'Sahih al-Bukhari, Hadith No. 71 | Graded: Sahih ✓',
+    context: 'True goodness lies in clear foresight, comprehension, and the wisdom to execute the principles of active preservation and context.'
+  }
+];
+
+export const PARTNERS: Partner[] = [
+  {
+    name: 'Halqa',
+    shape: 'square',
+    description: 'Traditional circle of scholarly gathering specializing in classic texts reconstruction.'
+  },
+  {
+    name: 'Fiqh Lab',
+    shape: 'circle',
+    description: 'An international research syndicate focusing on modern financial transactions and legal decrees.'
+  },
+  {
+    name: 'Iqra Hub',
+    shape: 'triangle',
+    description: 'A contemporary digital preservation library indexing critical editions of heritage manuscripts.'
+  }
+];

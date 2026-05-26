@@ -1,0 +1,6 @@
+{
+  "name": "Albab Islamic University",
+  "description": "Virtual seminary portal with concentric rotating Earth globe, celestial space theme toggling, and interactive curricular course search engines.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
