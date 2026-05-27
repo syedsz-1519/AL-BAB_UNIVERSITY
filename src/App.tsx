@@ -18,6 +18,7 @@ import CognitiveLabs from './components/CognitiveLabs';
 import WaswasClinic from './components/WaswasClinic';
 import MantiqTutor from './components/MantiqTutor';
 import FallacyScanner from './components/FallacyScanner';
+import DhikrRx from './components/DhikrRx';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -29,7 +30,7 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx'>(() => {
     if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
       return 'waswas-clinic';
     }
@@ -38,6 +39,9 @@ export default function App() {
     }
     if (window.location.hash === '#fallacy-scanner' || window.location.pathname === '/fallacy-scanner') {
       return 'fallacy-scanner';
+    }
+    if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
+      return 'dhikr-rx';
     }
     return 'landing';
   });
@@ -75,6 +79,8 @@ export default function App() {
         setCurrentSection('mantiq-tutor');
       } else if (window.location.hash === '#fallacy-scanner' || window.location.pathname === '/fallacy-scanner') {
         setCurrentSection('fallacy-scanner');
+      } else if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
+        setCurrentSection('dhikr-rx');
       }
     };
     window.addEventListener('popstate', handleUrlChange);
@@ -242,6 +248,15 @@ export default function App() {
       {currentSection === 'fallacy-scanner' && (
         <div className="animate-fade-in">
           <FallacyScanner 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'dhikr-rx' && (
+        <div className="animate-fade-in">
+          <DhikrRx 
             currentTheme={currentTheme}
             onBackToLanding={() => setCurrentSection('landing')}
           />

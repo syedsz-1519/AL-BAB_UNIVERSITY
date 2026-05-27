@@ -51,6 +51,7 @@ export default function Header({
     { id: 'fallacy-scanner', label: 'Fallacy Scanner', icon: ShieldAlert },
     { id: 'waswas-clinic', label: 'Waswas Clinic', icon: Heart },
     { id: 'cognitive-labs', label: 'Cognitive Labs', icon: Brain },
+    { id: 'dhikr-rx', label: 'Dhikr Rx', icon: Heart },
     { id: 'portal', label: t.scholasticPortal, icon: GraduationCap }
   ];
 

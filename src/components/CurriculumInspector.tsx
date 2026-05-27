@@ -238,6 +238,64 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
           </div>
 
         </div>
+
+        {/* AI COGNITIVE LABS SECTOR AT BOTTOM OF CURRICULUM */}
+        <div className="mt-20 pt-16 border-t border-stone-200/15">
+          <div className="text-center mb-10 max-w-2xl mx-auto">
+            <h3 className="font-serif font-black text-2xl md:text-3xl tracking-tight text-[#8B1A1A] dark:text-gold mb-2">
+              AI Cognitive Labs — مَخَابِرُ الذَّكَاء
+            </h3>
+            <p className="text-sm text-stone-500 dark:text-stone-400 font-sans italic">
+              Where Islamic scholarship meets artificial intelligence
+            </p>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <div 
+              style={{ backgroundColor: isSpace ? '#0a1024' : '#F5F0E8' }}
+              className={`p-8 rounded-sm border shadow-lg relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300
+                ${isSpace ? 'border-gold/20' : 'border-[#8B1A1A]'}
+              `}
+            >
+              {/* Little elegant background star watermark */}
+              <div className={`absolute -right-10 -bottom-10 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star ${isSpace ? 'bg-gold' : 'bg-[#8B1A1A]'}`} />
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-0.5 rounded-full font-mono text-[9px] uppercase font-bold tracking-wider text-white
+                    ${isSpace ? 'bg-amber-600' : 'bg-[#8B1A1A]'}
+                  `}>
+                    ACTIVE LAB RX
+                  </span>
+                  <span className="font-serif text-xs text-stone-400 font-bold tracking-wider select-none">
+                    وَصْفَةُ الذِّكْر
+                  </span>
+                </div>
+                <h4 className="font-serif font-black text-xl tracking-wide dark:text-gold text-stone-900 leading-tight">
+                  Dhikr Prescription Engine
+                </h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 font-sans leading-relaxed max-w-lg">
+                  Receive a personalized Dhikr, Dua, and neuroscience-backed spiritual prescription based on your emotional state.
+                </p>
+              </div>
+
+              <div className="shrink-0">
+                <button
+                  onClick={() => {
+                    window.location.hash = '#dhikr-rx';
+                    window.dispatchEvent(new HashChangeEvent('hashchange'));
+                  }}
+                  className={`w-full md:w-auto font-mono text-xs uppercase font-bold tracking-widest px-6 py-4.5 rounded shadow transition-all duration-300 cursor-pointer hover:scale-105 flex items-center justify-center gap-1.5 border-none
+                    ${isSpace ? 'bg-gold text-black hover:bg-amber-400' : 'bg-[#8B1A1A] text-white hover:bg-[#a32222]'}
+                  `}
+                >
+                  <span>Open Lab →</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );
