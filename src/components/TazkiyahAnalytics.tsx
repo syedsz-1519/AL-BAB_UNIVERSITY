@@ -52,6 +52,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
   const [data, setData] = useState<MergedDataPoint[]>([]);
   const [isSeeded, setIsSeeded] = useState<boolean>(false);
   const [activeMetric, setActiveMetric] = useState<'all' | 'serenity' | 'vagalTone' | 'focus'>('all');
+  const [isReady, setIsReady] = useState<boolean>(false);
 
   // Load and merge datasets
   const fetchAndMergeData = () => {
@@ -167,6 +168,10 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
 
   useEffect(() => {
     fetchAndMergeData();
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 150);
+    return () => clearTimeout(timer);
   }, []);
 
   // Colors based on academic theme
@@ -294,7 +299,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
       >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={data}
+            data={isReady ? data : []}
             margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" opacity={0.1} stroke={isSpace ? '#ffffff' : '#000000'} />
