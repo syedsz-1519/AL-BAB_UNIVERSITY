@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { 
   LineChart, 
   Line, 
@@ -285,7 +286,12 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
       </div>
 
       {/* LINE CHART CONTAINER */}
-      <div className="h-72 w-full mt-4 bg-black/5 dark:bg-black/20 p-4 rounded border border-stone-200/5 select-none">
+      <motion.div 
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="h-72 w-full mt-4 bg-black/5 dark:bg-black/20 p-4 rounded border border-stone-200/5 select-none"
+      >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
@@ -326,6 +332,10 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
                 strokeWidth={3}
                 activeDot={{ r: 8 }}
                 dot={{ stroke: serenityColor, strokeWidth: 2, r: 4 }}
+                isAnimationActive={true}
+                animationDuration={1600}
+                animationEasing="ease-out"
+                animationBegin={100}
               />
             )}
 
@@ -337,6 +347,10 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
                 stroke={vagalColor} 
                 strokeWidth={2}
                 dot={{ stroke: vagalColor, strokeWidth: 1, r: 3 }}
+                isAnimationActive={true}
+                animationDuration={1600}
+                animationEasing="ease-out"
+                animationBegin={350}
               />
             )}
 
@@ -348,11 +362,15 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
                 stroke={focusColor} 
                 strokeWidth={2}
                 dot={{ stroke: focusColor, strokeWidth: 1, r: 3 }}
+                isAnimationActive={true}
+                animationDuration={1600}
+                animationEasing="ease-out"
+                animationBegin={600}
               />
             )}
           </LineChart>
         </ResponsiveContainer>
-      </div>
+      </motion.div>
 
       <div className="flex items-center gap-2 mt-4 text-[10px] text-stone-500 justify-center">
         <Database className="h-3.5 w-3.5" />
