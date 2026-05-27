@@ -201,14 +201,10 @@ export default function DhikrRx({ currentTheme, onBackToLanding }: DhikrRxProps)
     setPrescription(null);
 
     try {
-      // Step 5 support: If user loaded the Anthropic API Key we can fetch it or fall back to Gemini server api
-      const customKey = ((import.meta as any).env?.VITE_NEXT_PUBLIC_ANTHROPIC_API_KEY as string) || '';
-      
       const response = await fetch("/api/labs/dhikr-rx", {
         method: "POST",
         headers: { 
-          "Content-Type": "application/json",
-          ...(customKey ? { "x-api-key": customKey } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ emotionKey: selectedEmotion })
       });
