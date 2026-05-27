@@ -20,6 +20,9 @@ import MantiqTutor from './components/MantiqTutor';
 import FallacyScanner from './components/FallacyScanner';
 import DhikrRx from './components/DhikrRx';
 import NafsAssessmentScreen from './components/NafsAssessmentScreen';
+import MaqasidAnalyzer from './components/MaqasidAnalyzer';
+import AqeedahFirewall from './components/AqeedahFirewall';
+import RuyaInterpreter from './components/RuyaInterpreter';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -31,9 +34,18 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx' | 'nafs-assessment'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter'>(() => {
     if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
       return 'waswas-clinic';
+    }
+    if (window.location.hash === '#aqeedah-firewall' || window.location.pathname === '/aqeedah-firewall') {
+      return 'aqeedah-firewall';
+    }
+    if (window.location.hash === '#ruya-interpreter' || window.location.pathname === '/ruya-interpreter') {
+      return 'ruya-interpreter';
+    }
+    if (window.location.hash === '#maqasid-analyzer' || window.location.pathname === '/maqasid-analyzer') {
+      return 'maqasid-analyzer';
     }
     if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
       return 'mantiq-tutor';
@@ -79,6 +91,12 @@ export default function App() {
     const handleUrlChange = () => {
       if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
         setCurrentSection('waswas-clinic');
+      } else if (window.location.hash === '#aqeedah-firewall' || window.location.pathname === '/aqeedah-firewall') {
+        setCurrentSection('aqeedah-firewall');
+      } else if (window.location.hash === '#ruya-interpreter' || window.location.pathname === '/ruya-interpreter') {
+        setCurrentSection('ruya-interpreter');
+      } else if (window.location.hash === '#maqasid-analyzer' || window.location.pathname === '/maqasid-analyzer') {
+        setCurrentSection('maqasid-analyzer');
       } else if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
         setCurrentSection('mantiq-tutor');
       } else if (window.location.hash === '#fallacy-scanner' || window.location.pathname === '/fallacy-scanner') {
@@ -273,6 +291,33 @@ export default function App() {
       {currentSection === 'nafs-assessment' && (
         <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
           <NafsAssessmentScreen 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'maqasid-analyzer' && (
+        <div className="animate-fade-in">
+          <MaqasidAnalyzer 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'aqeedah-firewall' && (
+        <div className="animate-fade-in">
+          <AqeedahFirewall 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'ruya-interpreter' && (
+        <div className="pt-24 animate-fade-in">
+          <RuyaInterpreter 
             currentTheme={currentTheme}
             onBackToLanding={() => setCurrentSection('landing')}
           />

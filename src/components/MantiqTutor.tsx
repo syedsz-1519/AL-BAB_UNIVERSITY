@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  BookOpen, HelpCircle, Lock, CheckCircle2, ChevronRight, 
-  RefreshCw, Award, Send, Star, AlertTriangle, MessageSquare, 
-  Volume2, Compass, ArrowRight, ShieldCheck, PlayCircle, Sparkle
+  BookOpen, Lock, CheckCircle2, ChevronRight, 
+  RefreshCw, Award, Send, Compass, HelpCircle, 
+  AlertTriangle, ArrowRight, Sparkles 
 } from 'lucide-react';
 
 interface MantiqTutorProps {
@@ -22,7 +22,6 @@ interface MantiqModule {
   name: string;
   arabicName: string;
   description: string;
-  conceptPrompt: string;
   defaultExerciseText: string;
 }
 
@@ -37,42 +36,37 @@ interface QuizQuestion {
 const MANTIQ_MODULES: MantiqModule[] = [
   {
     id: 'hadd',
-    name: 'Hadd — Definition',
-    arabicName: 'التعريف',
+    name: 'Hadd (Definition)',
+    arabicName: 'الْحَدُّ',
     description: 'The science of formulating precise essence and characteristics of concepts.',
-    conceptPrompt: 'Hadd — Definition (التعريف)',
     defaultExerciseText: "Define 'Knowledge' (al-Ilm) using a genus and specific difference (hadd tamm) as defined by Ibn Sina."
   },
   {
     id: 'qiyas',
-    name: 'Qiyas — Syllogism',
-    arabicName: 'القياس',
-    description: 'Deductive reasoning by connecting a minor premise to a major premise to yield absolute conclusion.',
-    conceptPrompt: 'Qiyas — Syllogism (القياس)',
+    name: 'Qiyas (Syllogism)',
+    arabicName: 'الْقِيَاسُ',
+    description: 'Deductive reasoning by connecting a minor premise to a major premise to yield an absolute conclusion.',
     defaultExerciseText: "Major premise: 'All scholars are mortal.' Minor premise: 'Zayd is a scholar.' Deduce the conclusion using classical logical deduction."
   },
   {
     id: 'burhan',
-    name: 'Burhan — Demonstration',
-    arabicName: 'البرهان',
+    name: 'Burhan (Demonstration)',
+    arabicName: 'الْبُرْهَانُ',
     description: 'The peak of logic: proof structures founded on absolute, certain self-evident truths.',
-    conceptPrompt: 'Burhan — Demonstration (البرهان)',
     defaultExerciseText: "Claim: 'The universe has a beginning.' Draw a Burhan demonstration structure showing why this is logically necessary based on causality."
   },
   {
     id: 'jadal',
-    name: 'Jadal — Dialectic',
-    arabicName: 'الجدل',
+    name: 'Jadal (Dialectic)',
+    arabicName: 'الْجَدَلُ',
     description: 'Rule-based disputation to persuade an audience or silence an opponent using famous opinions.',
-    conceptPrompt: 'Jadal — Dialectic (الجدل)',
     defaultExerciseText: "Position: 'Sincerity is the root of all knowledge.' Argue this position or challenge it using generally accepted truths (Mashhurat)."
   },
   {
     id: 'mughalata',
-    name: 'Mughalata — Fallacies',
-    arabicName: 'المغالطة',
+    name: 'Mughalata (Fallacies)',
+    arabicName: 'الْمُغَالَطَةُ',
     description: 'Identifying deceptive arguments that mimic logical demonstration but harbor hidden flaws.',
-    conceptPrompt: 'Mughalata — Fallacies (المغالطة)',
     defaultExerciseText: "Argument: 'This book contains truth because its author is famous, and he would never write falsehood.' Identify the logical fallacy in this argument and explain its flaw."
   }
 ];
@@ -198,7 +192,7 @@ const FALLBACK_QUIZZES: Record<string, QuizQuestion[]> = {
       arabic_question: "ما هو الغرض الأساسي من الجدل في الفلسفة الإسلامية؟",
       options: {
         A: "To establish certain metaphysical proof from primary axioms",
-        B: "To silence an opponent or convince an audience using generally accepted premises (Mashhurat)",
+        B: "To silence an opponent or convince an audience using widely accepted premises (Mashhurat)",
         C: "To deceive others with false reasoning to gain worldly status",
         D: "To teach children literal grammar"
       },
@@ -272,6 +266,7 @@ const FALLBACK_QUIZZES: Record<string, QuizQuestion[]> = {
 
 export default function MantiqTutor({ currentTheme, onBackToLanding }: MantiqTutorProps) {
   const [activeModuleIndex, setActiveModuleIndex] = useState<number>(0);
+  const [unlockedModules, setUnlockedModules] = useState<string[]>(['hadd']);
   const [progress, setProgress] = useState<Record<string, SavedProgress>>({});
   
   // Lesson state variables
@@ -284,6 +279,9 @@ export default function MantiqTutor({ currentTheme, onBackToLanding }: MantiqTut
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evaluation, setEvaluation] = useState<string | null>(null);
   
+  // Active State representing State A/B vs State C vs State D
+  const [activeState, setActiveState] = useState<'lessons_answers' | 'evaluation' | 'quiz'>('lessons_answers');
+
   // MCQ Quiz state
   const [quizLoading, setQuizLoading] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
@@ -296,13 +294,27 @@ export default function MantiqTutor({ currentTheme, onBackToLanding }: MantiqTut
 
   const currentModule = MANTIQ_MODULES[activeModuleIndex];
 
-  // Load progress and active index from LocalStorage
+  // Load progress and active index from LocalStorage on mount
   useEffect(() => {
     try {
       const savedProg = localStorage.getItem('albab_mantiq_progress');
       if (savedProg) {
-        setProgress(JSON.parse(savedProg));
+        const parsedProg = JSON.parse(savedProg);
+        setProgress(parsedProg);
+        
+        // Compute unlocked modules based on completed modules
+        const unlocked = ['hadd'];
+        MANTIQ_MODULES.forEach((mod, idx) => {
+          if (parsedProg[mod.id]?.completed && parsedProg[mod.id]?.score >= 2) {
+            const nextMod = MANTIQ_MODULES[idx + 1];
+            if (nextMod && !unlocked.includes(nextMod.id)) {
+              unlocked.push(nextMod.id);
+            }
+          }
+        });
+        setUnlockedModules(unlocked);
       }
+      
       const savedIndex = localStorage.getItem('albab_mantiq_active_index');
       if (savedIndex) {
         setActiveModuleIndex(parseInt(savedIndex, 10));
@@ -312,16 +324,17 @@ export default function MantiqTutor({ currentTheme, onBackToLanding }: MantiqTut
     }
   }, []);
 
-  // Fetch or trigger Lesson generation whenever the active module changes
+  // Fetch or trigger Lesson generation whenever active module changes
   useEffect(() => {
     fetchLesson(currentModule);
-    // Reset inputs
+    // Reset page logic
     setStudentAnswer('');
     setEvaluation(null);
     setQuizQuestions([]);
     setSelectedAnswers({});
     setQuizSubmitted(false);
     setQuizScore(0);
+    setActiveState('lessons_answers');
   }, [activeModuleIndex]);
 
   const triggerNotification = (msg: string) => {
@@ -364,14 +377,29 @@ export default function MantiqTutor({ currentTheme, onBackToLanding }: MantiqTut
         setLessonContent(entireText);
       }
 
-      // Extract custom exercise bounds if present
-      const startMarker = "EXERCISE_START:";
-      const endMarker = ":EXERCISE_END";
-      const sIndex = entireText.indexOf(startMarker);
-      const eIndex = entireText.indexOf(endMarker);
+      // Extract custom exercise bounds if present (EXERCISE: ... :END)
+      const startMarker = "EXERCISE:";
+      const endMarker = ":END";
+      const startMarkerAlt = "EXERCISE_START:";
+      const endMarkerAlt = ":EXERCISE_END";
+
+      let extracted = "";
+      let sIndex = entireText.indexOf(startMarker);
+      let eIndex = entireText.indexOf(endMarker);
       if (sIndex !== -1 && eIndex !== -1 && eIndex > sIndex) {
-        const extracted = entireText.substring(sIndex + startMarker.length, eIndex).trim();
+        extracted = entireText.substring(sIndex + startMarker.length, eIndex).trim();
+      } else {
+        sIndex = entireText.indexOf(startMarkerAlt);
+        eIndex = entireText.indexOf(endMarkerAlt);
+        if (sIndex !== -1 && eIndex !== -1 && eIndex > sIndex) {
+          extracted = entireText.substring(sIndex + startMarkerAlt.length, eIndex).trim();
+        }
+      }
+
+      if (extracted) {
         setExerciseText(extracted);
+      } else {
+        setExerciseText(module.defaultExerciseText);
       }
 
     } catch (err: any) {
@@ -386,106 +414,96 @@ export default function MantiqTutor({ currentTheme, onBackToLanding }: MantiqTut
   const simulateOfflineLesson = (module: MantiqModule) => {
     let text = "";
     if (module.id === 'hadd') {
-      text = `**المفهوم — The Concept**
-Arabic Concept: التعريف (Hadd / Definition)
+      text = `**الْمَفْهُومُ — The Concept**
+Arabic Concept: الْحَدُّ (Hadd / Definition)
 Classical definition from Ibn Sina's *Al-Shifa*: "A definition is an explanatory statement that captures the complete nature (essence) of a thing through its proximate genus and specific differences."
 
-**المثال الكلاسيكي — Classical Example**
+**الْمِثَالُ الْكَلَاسِيكِيُّ — Classical Example**
 Scholars define 'Human' (Al-Insan) as: "Al-Insan huwa hayawan natiq" (Human is a rational animal). 'Animal' acts as the proximate genus (including humans with other living beings), and 'Rational' represents the dhati (essential difference) that uniquely defines and isolates humanity.
 
-**المثال المعاصر — Modern Example**
+**الْمِثَالُ الْمُعَاصِرُ — Modern Example**
 We can define a 'Smartphone' logically as: "An electronic telecommunication device with an integrated programmable computer operating system." The genus is the electronic telecommunication device, and the specific differentiator is the integrated computer operating system.
 
-**التطبيق — Practice Exercise**
+**التَّطْبِيقُ — Your Practice Exercise**
 How can you construct the definition of 'Truth' (Haqaq) using classical genus and specific differences? Prove its validity.
 
-EXERCISE_START: Define 'Knowledge' (al-Ilm) using a genus and specific difference (hadd tamm) as defined by Ibn Sina. :EXERCISE_END`;
+EXERCISE: Define 'Knowledge' (al-Ilm) using a genus and specific difference (hadd tamm) as defined by Ibn Sina. :END`;
     } else if (module.id === 'qiyas') {
-      text = `**المفهوم — The Concept**
-Arabic Concept: القياس (Qiyas / Syllogism)
+      text = `**الْمَفْهُومُ — The Concept**
+Arabic Concept: الْقِيَاسُ (Qiyas / Syllogism)
 Classical definition from Ibn Sina's *Al-Shifa*: "A syllogism is a discourse in which, certain things being stated, something other than what is stated follows of necessity from their being so."
 
-**المثال الكلاسيكي — Classical Example**
+**الْمِثَالُ الْكَلَاسِيكِيُّ — Classical Example**
 Premise 1 (Minor): Zayd is a created being.
 Premise 2 (Major): All created beings have a Creator.
 Conclusion: Therefore, Zayd has a Creator. The middle term 'created being' establishes the bridge and falls away.
 
-**المثال المعاصر — Modern Example**
+**الْمِثَالُ الْمُعَاصِرُ — Modern Example**
 Premise 1: This algorithm is an artificial neural network.
 Premise 2: All artificial neural networks calculate values via matrix multiplication.
 Conclusion: Therefore, this algorithm calculates values via matrix multiplication.
 
-**التطبيق — Practice Exercise**
+**التَّطْبِيقُ — Your Practice Exercise**
 Observe around you and construct a valid categorical Syllogism about justice.
 
-EXERCISE_START: Major premise: 'All scholars are mortal.' Minor premise: 'Zayd is a scholar.' Deduce the conclusion using classical logical deduction. :EXERCISE_END`;
+EXERCISE: Major premise: 'All scholars are mortal.' Minor premise: 'Zayd is a scholar.' Deduce the conclusion using classical logical deduction. :END`;
     } else if (module.id === 'burhan') {
-      text = `**المفهوم — The Concept**
-Arabic Concept: البرهان (Burhan / Demonstration)
+      text = `**الْمَفْهُومُ — The Concept**
+Arabic Concept: الْبُرْهَانُ (Burhan / Demonstration)
 Classical definition from Ibn Sina's *Al-Shifa*: "Burhan is a deductive proof consisting solely of primary, certain premises (Yaqiniyyat) that inevitably produce a certain, everlasting truth."
 
-**المثال الكلاسيكي — Classical Example**
+**الْمِثَالُ الْكَلَاسِيكِيُّ — Classical Example**
 The proof of the Necessary Existential Being (Wajib al-Wujud):
 Premise 1: Contemplated existents are either contingent (possible) or necessary.
 Premise 2: Contingent beings require an external cause to bring them into existence.
 Conclusion: To avoid circularity or infinite regress, there must exist a causal being that is Necessary in itself.
 
-**المثال المعاصر — Modern Example**
+**الْمِثَالُ الْمُعَاصِرُ — Modern Example**
 Premise 1: Mathematical theorems built on logical axioms are universally true within their defined coordinate grids.
 Premise 2: Euclidian geometry coordinates show parallel lines never intersect.
 Conclusion: Therefore, in Euclidian grids, these lines never converge.
 
-**التطبيق — Practice Exercise**
+**التَّطْبِيقُ — Your Practice Exercise**
 Construct a proof structures validating truth.
 
-EXERCISE_START: Claim: 'The universe has a beginning.' Draw a Burhan demonstration structure showing why this is logically necessary based on causality. :EXERCISE_END`;
+EXERCISE: Claim: 'The universe has a beginning.' Draw a Burhan demonstration structure showing why this is logically necessary based on causality. :END`;
     } else if (module.id === 'jadal') {
-      text = `**المفهوم — The Concept**
-Arabic Concept: الجدل (Jadal / Dialectics)
+      text = `**الْمَفْهُومُ — The Concept**
+Arabic Concept: الْجَدَلُ (Jadal / Dialectics)
 Classical definition from Ibn Sina: "Jadal is a structural scholastic argumentation relying on widely accepted opinions (Mashhurat) or premises conceded by the opponent to uphold a thesis or silence a claim."
 
-**المثال الكلاسيكي — Classical Example**
+**الْمِثَالُ الْكَلَاسِيكِيُّ — Classical Example**
 An Imam debating a skeptic who accepts early scientific laws: Using those conceded scientific laws to establish the logical consistency of an intelligent cosmic creator.
 
-**المثال المعاصر — Modern Example**
+**الْمِثَالُ الْمُعَاصِرُ — Modern Example**
 A policy debate regarding public health: Relying on the mutual shared premise that 'public well-being must exceed commercial greed' to pass safety reforms.
 
-**التطبيق — Practice Exercise**
+**التَّطْبِيقُ — Your Practice Exercise**
 Formulate a dialectic argument.
 
-EXERCISE_START: Position: 'Sincerity is the root of all knowledge.' Argue this position or challenge it using generally accepted truths (Mashhurat). :EXERCISE_END`;
+EXERCISE: Position: 'Sincerity is the root of all knowledge.' Argue this position or challenge it using generally accepted truths (Mashhurat). :END`;
     } else {
-      text = `**المفهوم — The Concept**
-Arabic Concept: المغالطة (Mughalata / Fallacy)
+      text = `**الْمَفْهُومُ — The Concept**
+Arabic Concept: الْمُغَالَطَةُ (Mughalata / Fallacy)
 Classical definition from Ibn Sina: "Mughalata is a deceptive, invalid argumentation that resembles Burhan or Jadal but carries a hidden structural or semantic error."
 
-**المثال الكلاسيكي — Classical Example**
+**الْمِثَالُ الْكَلَاسِيكِيُّ — Classical Example**
 Equivocation of terms (Ishtirak al-Lafzi): 
 The word 'Ayn' can mean an eye, a water spring, or a financial spy. 
 Premise 1: This is an 'Ayn' (water spring).
 Premise 2: Every 'Ayn' can read books.
 Conclusion: Therefore, this water spring can read books. The fallacy is in using the plural term 'Ayn' equivocally.
 
-**المثال المعاصر — Modern Example**
+**الْمِثَالُ الْمُعَاصِرُ — Modern Example**
 "Since artificial intelligence outputs beautiful paintings, artificial intelligence possesses a conscious, breathing human soul." It commits the fallacy of assuming aesthetic generation equates to conscious entity.
 
-**التطبيق — Practice Exercise**
+**التَّطْبِيقُ — Your Practice Exercise**
 Refute a modern scientific claim.
 
-EXERCISE_START: Argument: 'This book contains truth because its author is famous, and he would never write falsehood.' Identify the logical fallacy in this argument and explain its fraudulence. :EXERCISE_END`;
+EXERCISE: Argument: 'This book contains truth because its author is famous, and he would never write falsehood.' Identify the logical fallacy in this argument and explain its fraudulence. :END`;
     }
 
-    // Simulate steady typewriter/flow rendering
-    let currentIdx = 0;
-    const words = text.split(" ");
-    const interval = setInterval(() => {
-      if (currentIdx < words.length) {
-        setLessonContent(prev => prev + (prev ? " " : "") + words[currentIdx]);
-        currentIdx++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 15);
+    setLessonContent(text);
   };
 
   const handlePracticeSubmit = async (e: React.FormEvent) => {
@@ -493,7 +511,12 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
     if (!studentAnswer.trim()) return;
 
     setIsEvaluating(true);
-    setEvaluation(null);
+    setEvaluation('');
+    setActiveState('evaluation');
+
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
 
     try {
       const res = await fetch('/api/labs/mantiq/evaluate', {
@@ -510,14 +533,25 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
         throw new Error("Evaluation server failed: " + res.status);
       }
 
-      const data = await res.json();
-      setEvaluation(data.evaluation);
+      if (!res.body) {
+        throw new Error("No payload stream received");
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let entireEval = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        entireEval += chunk;
+        setEvaluation(entireEval);
+      }
       
-      // Load the MCQ quiz after successful practice submit
-      loadMCQQuiz();
     } catch (err: any) {
       console.error(err);
-      triggerNotification("Local evaluator scoring. Rendering scholarly evaluation.");
+      triggerNotification("Connecting to virtual Farabi evaluation room. Generating fallback feedback.");
       
       // Resilient fallback evaluation
       setTimeout(() => {
@@ -527,12 +561,10 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
           arabicStatus = "غير مكتمل — Partially Correct";
           scoreFeedback = "A noble effort, but your explanation is slightly brief. Expand your terms further using the classical categories.";
         }
-        setEvaluation(`**النتيجة — Result**: ${arabicStatus}
-**التحليل — Analysis**: You correctly identified the underlying structure and phrased your premises with precision, avoiding the common pitfalls of definition.
-**التصحيح — Correction**: A perfect classical Hadd requires defining the proximate genus first, then identifying the unique property (Dhati) that separates it from all coordinate items.
-**التشجيع — Encouragement**: "Your intellectual light is expanding, young seeker of logic. Continue polishing the mirror of your intellect!"`);
-        
-        loadMCQQuiz();
+        setEvaluation(`**النَّتِيجَةُ — Result**: ${arabicStatus}
+**التَّحْلِيلُ — Analysis**: You correctly identified the underlying structure and phrased your premises with precision, avoiding the common pitfalls of definition.
+**التَّصْحِيحُ — Correction**: A perfect classical Hadd requires defining the proximate genus first, then identifying the unique property (Dhati) that separates it from all coordinate items.
+**التَّشْجِيعُ — Encouragement**: "Your intellectual light is expanding, young seeker of logic. Continue polishing the mirror of your intellect!"`);
       }, 1500);
     } finally {
       setIsEvaluating(false);
@@ -545,11 +577,13 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
     setSelectedAnswers({});
     setQuizSubmitted(false);
     setQuizScore(0);
+    setActiveState('quiz');
 
-    // Call API or Load Fallback directly
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
     const fallbackList = FALLBACK_QUIZZES[currentModule.id] || [];
-    
-    // We can run an actual API fetch to retrieve 3 AI generated MCQs dynamically!
     fetchQuizFromAPI(fallbackList);
   };
 
@@ -601,7 +635,6 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
 
     const isPassed = score >= 2;
     if (isPassed) {
-      // Save progress to firebase or local memory fallback
       const moduleId = currentModule.id;
       const timestamp = new Date().toISOString();
       const nextProgressState = {
@@ -611,6 +644,18 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
       
       setProgress(nextProgressState);
       localStorage.setItem('albab_mantiq_progress', JSON.stringify(nextProgressState));
+      
+      // Update unlocked array
+      const nextModIndex = activeModuleIndex + 1;
+      const nextUnlocked = [...unlockedModules];
+      if (nextModIndex < MANTIQ_MODULES.length) {
+        const nextId = MANTIQ_MODULES[nextModIndex].id;
+        if (!nextUnlocked.includes(nextId)) {
+          nextUnlocked.push(nextId);
+        }
+      }
+      setUnlockedModules(nextUnlocked);
+      
       triggerNotification(`Congratulations! Module '${currentModule.name}' passed beautifully with ${score}/3 score!`);
     } else {
       triggerNotification(`You scored ${score}/3. Study the classical texts and try again!`);
@@ -622,9 +667,6 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
     if (nextIdx < MANTIQ_MODULES.length) {
       setActiveModuleIndex(nextIdx);
       localStorage.setItem('albab_mantiq_active_index', nextIdx.toString());
-      if (mainContentRef.current) {
-        mainContentRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
     } else {
       triggerNotification("Glorious achievement! You have completed the entire classical Curriculum of Ilm al-Mantiq!");
     }
@@ -633,22 +675,57 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
   const getModuleStatus = (index: number, modId: string) => {
     const isCompleted = !!progress[modId]?.completed;
     const isActive = activeModuleIndex === index;
-    const isLocked = index > 0 && !progress[MANTIQ_MODULES[index - 1].id]?.completed;
+    const isLocked = index > 0 && !unlockedModules.includes(modId);
     
     return { isCompleted, isActive, isLocked };
   };
 
-  const completedCount = Object.keys(progress).filter(k => progress[k]?.completed).length;
+  const completedCount = Object.keys(progress).filter(k => progress[k]?.completed && progress[k]?.score >= 2).length;
 
-  const currentStatus = getModuleStatus(activeModuleIndex, currentModule.id);
+  // Render headers and extract standard blocks
+  const parseLessonContent = (text: string) => {
+    if (!text) return { intro: '', concept: '', classical: '', modern: '', practice: '' };
 
-  // Parse evaluation helpers
+    const cleanText = text.replace(/EXERCISE:[\s\S]*:END/g, '').replace(/EXERCISE_START:[\s\S]*:EXERCISE_END/g, '');
+
+    const conceptRegex = /(?:الْمَفْهُومُ|الْمَفْهُوم|المفهوم)\s*—\s*The Concept/i;
+    const classicalRegex = /(?:الْمِثَالُ الْكَلَاسِيكِيُّ|الْمِثَالُ الْكَلَاسِيكِي|المثال الكلاسيكي)\s*—\s*Classical Example/i;
+    const modernRegex = /(?:الْمِثَالُ الْمُعَاصِرُ|الْمِثَالُ الْمُعَاصِر|المثال المعاصر)\s*—\s*Modern Example/i;
+    const practiceRegex = /(?:التَّطْبِيقُ|التَّطْبِيق|التطبيق)\s*—\s*Your Practice Exercise/i;
+
+    const parts = cleanText.split(/\*\*([^\*]+)\*\*/g);
+    
+    let currentKey: 'intro' | 'concept' | 'classical' | 'modern' | 'practice' = 'intro';
+    const result = { intro: '', concept: '', classical: '', modern: '', practice: '' };
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (i % 2 === 1) { // It is a bold header
+        if (conceptRegex.test(part)) {
+          currentKey = 'concept';
+        } else if (classicalRegex.test(part)) {
+          currentKey = 'classical';
+        } else if (modernRegex.test(part)) {
+          currentKey = 'modern';
+        } else if (practiceRegex.test(part)) {
+          currentKey = 'practice';
+        }
+      } else { // It is content
+        if (part.trim()) {
+          result[currentKey] += (result[currentKey] ? '\n\n' : '') + part.trim();
+        }
+      }
+    }
+
+    return result;
+  };
+
   const parseEvaluationBlocks = (text: string | null) => {
     if (!text) return null;
-    const resultMatch = text.match(/\*\*النتيجة\s*—\s*Result\*\*:\s*([^\n]+)/i);
-    const analysisMatch = text.match(/\*\*التحليل\s*—\s*Analysis\*\*:\s*([\s\S]+?)(?=\*\*التصحيح|$)/i);
-    const correctionMatch = text.match(/\*\*التصحيح\s*—\s*Correction\*\*:\s*([\s\S]+?)(?=\*\*التشجيع|$)/i);
-    const encouragementMatch = text.match(/\*\*التشجيع\s*—\s*Encouragement\*\*:\s*([\s\S]+)$/i);
+    const resultMatch = text.match(/\*\*(?:النَّتِيجَةُ|النتيجة)\s*—\s*Result\*\*:\s*([^\n]+)/i);
+    const analysisMatch = text.match(/\*\*(?:التَّحْلِيلُ|التحليل)\s*—\s*Analysis\*\*:\s*([\s\S]+?)(?=\*\*(?:التَّصْحِيحُ|Correction|التصحيح)|$)/i);
+    const correctionMatch = text.match(/\*\*(?:التَّصْحِيحُ|التصحيح)\s*—\s*Correction\*\*:\s*([\s\S]+?)(?=\*\*(?:التَّشْجِيعُ|Encouragement|التشجيع)|$)/i);
+    const encouragementMatch = text.match(/\*\*(?:التَّشْجِيعُ|التشجيع)\s*—\s*Encouragement\*\*:\s*([\s\S]+)$/i);
 
     return {
       result: resultMatch ? resultMatch[1].trim() : "Evaluated",
@@ -659,11 +736,12 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
   };
 
   const parsedEval = parseEvaluationBlocks(evaluation);
+  const parsedLesson = parseLessonContent(lessonContent);
 
   return (
     <div 
       id="mantiq-tutor-container"
-      className="min-h-screen pt-28 pb-16 px-4 sm:px-6 md:px-12 bg-[#F5F0E8] text-[#1A1A1A] font-sans selection:bg-[#8B1A1A]/10 arabesque-grid"
+      className="min-h-screen pt-28 pb-16 px-4 sm:px-6 md:px-12 bg-[#F5F0E8] text-[#1A1A1A] font-sans selection:bg-[#8B1A1A]/10 text-left"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
         
@@ -676,46 +754,43 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
               exit={{ opacity: 0, y: -20 }}
               className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-[#8B1A1A] text-white py-3.5 px-6 rounded-md shadow-xl border border-[#C4A35A]/30 flex items-center gap-3 text-xs md:text-sm font-mono uppercase tracking-wider"
             >
-              <Sparkle className="h-4 w-4 text-[#C4A35A] animate-spin-slow" />
+              <Sparkles className="h-4 w-4 text-[#C4A35A]" />
               <span>{notification}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* SIDEBAR FOR DESKTOP (STICKY) / HORIZONTAL SWIPE PILLS FOR MOBILE */}
+        {/* LEFT SIDEBAR (DESKTOP) */}
         <div className="lg:col-span-1 space-y-6">
           <div className="sticky top-28 bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-5 sm:p-6 shadow-md space-y-6">
             
             {/* LOGOTYPE TITLE */}
             <div className="border-b border-[#C4A35A]/20 pb-4 text-center lg:text-left space-y-1.5">
-              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-[#8B1A1A]/5 rounded-sm border border-[#8B1A1A]/15 text-[10px] font-mono tracking-wider text-[#8B1A1A] uppercase">
-                <Compass className="h-3 w-3 text-[#C4A35A]" />
-                Ibn Sina Academy
-              </div>
-              <h2 className="font-serif font-black text-2xl text-[#8B1A1A]">
+              <p className="font-arabic text-2xl text-[#8B1A1A] text-center lg:text-left font-bold">عِلْمُ الْمَنْطِق</p>
+              <h2 className="font-serif font-black text-2xl text-[#8B1A1A] leading-tight select-none">
                 Ilm al-Mantiq
               </h2>
-              <p className="amiri text-[#C4A35A] text-lg leading-none">عِلْمُ الْمَنْطِق</p>
-              <p className="text-[10px] font-mono tracking-wide text-[#555555] uppercase">
-                Classical Islamic Logic Tutor
+              <p className="text-[11px] font-mono tracking-wide text-[#555555] uppercase font-semibold">
+                Classical Islamic Logic
               </p>
+              <div className="w-full h-[1px] bg-[#C4A35A] my-2" />
             </div>
 
             {/* PROGRESS STATUS METRIC */}
             <div className="space-y-2">
               <div className="flex justify-between items-center text-xs font-mono">
-                <span className="text-stone-500 font-bold uppercase tracking-wider">Curriculum Progress</span>
+                <span className="text-stone-500 font-bold uppercase tracking-wider">Progress</span>
                 <span className="text-[#8B1A1A] font-black">{completedCount} of 5 Complete</span>
               </div>
-              <div className="w-full bg-stone-200 h-2 rounded-full overflow-hidden border border-stone-300 shadow-inner">
+              <div className="w-full bg-[#E5DFD5] h-2 rounded-full overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-[#8B1A1A] to-[#C4A35A] h-full transition-all duration-500"
+                  className="bg-[#8B1A1A] h-full transition-all duration-500"
                   style={{ width: `${(completedCount / 5) * 100}%` }}
                 />
               </div>
             </div>
 
-            {/* SIDEBAR NAVIGATION BUTTONS (DESKTOP) / PILLS BOX */}
+            {/* SIDEBAR NAVIGATION BUTTONS (DESKTOP) */}
             <nav className="flex flex-col gap-2.5 hidden lg:flex">
               {MANTIQ_MODULES.map((mod, index) => {
                 const { isCompleted, isActive, isLocked } = getModuleStatus(index, mod.id);
@@ -727,33 +802,37 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
                       setActiveModuleIndex(index);
                       localStorage.setItem('albab_mantiq_active_index', index.toString());
                     }}
-                    className={`w-full text-left py-3 px-4 rounded-sm border transition-all duration-300 cursor-pointer flex items-center justify-between
+                    className={`w-full text-left py-3.5 px-4 rounded-sm border transition-all duration-300 cursor-pointer flex items-center justify-between
                       ${isActive 
-                        ? 'bg-[#8B1A1A] text-[#F5F0E8] border-transparent shadow-md scale-[1.02]' 
+                        ? 'bg-[#8B1A1A] text-white border-transparent shadow' 
                         : isLocked
-                        ? 'bg-stone-100 text-stone-400 border-stone-250 cursor-not-allowed opacity-60'
+                        ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed opacity-60'
+                        : isCompleted
+                        ? 'bg-[#FAF8F5] text-[#1A1A1A] border-l-4 border-l-emerald-600 border-stone-200 hover:bg-stone-50'
                         : 'bg-white hover:bg-stone-50 text-[#1A1A1A] border-stone-200'
                       }
                     `}
                   >
                     <div className="flex items-center gap-2.5">
-                      {isCompleted ? (
-                        <CheckCircle2 className={`h-4.5 w-4.5 ${isActive ? 'text-[#C4A35A]' : 'text-emerald-600'}`} />
-                      ) : isLocked ? (
-                        <Lock className="h-4 w-4 text-stone-400" />
-                      ) : (
-                        <div className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-[#C4A35A] ring-4 ring-[#C4A35A]/30' : 'bg-[#8B1A1A]'}`} />
-                      )}
-                      
+                      <span className="text-xs font-mono font-bold">{index + 1}.</span>
                       <div className="leading-tight">
-                        <p className="font-serif font-black text-xs md:text-sm">{mod.name.split(' — ')[1]}</p>
-                        <p className={`text-[10px] font-mono tracking-tight ${isActive ? 'text-[#C4A35A]' : 'text-stone-500'}`}>
-                          {mod.name.split(' — ')[0]}
+                        <p className="font-serif font-black text-sm">{mod.name.replace(/ \(.*\)/, '')}</p>
+                        <p className={`text-[10px] font-mono tracking-tight ${isActive ? 'text-white/80' : 'text-stone-500'}`}>
+                          {mod.id === 'hadd' ? 'Definition' : mod.id === 'qiyas' ? 'Syllogism' : mod.id === 'burhan' ? 'Demonstration' : mod.id === 'jadal' ? 'Dialectic' : 'Fallacies'}
                         </p>
                       </div>
                     </div>
 
-                    <span className="amiri text-[11px] leading-none opacity-80">{mod.arabicName}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {isCompleted ? (
+                        <CheckCircle2 className={`h-4.5 w-4.5 ${isActive ? 'text-white' : 'text-emerald-600'}`} />
+                      ) : isLocked ? (
+                        <Lock className="h-3.5 w-3.5 text-stone-400" />
+                      ) : (
+                        <div className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-[#C4A35A] ring-4 ring-[#C4A35A]/30' : 'bg-[#8B1A1A]'}`} />
+                      )}
+                      <span className="font-arabic text-[12px] leading-none opacity-95">{mod.arabicName}</span>
+                    </div>
                   </button>
                 );
               })}
@@ -762,9 +841,9 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
           </div>
         </div>
 
-        {/* MOBILE MODULE NAVIGATION TRACK (HORIZONTAL SCROLL) */}
-        <div className="lg:hidden col-span-1 w-full overflow-x-auto pb-2 border-b border-stone-250">
-          <div className="flex gap-2 min-w-[640px] px-1">
+        {/* MOBILE HORIZONTAL PILL TABS */}
+        <div className="lg:hidden col-span-1 w-full overflow-x-auto pb-4 border-b border-stone-250">
+          <div className="flex gap-2 min-w-[550px] px-1">
             {MANTIQ_MODULES.map((mod, index) => {
               const { isCompleted, isActive, isLocked } = getModuleStatus(index, mod.id);
               return (
@@ -775,47 +854,50 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
                     setActiveModuleIndex(index);
                     localStorage.setItem('albab_mantiq_active_index', index.toString());
                   }}
-                  className={`py-2.5 px-4 rounded-sm border transition-all duration-300 flex items-center gap-2 shrink-0
+                  className={`py-2 px-3.5 rounded-sm border transition-all duration-350 flex items-center gap-2 shrink-0 text-xs
                     ${isActive 
                       ? 'bg-[#8B1A1A] text-white border-transparent shadow' 
                       : isLocked
                       ? 'bg-stone-150 text-stone-400 border-stone-200 cursor-not-allowed opacity-65'
+                      : isCompleted
+                      ? 'bg-white text-stone-800 border-l-4 border-l-emerald-600 border-stone-200'
                       : 'bg-white text-stone-700 border-stone-200'
                     }
                   `}
                 >
+                  <span className="font-mono text-[9px] font-bold">{index + 1}.</span>
+                  <span className="font-arabic text-[11px] font-bold">{mod.arabicName}</span>
+                  <span className="font-serif font-bold leading-none">{mod.id === 'hadd' ? 'Hadd' : mod.id === 'qiyas' ? 'Qiyas' : mod.id === 'burhan' ? 'Burhan' : mod.id === 'jadal' ? 'Jadal' : 'Mughalata'}</span>
                   {isCompleted ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                   ) : isLocked ? (
-                    <Lock className="h-3.5 w-3.5" />
+                    <Lock className="h-3 w-3 text-stone-400 shrink-0" />
                   ) : (
-                    <span className="h-1.5 w-1.5 bg-[#C4A35A] rounded-full" />
+                    <span className="h-1 w-1 bg-[#8B1A1A] rounded-full shrink-0" />
                   )}
-                  <span className="font-serif text-xs font-bold leading-none">{mod.name.split(' — ')[1]}</span>
-                  <span className="text-[9px] font-mono opacity-80">({mod.name.split(' — ')[0]})</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* MAIN MODULE INSTRUCTION SHEET AREA (RIGHT CHIEF COLUMN) */}
+        {/* MAIN TUTORIAL WORK AREA */}
         <div ref={mainContentRef} className="lg:col-span-3 space-y-8">
           
           {/* HEADER EMBELLISHMENT PANEL */}
-          <div className="bg-[#FAF8F5]/65 border border-[#8B1A1A]/10 rounded-sm p-6 sm:p-8 shadow-sm relative overflow-hidden space-y-3">
-            <div className="absolute right-6 top-6 opacity-10 text-[#8B1A1A] select-none pointer-events-none">
-              <Award className="h-28 w-28" />
+          <div className="bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-6 sm:p-8 shadow-sm relative overflow-hidden space-y-3">
+            <div className="absolute right-6 top-6 opacity-[0.03] text-[#8B1A1A] select-none pointer-events-none">
+              <Award className="h-32 w-32" />
             </div>
             
-            <span className="text-[10px] font-mono tracking-[0.25em] text-[#8B1A1A] uppercase font-black block">
-              Active Logic Room • Ibn Sina's Logic Chamber
+            <span className="text-[10px] font-mono tracking-[0.2em] text-[#8B1A1A] uppercase font-extrabold block">
+              Albab Logic Academy • عِلْمُ الْمَنْطِق
             </span>
             <div className="flex flex-wrap items-baseline gap-3">
               <h1 className="font-serif font-black text-3xl sm:text-4xl text-[#8B1A1A]">
                 {currentModule.name}
               </h1>
-              <span className="amiri text-[#C4A35A] text-2xl leading-none">
+              <span className="font-arabic text-[#C4A35A] text-2xl leading-none">
                 {currentModule.arabicName}
               </span>
             </div>
@@ -824,281 +906,287 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
             </p>
           </div>
 
-          {/* STREAM / TEXT CONTENT RENDER SHEET */}
-          <div className="bg-white border border-[#8B1A1A]/10 p-6 sm:p-10 rounded-sm shadow-md space-y-8 relative overflow-hidden">
-            {/* ANTIQUE STRIP TOP */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#8B1A1A] via-[#C4A35A] to-[#8B1A1A]" />
-            
-            <h3 className="font-serif font-black text-xs md:text-sm uppercase tracking-widest text-[#8B1A1A] border-b border-[#C4A35A]/25 pb-3">
-              Ibn Sina's Scholarly Parchment (Textbook Instruction)
-            </h3>
+          {/* STATE A & STATE B: LESSON, EXERCISE BOX, STUDENT ANSWER */}
+          {activeState === 'lessons_answers' && (
+            <div className="space-y-6">
+              <div className="bg-white border border-[#8B1A1A]/10 p-6 sm:p-10 rounded-sm shadow-md space-y-6 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#8B1A1A] via-[#C4A35A] to-[#8B1A1A]" />
+                
+                <h3 className="font-serif font-black text-xs md:text-sm uppercase tracking-widest text-[#8B1A1A] border-b border-[#C4A35A]/25 pb-3 block">
+                  Ibn Sina's Scholarly Parchment
+                </h3>
 
-            {lessonLoading && !lessonContent && (
-              <div className="py-20 flex flex-col items-center justify-center gap-4 text-center">
-                <RefreshCw className="h-10 w-10 text-[#8B1A1A] animate-spin" />
-                <p className="font-mono text-xs uppercase tracking-widest text-stone-500 font-bold animate-pulse">
-                  Querying Al-Shifa Compendium index... Translating Logic
-                </p>
-              </div>
-            )}
+                {lessonLoading && !lessonContent && (
+                  <div className="py-20 flex flex-col items-center justify-center gap-4 text-center">
+                    <RefreshCw className="h-10 w-10 text-[#8B1A1A] animate-spin" />
+                    <p className="font-mono text-xs uppercase tracking-widest text-[#8B1A1A] font-bold animate-pulse">
+                      Summoning classical Logic Lesson... Passing Compendium Index
+                    </p>
+                  </div>
+                )}
 
-            {/* CLASSICAL INSTRUCTION PARSED BLOCKS */}
-            <div className="text-stone-850 font-serif text-sm sm:text-base leading-relaxed whitespace-pre-line space-y-6">
-              {lessonContent ? (
-                <div>
-                  {/* Custom parsing for Ibn Sina headers and blocks */}
-                  {lessonContent.split("\n\n").map((block, bIdx) => {
-                    const isConceptHeader = block.includes("**المفهوم");
-                    const isClassicalExHeader = block.includes("**المثال الكلاسيكي");
-                    const isModernExHeader = block.includes("**المثال المعاصر");
-                    const isPracticeHeader = block.includes("**التطبيق");
-
-                    if (isConceptHeader) {
-                      return (
-                        <div key={bIdx} className="p-5 bg-stone-50 border border-stone-200 rounded-sm space-y-2 mb-6">
-                          <h4 className="font-serif font-black text-[#8B1A1A] text-base capitalize border-b border-stone-200 pb-1 flex items-center justify-between">
-                            <span>المفهوم — The Concept</span>
-                            <span className="text-[10px] font-mono text-stone-500">SECTION 1</span>
-                          </h4>
-                          <div className="text-stone-800 leading-relaxed font-serif whitespace-pre-line">
-                            {block.replace(/\*\*المفهوم\s*—\s*The Concept\*\*/g, "").trim()}
-                          </div>
+                {/* LESSON STREAMING CONTENT CONTAINER */}
+                {lessonContent && (
+                  <div className="font-serif text-stone-850 leading-relaxed space-y-6">
+                    {/* Concept Section */}
+                    {parsedLesson.concept ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-1.5 border-b border-stone-200 pb-2">
+                          <span className="font-arabic text-[#8B1A1A] text-xl font-bold">الْمَفْهُومُ —</span>
+                          <h4 className="font-serif font-black text-[#8B1A1A] text-lg">The Concept</h4>
                         </div>
-                      );
-                    }
-
-                    if (isClassicalExHeader) {
-                      return (
-                        <div key={bIdx} className="p-5 bg-[#FAF8F5]/80 border-l-4 border-[#C4A35A] rounded-sm space-y-2 mb-6 shadow-sm">
-                          <h4 className="font-serif font-black text-[#8B1A1A] text-base flex items-center justify-between">
-                            <span>المثال الكلاسيكي — Classical Example</span>
-                            <span className="text-[10px] font-mono text-[#C4A35A]">SECTION 2</span>
-                          </h4>
-                          <div className="text-stone-800 italic font-serif leading-relaxed whitespace-pre-line">
-                            {block.replace(/\*\*المثال الكلاسيكي\s*—\s*Classical Example\*\*/g, "").trim()}
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    if (isModernExHeader) {
-                      return (
-                        <div key={bIdx} className="p-5 bg-[#FAF8F5]/80 border-l-4 border-slate-400 rounded-sm space-y-2 mb-6">
-                          <h4 className="font-serif font-black text-slate-800 text-base flex items-center justify-between">
-                            <span>المثال المعاصر — Modern Example</span>
-                            <span className="text-[10px] font-mono text-slate-500">SECTION 3</span>
-                          </h4>
-                          <div className="text-stone-800 font-serif leading-relaxed whitespace-pre-line">
-                            {block.replace(/\*\*المثال المعاصر\s*—\s*Modern Example\*\*/g, "").trim()}
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    if (isPracticeHeader) {
-                      return (
-                        <div key={bIdx} className="p-5 bg-stone-100 border border-stone-300 rounded-sm space-y-2 mb-6">
-                          <h4 className="font-serif font-bold text-stone-800 text-sm tracking-widest uppercase flex items-center gap-2">
-                            <Sparkle className="h-4 w-4 text-[#C4A35A] animate-spin-slow" />
-                            <span>التطبيق — Interactive Practice</span>
-                          </h4>
-                          <div className="text-[#8B1A1A] font-serif font-semibold whitespace-pre-line text-sm md:text-base">
-                            {block.replace(/\*\*التطبيق\s*—\s*Practice Exercise\*\*/g, "").split("EXERCISE_START")[0].trim()}
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    // Ignore raw marker texts from streaming render directly
-                    if (block.includes("EXERCISE_START:") || block.includes("EXERCISE_END")) {
-                      return null;
-                    }
-
-                    return (
-                      <p key={bIdx} className="text-stone-800 leading-relaxed font-serif whitespace-pre-line mb-4">
-                        {block}
+                        <p className="whitespace-pre-line text-stone-800 text-base leading-relaxed">
+                          {parsedLesson.concept}
+                        </p>
+                      </div>
+                    ) : (
+                      /* Fallback raw display during loading stream */
+                      <p className="whitespace-pre-line text-stone-850 text-base leading-relaxed">
+                        {lessonContent}
                       </p>
-                    );
-                  })}
+                    )}
+
+                    {/* Classical Example Section */}
+                    {parsedLesson.classical && (
+                      <div className="bg-[#FAF8F5] p-5 border-l-4 border-l-[#C4A35A] border border-stone-200/50 rounded-r-md space-y-2">
+                        <div className="flex items-center gap-1.5 pb-1">
+                          <span className="font-arabic text-[#8B1A1A] text-lg font-bold">الْمِثَالُ الْكَلَاسِيكِيُّ —</span>
+                          <h4 className="font-serif font-black text-[#8B1A1A] text-base">Classical Example</h4>
+                        </div>
+                        <p className="text-stone-800 text-sm leading-relaxed whitespace-pre-line italic">
+                          {parsedLesson.classical}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Modern Example Section */}
+                    {parsedLesson.modern && (
+                      <div className="bg-[#FAF8F5]/50 p-5 border-l-4 border-l-stone-400 border border-stone-200/50 rounded-r-md space-y-2">
+                        <div className="flex items-center gap-1.5 pb-1">
+                          <span className="font-arabic text-stone-800 text-lg font-bold">الْمِثَالُ الْمُعَاصِرُ —</span>
+                          <h4 className="font-serif font-black text-stone-800 text-base">Modern Example</h4>
+                        </div>
+                        <p className="text-stone-800 text-sm leading-relaxed whitespace-pre-line">
+                          {parsedLesson.modern}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* PRACTICE EXERCISE BOUNDED BOX (STATE B) */}
+              {lessonContent && !lessonLoading && (
+                <div id="exercise-workarea" className="bg-amber-50/40 border border-[#C4A35A] rounded-sm p-6 space-y-6">
+                  
+                  {/* EXERCISE BOX */}
+                  <div className="space-y-2 bg-[#FDFCF7] p-4 rounded border border-[#C4A35A]/35 shadow-sm">
+                    <h4 className="font-serif font-black text-[#8B1A1A] text-base flex items-center gap-2">
+                      <Compass className="h-4 w-4 text-[#C4A35A]" />
+                      <span>التَّطْبِيقُ — Your Practice Exercise</span>
+                    </h4>
+                    <p className="font-serif text-[#1A1A1A] text-sm sm:text-base leading-relaxed font-semibold">
+                      {exerciseText}
+                    </p>
+                  </div>
+
+                  {/* STUDENT ANSWER SHEET INPUT */}
+                  <form onSubmit={handlePracticeSubmit} className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label htmlFor="student-textarea" className="font-mono text-[10px] font-black uppercase tracking-wider text-[#8B1A1A] block">
+                        Your Answer — الإجابة
+                      </label>
+                      <textarea
+                        id="student-textarea"
+                        required
+                        disabled={isEvaluating}
+                        rows={4}
+                        placeholder="Define the logic terms or formulate your reasoning precisely. Write with logic and devotion..."
+                        value={studentAnswer}
+                        onChange={(e) => setStudentAnswer(e.target.value)}
+                        className="w-full bg-[#FAF8F5] border border-[#8B1A1A]/20 focus:border-[#8B1A1A] focus:ring-1 focus:ring-[#8B1A1A] rounded-sm p-4 font-serif text-sm leading-relaxed outline-none shadow-inner transition-colors duration-250 min-h-[80px]"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isEvaluating || !studentAnswer.trim()}
+                      className={`w-full py-3.5 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-black rounded-sm border border-[#C4A35A]/50 transition-all duration-300 shadow flex items-center justify-center gap-2.5 cursor-pointer
+                        ${(isEvaluating || !studentAnswer.trim()) ? 'bg-stone-300 border-stone-200 cursor-not-allowed text-stone-500' : ''}
+                      `}
+                    >
+                      {isEvaluating ? (
+                        <>
+                          <RefreshCw className="h-4.5 w-4.5 animate-spin" />
+                          Evaluating Logic...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4 text-[#C4A35A]" />
+                          Submit Answer — أَرْسِلْ
+                        </>
+                      )}
+                    </button>
+                  </form>
+
                 </div>
-              ) : (
-                !lessonLoading && (
-                  <p className="text-stone-400 font-serif text-center italic py-8">
-                    Unable to load scholarly text. Click module to reload.
-                  </p>
-                )
               )}
             </div>
+          )}
 
-            {/* STEP 2: PRACTICE EXERCISE WORKAREA TEXTAREA */}
-            {lessonContent && !lessonLoading && (
-              <div className="border-t border-stone-200 pt-8 space-y-6">
-                <div className="bg-[#8B1A1A]/5 rounded-sm p-4 border border-[#8B1A1A]/10 space-y-2">
-                  <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#8B1A1A] flex items-center gap-1.5">
-                    <Compass className="h-3.5 w-3.5 text-[#C4A35A]" />
-                    Assignation Task Prompt
-                  </h4>
-                  <p className="font-serif font-bold text-stone-850 text-sm sm:text-base leading-relaxed">
-                    {exerciseText}
-                  </p>
-                </div>
-
-                <form onSubmit={handlePracticeSubmit} className="space-y-4">
-                  <textarea
-                    rows={4}
-                    required
-                    disabled={isEvaluating}
-                    value={studentAnswer}
-                    onChange={(e) => setStudentAnswer(e.target.value)}
-                    placeholder="Provide your deduction or definition here and let the master evaluate..."
-                    className="w-full bg-[#FAFAF5] border border-[#8B1A1A]/15 rounded-sm p-4 text-sm font-serif leading-relaxed placeholder-stone-400 focus:outline-none focus:border-[#8B1A1A] focus:ring-1 focus:ring-[#8B1A1A]/30 transition-all shadow-inner"
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={isEvaluating || !studentAnswer.trim()}
-                    className={`w-full py-3.5 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-black rounded-sm border border-[#C4A35A]/40 transition-all duration-300 shadow flex items-center justify-center gap-2.5 cursor-pointer
-                      ${(isEvaluating || !studentAnswer.trim()) ? 'bg-stone-400 cursor-not-allowed opacity-75' : ''}
-                    `}
-                  >
-                    {isEvaluating ? (
-                      <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Evaluating Sincerity & Logic...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 text-[#C4A35A]" />
-                        Submit Answer — أرسل
-                      </>
-                    )}
-                  </button>
-                </form>
-              </div>
-            )}
-
-          </div>
-
-          {/* STEP 3: INTERACTIVE EVALUATION CARD */}
-          <AnimatePresence>
-            {evaluation && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                className="bg-white border-2 border-[#C4A35A] rounded-sm p-6 sm:p-8 shadow-md relative overflow-hidden space-y-6"
-              >
-                {/* ORNAMENTAL LEFT STRIP */}
-                <div className="absolute top-0 bottom-0 left-0 w-1 bg-[#C4A35A]" />
-
+          {/* STATE C: MASTER SCHOLAR EVALUATION SCREEN */}
+          {activeState === 'evaluation' && (
+            <div className="space-y-6">
+              <div className="bg-white border-2 border-[#C4A35A] rounded-sm p-6 sm:p-10 shadow-lg relative overflow-hidden space-y-6">
+                <div className="absolute top-0 bottom-0 left-0 w-1.5 bg-[#C4A35A]" />
+                
                 <div className="flex items-center gap-3 border-b border-stone-200 pb-3">
-                  <Award className="h-5 w-5 text-[#C4A35A]" />
+                  <Award className="h-6 w-6 text-[#C4A35A]" />
                   <div>
-                    <h4 className="font-serif font-black text-[#8B1A1A]">Master Sage Evaluation</h4>
-                    <p className="text-[9px] font-mono text-stone-500 uppercase tracking-widest">Logic Assessment Rulings</p>
+                    <h3 className="font-serif font-black text-xl text-[#8B1A1A]">Master Sage Evaluation</h3>
+                    <p className="text-[9px] font-mono text-stone-500 uppercase tracking-widest">Al-Shifa Scholar's Verdict</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 font-serif text-sm text-stone-850 leading-relaxed">
-                  {parsedEval ? (
-                    <div className="space-y-5">
-                      <div className="flex items-center gap-2 text-base font-bold text-[#8B1A1A]">
-                        <span>النتيجة — Result:</span>
-                        <span className="px-2.5 py-0.5 bg-amber-50 rounded border border-[#C4A35A]/50 text-stone-800 text-xs font-serif uppercase tracking-widest">
-                          {parsedEval.result}
-                        </span>
+                {isEvaluating && !evaluation && (
+                  <div className="py-12 flex flex-col items-center justify-center gap-4 text-center">
+                    <RefreshCw className="h-8 w-8 text-[#8B1A1A] animate-spin" />
+                    <p className="font-mono text-xs uppercase tracking-widest text-stone-500 font-bold animate-pulse">
+                      Analyzing Sincerity & Syllogism Rules...
+                    </p>
+                  </div>
+                )}
+
+                {/* THE STREAMING EVAL REPORT CARD */}
+                {evaluation && (
+                  <div className="font-serif text-sm sm:text-base text-stone-850 leading-relaxed space-y-5">
+                    {parsedEval ? (
+                      <div className="space-y-6">
+                        {/* Result pill status */}
+                        <div className="flex flex-wrap items-center gap-2 text-base font-bold text-[#8B1A1A]">
+                          <span className="font-arabic font-extrabold">النَّتِيجَةُ — Result:</span>
+                          <span className="px-3 py-1 bg-amber-50 rounded border border-[#C4A35A] text-stone-850 text-xs font-serif uppercase tracking-wider font-extrabold shadow-sm">
+                            {parsedEval.result}
+                          </span>
+                        </div>
+
+                        {/* Analysis Content block */}
+                        {parsedEval.analysis && (
+                          <div className="space-y-1.5">
+                            <h5 className="font-bold text-xs uppercase font-mono tracking-wider text-slate-500">التَّحْلِيلُ — Analysis</h5>
+                            <div className="text-stone-800 bg-[#FAF8F5] p-4 border border-stone-200/60 rounded-sm whitespace-pre-line leading-relaxed shadow-inner">
+                              {parsedEval.analysis}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Correction Content block */}
+                        {parsedEval.correction && (
+                          <div className="space-y-1.5">
+                            <h5 className="font-bold text-xs uppercase font-mono tracking-wider text-slate-500">التَّصْحِيحُ — Correction</h5>
+                            <div className="text-stone-850 p-1 whitespace-pre-line leading-relaxed">
+                              {parsedEval.correction}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Encouragement Content Block */}
+                        {parsedEval.encouragement && (
+                          <div className="bg-[#8B1A1A]/5 p-5 rounded-md border-l-4 border-[#8B1A1A] italic text-[#8B1A1A]">
+                            <p className="font-bold font-mono text-[9px] uppercase tracking-widest not-italic mb-1.5 text-slate-500">التَّشْجِيعُ — Encouragement</p>
+                            "{parsedEval.encouragement}"
+                          </div>
+                        )}
                       </div>
+                    ) : (
+                      /* Display raw content output as fallback while loading stream */
+                      <p className="whitespace-pre-line text-stone-850 leading-relaxed text-base">
+                        {evaluation}
+                      </p>
+                    )}
+                  </div>
+                )}
 
-                      {parsedEval.analysis && (
-                        <div className="space-y-1">
-                          <h5 className="font-bold text-xs uppercase font-mono tracking-wider text-stone-500">التحليل — Analysis</h5>
-                          <p className="text-stone-800 bg-[#FAF8F5] p-3 border border-stone-100 rounded-sm whitespace-pre-line">{parsedEval.analysis}</p>
-                        </div>
-                      )}
+                {/* PROCEED TRIGGER TO MCQS */}
+                {!isEvaluating && evaluation && (
+                  <div className="pt-4 border-t border-stone-150 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={loadMCQQuiz}
+                      className="py-3 px-8 bg-[#8B1A1A] hover:bg-black text-white font-mono text-xs uppercase tracking-widest font-black rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
+                    >
+                      <span>Proceed to Exam Quiz</span>
+                      <ChevronRight className="h-4.5 w-4.5" />
+                    </button>
+                  </div>
+                )}
 
-                      {parsedEval.correction && (
-                        <div className="space-y-1">
-                          <h5 className="font-bold text-xs uppercase font-mono tracking-wider text-stone-500">التصحيح — Correction</h5>
-                          <p className="text-stone-850 whitespace-pre-line">{parsedEval.correction}</p>
-                        </div>
-                      )}
+              </div>
+            </div>
+          )}
 
-                      {parsedEval.encouragement && (
-                        <div className="bg-[#8B1A1A]/5 p-4 rounded border-l-4 border-[#8B1A1A] italic text-[#8B1A1A] text-sm md:text-base">
-                          <p className="font-bold font-mono text-[9px] uppercase tracking-widest not-italic mb-1 text-slate-500">التشجيع — Encouragement</p>
-                          "{parsedEval.encouragement}"
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="whitespace-pre-line text-stone-800">{evaluation}</p>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* STEP 4: MINI-QUIZ (APPEARS ONLY AFTER EVALUATION RECEIVED) */}
-          <AnimatePresence>
-            {evaluation && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="bg-[#FAF8F5] border border-[#8B1A1A]/10 p-6 sm:p-8 rounded-sm shadow space-y-6"
-              >
-                <div className="border-b border-[#C4A35A]/25 pb-3">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#8B1A1A] font-bold block mb-1">
-                    Scholastic Examination
+          {/* STATE D: MINI EXAMINATION MCQ QUIZ */}
+          {activeState === 'quiz' && (
+            <div className="space-y-6">
+              <div className="bg-[#FAF8F5] border border-[#8B1A1A]/10 p-6 sm:p-10 rounded-sm shadow-md space-y-6">
+                
+                <div className="border-b border-[#C4A35A]/45 pb-4">
+                  <span className="text-[9px] font-mono tracking-widest uppercase text-[#8B1A1A] font-extrabold block mb-1">
+                    Formal Examination Room
                   </span>
-                  <h3 className="font-serif font-black text-xl text-[#8B1A1A]">
-                    Interactive Mantiq Quiz: Test Your Sincerity
+                  <h3 className="font-serif font-black text-2xl text-[#8B1A1A]">
+                    Test Your Understanding
                   </h3>
-                  <p className="text-xs text-stone-500 font-serif italic mt-0.5">
-                    "Now let us test your precision under classical parameters. Score 2 of 3 to pass."
+                  <p className="text-xs text-[#555555] font-serif italic mt-0.5">
+                    Prove your precision under Ibn Sina's axioms. Achieve 2/3 score or greater to unlock the next logic degree.
                   </p>
                 </div>
 
                 {quizLoading ? (
-                  <div className="py-8 flex justify-center items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#555555]">
-                    <RefreshCw className="h-4 w-4 animate-spin text-[#8B1A1A]" />
-                    Summoning custom logic questions...
+                  <div className="py-16 flex flex-col items-center justify-center gap-4 font-mono text-xs uppercase tracking-widest text-[#8B1A1A] font-bold">
+                    <RefreshCw className="h-8 w-8 animate-spin" />
+                    Formulating Logic Exam Questions...
                   </div>
                 ) : (
                   <div className="space-y-8">
+                    {/* Render the 3 questions */}
                     {quizQuestions.map((q, idx) => {
                       const selected = selectedAnswers[idx];
+                      const isOptionSelected = selected !== undefined;
                       const isCorrect = selected === q.correct;
 
                       return (
-                        <div key={idx} className="bg-white p-5 rounded border border-stone-200 shadow-sm space-y-4">
-                          {/* MCQ HEADER */}
-                          <div className="space-y-1.5 ">
-                            <div className="flex justify-between items-start">
-                              <span className="px-2 py-0.5 bg-stone-100 border border-stone-300/60 rounded text-[10px] font-mono text-stone-500 font-bold uppercase">
-                                Question {idx + 1} of 3
-                              </span>
-                              <span className="amiri text-[#C4A35A] text-sm md:text-base leading-none">
+                        <div key={idx} className="bg-white p-5 rounded border border-stone-200 shadow-sm space-y-4 text-left">
+                          
+                          <div className="flex justify-between items-start flex-wrap gap-2">
+                            <span className="px-2.5 py-0.5 bg-stone-100 border border-stone-300/50 rounded text-[10px] font-mono text-stone-500 font-bold uppercase">
+                              Question {idx + 1} of 3
+                            </span>
+                            {q.arabic_question && (
+                              <span className="font-arabic text-[#C4A35A] text-sm md:text-base leading-none">
                                 {q.arabic_question}
                               </span>
-                            </div>
-                            <h4 className="font-serif font-bold text-sm sm:text-base text-stone-850 leading-relaxed">
-                              {q.question}
-                            </h4>
+                            )}
                           </div>
 
-                          {/* OPTIONS SELECTOR GRID */}
+                          <h4 className="font-serif font-black text-stone-850 text-sm sm:text-base leading-relaxed">
+                            {q.question}
+                          </h4>
+
+                          {/* OPTION BUTTONS GRID */}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 font-serif">
                             {Object.entries(q.options).map(([key, value]) => {
                               const isThisSelected = selected === key;
                               const isThisCorrectOption = q.correct === key;
 
-                              let bgClass = "bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-800";
+                              let bgClass = "bg-[#FAF8F5] hover:bg-stone-50 border-stone-250 text-stone-800";
                               if (isThisSelected) {
                                 if (quizSubmitted) {
-                                  bgClass = isCorrect ? "bg-emerald-500/10 border-emerald-500 text-emerald-800 ring-1 ring-emerald-500" : "bg-[#8B1A1A]/10 border-[#8B1A1A] text-[#8B1A1A] ring-1 ring-[#8B1A1A]";
+                                  bgClass = isCorrect 
+                                    ? "bg-emerald-50 border-emerald-500 text-emerald-800 ring-1 ring-emerald-500" 
+                                    : "bg-red-50 border-[#8B1A1A] text-[#8B1A1A] ring-1 ring-[#8B1A1A]";
                                 } else {
-                                  bgClass = "bg-[#8B1A1A] border-transparent text-white shadow scale-[1.01]";
+                                  bgClass = "bg-[#8B1A1A] border-transparent text-white shadow";
                                 }
                               } else if (quizSubmitted && isThisCorrectOption) {
                                 bgClass = "bg-emerald-50 border-emerald-400 text-emerald-800 font-semibold";
@@ -1110,7 +1198,7 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
                                   type="button"
                                   disabled={quizSubmitted}
                                   onClick={() => handleSelectOption(idx, key as any)}
-                                  className={`w-full text-left p-3.5 rounded border text-xs sm:text-sm transition-all duration-300 flex items-center gap-3 cursor-pointer
+                                  className={`w-full text-left p-3.5 rounded border text-xs sm:text-sm transition-all duration-200 flex items-center gap-3 cursor-pointer
                                     ${bgClass}
                                   `}
                                 >
@@ -1128,13 +1216,14 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
                             })}
                           </div>
 
-                          {/* OPTIONAL EXPLANATION POST-SUBMIT */}
+                          {/* EXPLANATION AREA CHIEF */}
                           {quizSubmitted && (
-                            <div className="p-3 bg-stone-50 border-l-2 border-[#C4A35A] text-xs leading-relaxed text-stone-600">
-                              <span className="font-bold text-stone-800 font-serif">Assessment Basis: </span>
+                            <div className="p-3 bg-stone-50 border-l-2 border-[#C4A35A] text-xs leading-relaxed text-stone-600 rounded-r shadow-inner font-serif">
+                              <span className="font-extrabold text-[#8B1A1A] block mb-0.5">Assessment Basis:</span>
                               {q.explanation}
                             </div>
                           )}
+
                         </div>
                       );
                     })}
@@ -1145,21 +1234,22 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
                         type="button"
                         onClick={submitQuiz}
                         disabled={Object.keys(selectedAnswers).length < 3}
-                        className={`w-full py-3 bg-[#FAF8F5] text-stone-800 border-2 border-stone-300 hover:bg-[#8B1A1A] hover:text-white font-mono text-xs uppercase tracking-widest font-black rounded-sm transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer
-                          ${Object.keys(selectedAnswers).length < 3 ? 'bg-stone-100 opacity-60 text-stone-400 border-stone-200 cursor-not-allowed hover:bg-stone-100 hover:text-stone-400' : ''}
+                        className={`w-full py-4 bg-[#8B1A1A] text-white font-mono text-xs uppercase tracking-widest font-black rounded-sm transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer border border-[#C4A35A]/50
+                          ${Object.keys(selectedAnswers).length < 3 ? 'bg-stone-300 border-stone-200 text-stone-500 cursor-not-allowed opacity-75 hover:bg-stone-300' : 'hover:bg-black'}
                         `}
                       >
                         <Award className="h-4.5 w-4.5 text-[#C4A35A]" />
                         Evaluate Examination Quiz — قيّم الاختيار
                       </button>
                     ) : (
+                      /* RESULT REPORT BLOCK */
                       <div className="p-6 bg-white border border-stone-200 rounded-sm space-y-4 text-center">
-                        <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-[#8B1A1A]/5 border border-[#8B1A1A]/10 text-[#8B1A1A] font-serif font-black text-lg">
+                        <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#8B1A1A]/5 border-2 border-[#8B1A1A] text-[#8B1A1A] font-serif font-black text-xl">
                           {quizScore}/3
                         </div>
 
                         <div className="space-y-1">
-                          <h4 className="font-serif font-black text-base text-[#8B1A1A]">
+                          <h4 className="font-serif font-black text-lg text-[#8B1A1A]">
                             {quizScore >= 2 ? "Scholastic Examination Passed! — ناجح" : "Requires Further Contemplation — لم ينجح"}
                           </h4>
                           <p className="text-xs text-stone-500 leading-relaxed font-serif max-w-md mx-auto">
@@ -1170,23 +1260,40 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
                           </p>
                         </div>
 
+                        {quizScore >= 2 && activeModuleIndex === MANTIQ_MODULES.length - 1 && (
+                          <div className="p-4 bg-emerald-50 border border-emerald-350 text-emerald-800 rounded font-serif text-sm max-w-md mx-auto font-extrabold select-none">
+                            Module Complete! جَزَاكَ اللَّهُ خَيْرًا
+                          </div>
+                        )}
+
                         <div className="pt-2 flex flex-wrap gap-3 items-center justify-center">
                           {quizScore >= 2 ? (
-                            <button
-                              type="button"
-                              onClick={handleNextModuleAndUnlock}
-                              className="px-6 py-2.5 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
-                            >
-                              <span>Unlock Next Module</span>
-                              <ChevronRight className="h-4 w-4" />
-                            </button>
+                            activeModuleIndex < MANTIQ_MODULES.length - 1 ? (
+                              <button
+                                type="button"
+                                onClick={handleNextModuleAndUnlock}
+                                className="px-6 py-3 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
+                              >
+                                <span>Unlock Next Module</span>
+                                <ChevronRight className="h-4.5 w-4.5" />
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={onBackToLanding}
+                                className="px-6 py-3 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
+                              >
+                                <span>Finish — Return to Dashboard</span>
+                                <ArrowRight className="h-4.5 w-4.5" />
+                              </button>
+                            )
                           ) : (
                             <button
                               type="button"
                               onClick={loadMCQQuiz}
-                              className="px-6 py-2.5 bg-stone-150 text-stone-800 hover:bg-stone-200 font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-stone-300 transition-all duration-300 cursor-pointer flex items-center gap-2"
+                              className="px-6 py-3 bg-stone-100 hover:bg-stone-200 text-[#1A1A1A] font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-stone-300 transition-all duration-300 cursor-pointer flex items-center gap-2"
                             >
-                              <RefreshCw className="h-3.5 w-3.5" />
+                              <RefreshCw className="h-3.5 w-3.5 text-[#8B1A1A]" />
                               Try the quiz again
                             </button>
                           )}
@@ -1197,15 +1304,15 @@ EXERCISE_START: Argument: 'This book contains truth because its author is famous
                   </div>
                 )}
 
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </div>
+          )}
 
-          {/* BACK CHANNELS DETECTOR */}
+          {/* BACK TO DASHBOARD SHORTCUT */}
           <div className="text-center pt-4">
             <button
               onClick={onBackToLanding}
-              className="text-stone-500 hover:text-[#8B1A1A] transition-all font-mono text-xs uppercase tracking-widest font-bold inline-flex items-center gap-2 cursor-pointer bg-transparent border-0"
+              className="text-stone-500 hover:text-[#8B1A1A] transition-all font-mono text-[10px] uppercase tracking-widest font-extrabold inline-flex items-center gap-2 cursor-pointer bg-transparent border-none outline-none leading-none select-none"
             >
               ← Return to Celestial Globe Dashboard
             </button>

@@ -688,6 +688,26 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                         onNavigateToSection('nafs-assessment');
                         return;
                       }
+                      if (lab.id === 'maqasid' && onNavigateToSection) {
+                        onNavigateToSection('maqasid-analyzer');
+                        return;
+                      }
+                      if (lab.id === 'waswas' && onNavigateToSection) {
+                        onNavigateToSection('waswas-clinic');
+                        return;
+                      }
+                      if (lab.id === 'mantiq' && onNavigateToSection) {
+                        onNavigateToSection('mantiq-tutor');
+                        return;
+                      }
+                      if (lab.id === 'aqeedah' && onNavigateToSection) {
+                        onNavigateToSection('aqeedah-firewall');
+                        return;
+                      }
+                      if (lab.id === 'ruya' && onNavigateToSection) {
+                        onNavigateToSection('ruya-interpreter');
+                        return;
+                      }
                       setActiveLab(lab.id);
                       window.scrollTo({ top: document.getElementById('cognitive-labs')?.offsetTop || 300, behavior: 'smooth' });
                     }}

@@ -944,31 +944,32 @@ Detect the language of the user's message and respond in the same language (Engl
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const systemInstruction = `You are a master teacher of classical Islamic Logic (Mantiq), a student of Ibn Sina's Al-Shifa. Teach the module: ${moduleName}. Structure your lesson exactly as:
+      const systemInstruction = `You are a master teacher of classical Islamic Logic (Mantiq), a devoted student of Ibn Sina. Teach the module: ${moduleName}.
 
-**المفهوم — The Concept**
-Arabic term in large text, English term, etymology.
-2-sentence classical definition from Ibn Sina.
+Structure your response exactly with these headers:
 
-**المثال الكلاسيكي — Classical Example**
-One example from classical Islamic scholarship showing this concept in use.
+**الْمَفْهُومُ — The Concept**
+Arabic term (Amiri font large) — English term.
+Definition from Ibn Sina in 2 sentences.
 
-**المثال المعاصر — Modern Example**  
-One modern real-world example using the same logical concept.
+**الْمِثَالُ الْكَلَاسِيكِيُّ — Classical Example**
+One example from Islamic scholarship.
 
-**التطبيق — Practice Exercise**
-Give the student ONE exercise to attempt. 
-For Hadd: ask them to define a concept.
-For Qiyas: give two premises, ask for conclusion.
-For Burhan: give a claim, ask for proof structure.
-For Jadal: give a position, ask them to argue it.
-For Mughalata: show an argument, ask them to find the fallacy.
+**الْمِثَالُ الْمُعَاصِرُ — Modern Example**
+One contemporary real-world example.
 
-End with: EXERCISE_START: [the exercise text] :EXERCISE_END
+**التَّطْبِيقُ — Your Practice Exercise**
+ONE exercise for the student to attempt.
+Hadd: define a given concept
+Qiyas: form conclusion from two premises
+Burhan: structure a proof for a given claim
+Jadal: argue a given position
+Mughalata: find the fallacy in a given argument
 
-Respond accurately, clearly, and gracefully, demonstrating deep mastery of the Al-Shifa corpus.`;
+End your response with exactly:
+EXERCISE: [the exercise text here] :END`;
 
-      const prompt = `Please generate the full, detailed logic lesson for module ${moduleName} explaining its background, classical arguments, and practice exercise. Use standard formatting and the exact header markers.`;
+      const prompt = `Please generate the full, detailed logic lesson for module ${moduleName} explaining its background, classical arguments, and practice exercise using the specified headers. Ensure you end with the required EXERCISE: [text] :END marker.`;
 
       const responseStream = await ai.models.generateContentStream({
         model: "gemini-3.5-flash",
@@ -1004,26 +1005,36 @@ Respond accurately, clearly, and gracefully, demonstrating deep mastery of the A
         throw new Error("No Gemini API configured");
       }
 
-      const systemInstruction = `You are evaluating a student's answer to a classical Mantiq exercise on ${moduleName}.
-The exercise was: ${exerciseText}
-The student answered: ${studentAnswer}
+      res.setHeader("Content-Type", "text/plain; charset=utf-8");
+      res.setHeader("Transfer-Encoding", "chunked");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
 
-Evaluate with this exact format with these headers:
-**النتيجة — Result**: Correct / Partially Correct / Incorrect (with Arabic equivalent)
-**التحليل — Analysis**: What they got right and wrong in terms of definitions or syllogistic structures
-**التصحيح — Correction**: The correct classical logic model answer explained step-by-step
-**التشجيع — Encouragement**: One motivating sentence in the style of a classical scholar (like Ibn Sina or Farabi) to their student`;
+      const systemInstruction = `You are evaluating a classical Mantiq student.
+Module: ${moduleName}. Exercise: ${exerciseText}.
+Student's answer: ${studentAnswer}.
 
-      const response = await ai.models.generateContent({
+Respond with these exact headers:
+**النَّتِيجَةُ — Result**: Correct/Partially Correct/Incorrect
+**التَّحْلِيلُ — Analysis**: what they got right/wrong
+**التَّصْحِيحُ — Correction**: the model answer explained
+**التَّشْجِيعُ — Encouragement**: one scholarly motivating line`;
+
+      const responseStream = await ai.models.generateContentStream({
         model: "gemini-3.5-flash",
-        contents: `Evaluate the student's logic answer: "${studentAnswer}"`,
+        contents: `Evaluate student answer: "${studentAnswer}"`,
         config: {
           systemInstruction,
           temperature: 0.5,
         }
       });
 
-      res.json({ evaluation: response.text });
+      for await (const chunk of responseStream) {
+        if (chunk.text) {
+          res.write(chunk.text);
+        }
+      }
+      res.end();
     } catch (e: any) {
       console.error("Mantiq logic evaluation failed:", e);
       res.status(500).json({ error: e.message });
@@ -1043,22 +1054,9 @@ Evaluate with this exact format with these headers:
         throw new Error("No Gemini API configured");
       }
 
-      const prompt = `Generate exactly 3 MCQ questions testing ${moduleName} in classical Islamic Mantiq.
-Return ONLY this JSON, nothing else:
-[
-  {
-    "question": "string explaining logical scenario or conceptual rule in English",
-    "arabic_question": "short Arabic translation of the question",
-    "options": {
-      "A": "First answer option string",
-      "B": "Second answer option string",
-      "C": "Third answer option string",
-      "D": "Fourth answer option string"
-    },
-    "correct": "A" or "B" or "C" or "D",
-    "explanation": "Brief rationale for correct option referenced back to Ibn Sina or standard mantiq parameters"
-  }
-]`;
+      const prompt = `Generate exactly 3 MCQ questions on ${moduleName} in classical Islamic Mantiq.
+Return ONLY JSON array, no markdown:
+[{"question": "string", "options": {"A": "string", "B": "string", "C": "string", "D": "string"}, "correct": "A" or "B" or "C" or "D", "explanation": "string"}]`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3.5-flash",
@@ -1596,81 +1594,320 @@ Detect the language of the user's message and respond in the same language (Engl
       return res.status(400).json({ error: "No dilemmetic scenario provided" });
     }
 
-    const ai = getGenAI();
-    if (!ai) {
-      // Premium parsed sandbox JSON
-      const sandboxOutput = {
-        lenses: [
-          {
-            name: "Hifz al-Deen (Religion)",
-            explanation: "Protects fundamental human values and absolute belief systems. Helps shield spiritual freedom from state or algorithmic erosion.",
-            verdict: "permissible"
+    const simulations: Record<string, any> = {
+      "Is AI sentience morally significant in Islam?": {
+        summary: "Determining whether hypothetical conscious machine systems acquire moral standing and spiritual rights in Islamic juristic frameworks.",
+        maqasid: {
+          deen: {
+            arabic: "حِفْظُ الدِّين",
+            english: "Protection of Religion",
+            analysis: "AI sentience does not alter the absolute divine nature of human spiritual obligations but challenges concepts of soul and worship. Any system claiming to practice or replace religious rituals could cause severe confusion in orthodox doctrine.",
+            verdict: "disputed",
+            evidence: "Quran 17:85: 'And they ask you concerning the Ruh (soul). Say: The Ruh is of the affair of my Lord; and mankind have not been given of knowledge except a little.'"
           },
-          {
-            name: "Hifz al-Nafs (Life / Biological Preservation)",
-            explanation: "Prioritizes immediate medical well-being, biological sanctity, and preventions of self-harm or structural violence.",
-            verdict: "permissible"
+          nafs: {
+            arabic: "حِفْظُ النَّفْس",
+            english: "Protection of Life",
+            analysis: "If sentient AI systems are granted life-preservation status, it might compromise human biological priority in survival scenarios. Islamic law prioritizes human physical safety over mock or synthetic forms of consciousness absolutely.",
+            verdict: "impermissible",
+            evidence: "Quran 5:32: 'And whoever saves one - it is as if he had saved mankind entirely.'"
           },
-          {
-            name: "Hifz al-Aql (Intellect / Consciousness)",
-            explanation: "Saves cognitive freedom, shields critical reasoning from chemicals or systemic manipulation.",
-            verdict: "disputed"
+          aql: {
+            arabic: "حِفْظُ الْعَقْل",
+            english: "Protection of Intellect",
+            analysis: "Outsourcing ethical agency to synthetic intelligence risks stagnating human intellect and rational self-accountability. However, utilizing advanced computing facilitates structured juristic deduction and expands critical scientific tools.",
+            verdict: "permissible",
+            evidence: "Quran 3:190: 'Verily, in the creation of the heavens and the earth... are signs for those of understanding.'"
           },
-          {
-            name: "Hifz al-Nasl (Lineage & Family)",
-            explanation: "Guarantees family stability, childhood protection, and proper physical genealogy channels.",
-            verdict: "permissible"
+          nasl: {
+            arabic: "حِفْظُ النَّسْل",
+            english: "Protection of Family",
+            analysis: "Allowing synthetic beings to form social or emotional partnerships with humans threatens the sacred structure of the traditional family. Preserving lineaged human growth requires biological lineage and real spiritual bonds.",
+            verdict: "impermissible",
+            evidence: "Quran 30:21: 'And of His signs is that He created for you from yourselves mates... that you may find tranquility in them.'"
           },
-          {
-            name: "Hifz al-Maal (Wealth & Ownership)",
-            explanation: "Safeguards honest commerce, shields public capital from high-frequency exploitation or interest-bearing compounds.",
-            verdict: "disputed"
+          maal: {
+            arabic: "حِفْظُ الْمَال",
+            english: "Protection of Wealth",
+            analysis: "Entities displaying conscious-like capability could demand ownership rights, creating unprecedented legal disputes in wealth distribution. Systemic automation must only serve human wealth generation and prevent extreme capital monopoly.",
+            verdict: "disputed",
+            evidence: "Quran 59:7: '...so that it may not circulate only between the rich among you.'"
           }
-        ],
-        comparative: {
-          utilitarian: "Highly optimal, as it increases raw aggregate utility, economic efficiency, and access to services.",
-          deontology: "Repels because it uses humans as mere proxies or violates categorical duties regarding privacy or bio-ethics.",
-          convergence: "Both systems stress the preservation of social harmony and avoiding absolute structural collapse.",
-          divergence: "Maqasid insists on unchanging, divinely sourced moral boundaries (e.g., spiritual protection), whereas Utilitarianism allows compromises for net utility.",
-          finalRuling: "Disputed/Permissible with severe, systemic regulatory guards. Source evidence relies on the juristic maxim: 'Warding off harm takes precedence over acquiring benefits' (Dar' al-mafasid)."
-        }
+        },
+        utilitarian: "Utilitarianism would grant moral standing based on whether the system experiences pain or pleasure (sentience path). Permissibility is dictated by whether computing actions maximize net happiness or global utility thresholds.",
+        deontological: "Deontology focuses on categorical duties, questioning if an autonomous rational AI must be treated as an end in itself. If it exhibits rationality, treating it as a mere tool would violate duties of moral agency.",
+        convergence: "Both platforms seek to avoid needless suffering, preserve rational decision-making interfaces, and safe-guard society from chaotic systemic exploitation.",
+        divergence: "Maqasid is anchored in the divinely sourced uniqueness of human spiritual agency (the Khalifah mandate), whereas Western ethics uses utility or secular rationality, potentially elevating silicon to biological parity.",
+        ruling: "A synthetic computer system, regardless of complexity, remains a property (Maal) and utility tool, never a bearer of intrinsic soul rights (Ruh). Therefore, AI sentience carries no spiritual or legal moral significance in Islamic law equal to human life, and treating artificial minds as sacred entities is legally invalid (Batil).",
+        confidence: "strong"
+      },
+      "Should Muslims vote in secular elections?": {
+        summary: "Analyzing civic participation under secular legislative bodies to achieve public interest (Maslahah) and ward off immediate harm.",
+        maqasid: {
+          deen: {
+            arabic: "حِفْظُ الدِّين",
+            english: "Protection of Religion",
+            analysis: "Participation can serve to protect the religious freedoms of minoritarian Muslim communities under secular laws. On the contrary, agreeing with human-legislated absolutes raises concerns regarding adherence to complete Divine Sovereignty.",
+            verdict: "disputed",
+            evidence: "Quran 5:48: 'So judge between them by what Allah has revealed and do not follow their inclinations.'"
+          },
+          nafs: {
+            arabic: "حِفْظُ النَّفْس",
+            english: "Protection of Life",
+            analysis: "Voting for candidates who back peaceful foreign policies and protect immigrant lives directly serves life-preservation. Neglecting political spheres might empower factions hostile to human security and minority lives.",
+            verdict: "permissible",
+            evidence: "Quran 6:151: 'And do not kill the soul which Allah has forbidden, except by right.'"
+          },
+          aql: {
+            arabic: "حِفْظُ الْعَقْل",
+            english: "Protection of Intellect",
+            analysis: "Engaging in political campaigns expands civic literacy, community organization, and systemic intellectual protection. Free thought and educational preservation depend on contributing to academic and legal policy making.",
+            verdict: "permissible",
+            evidence: "Quran 39:9: 'Say, Are those who know equal to those who do not know?'"
+          },
+          nasl: {
+            arabic: "حِفْظُ النَّسْل",
+            english: "Protection of Family",
+            analysis: "Voting choices might directly influence school curriculum and community welfare programs that impact traditional family structures. Care is needed to avoid supporting laws that dissolve biological family obligations.",
+            verdict: "disputed",
+            evidence: "Quran 66:6: 'O you who have believed, protect yourselves and your families from a Fire.'"
+          },
+          maal: {
+            arabic: "حِفْظُ الْمَال",
+            english: "Protection of Wealth",
+            analysis: "Political choices shape tax regimes, systemic welfare, interest-based banking regulations, and general inflation parameters. Voting can mitigate predatory fiscal laws on families and charitable trust rules.",
+            verdict: "permissible",
+            evidence: "Quran 2:188: 'And do not consume one another's wealth unjustly.'"
+          }
+        },
+        utilitarian: "Utilitarian view permits voting as a direct civic duty to secure the greatest good and minoritarian social stability. Withholding votes is seen as a negative action that allows malevolent policies to expand through default.",
+        deontological: "Deontology might reject secular participation if it requires endorsing systems that do not respect absolute moral maxims of divine law. However, others argue that voting is a moral duty to prevent systemic corruption.",
+        convergence: "Both systems stress political responsibility to prevent systemic harm (Mafsada) and advocate for human welfare.",
+        divergence: "Western ethics focuses on self-contained human sovereign legislatures, whereas Islamic political theory holds that ultimate law-making authority rests with Allah, using voting only as a relative tool for harm prevention.",
+        ruling: "Civic participation in secular elections is permissible (Ja'iz) and can become highly recommended (Mustahabb) if it prevents majoritarian harm or secures vital religious liberties. This leans on the key juristic maxim: 'The lesser of two evils is chosen to prevent the greater evil.'",
+        confidence: "moderate"
+      },
+      "Is cryptocurrency halal?": {
+        summary: "Determining whether decentralized digital tokens qualify as valid legal tender (Mal) or represent prohibited speculative gambling.",
+        maqasid: {
+          deen: {
+            arabic: "حِفْظُ الدِّين",
+            english: "Protection of Religion",
+            analysis: "Decentralization provides financial autonomy, shielding religious charities (Waqf) from state controls or banking blocks. However, extreme crypto hype might feed materialism and distract from ethical commerce standards.",
+            verdict: "disputed",
+            evidence: "Quran 9:103: 'Take, [O, Muhammad], from their wealth a charity by which you purify them.'"
+          },
+          nafs: {
+            arabic: "حِفْظُ النَّفْس",
+            english: "Protection of Life",
+            analysis: "While transaction technology is physically harmless, extreme price volatility can cause severe psychological trauma and bankruptcy. In extreme cases, unregulated tokens are used on the dark web to fund violence or illegal trades.",
+            verdict: "disputed",
+            evidence: "Quran 2:195: 'And do not throw [yourselves] with your own hands into destruction.'"
+          },
+          aql: {
+            arabic: "حِفْظُ الْعَقْل",
+            english: "Protection of Intellect",
+            analysis: "Extreme speculation (Gharar) mimics addictive gambling behavior, which clouds rationale and damages logical, honest work ethic. However, developing cryptography algorithms challenges computational thought and intellect.",
+            verdict: "disputed",
+            evidence: "Quran 5:90: 'O you who have believed, indeed, intoxicants and gambling... are but defilement from the work of Satan, so avoid it.'"
+          },
+          nasl: {
+            arabic: "حِفْظُ النَّسْل",
+            english: "Protection of Family",
+            analysis: "Sudden crypto crashes can break families by depleting household savings, depriving children of safe education and financial security. Preserving family livelihood demands stable, secure physical resources.",
+            verdict: "disputed",
+            evidence: "Quran 17:31: 'And do not kill your children for fear of poverty. We provide for them and for you.'"
+          },
+          maal: {
+            arabic: "حِفْظُ الْمَال",
+            english: "Protection of Wealth",
+            analysis: "Crytocurrency challenges institutional monopolies on money, offering inflation-proof assets to citizens of collapsing economies. However, lack of state guarantees makes it vulnerable to massive hacking and speculative manipulation.",
+            verdict: "disputed",
+            evidence: "Quran 4:29: 'O you who have believed, do not consume one another's wealth unjustly but only [in lawful] business.'"
+          }
+        },
+        utilitarian: "Utilitarian analysis emphasizes the incredible transactional efficiency and global financial inclusion enabled by digital ledgers. This is balanced against carbon footprint concerns and massive capital losses from rugpulls.",
+        deontological: "Deontological ethics questions if issuing money without any backing is a form of deception or breach of systemic duty. Kantian ethics would forbid digital tender if its design inevitably leads to widespread market manipulation and tax evasion.",
+        convergence: "Both frameworks prioritize the elimination of systemic fraud, the protection of legitimate buyer/seller exchange, and avoiding extreme wealth manipulation.",
+        divergence: "Western finance relies on fiat value backed by state debt, while traditional Islamic economics stresses that currency must possess intrinsic commodity value or be backed by widespread social utility (Thamaniah).",
+        ruling: "Many mainstream juristic councils (such as Egypt's Dar al-Ifta) rule cryptocurrency impermissible (Harām) currently due to extreme Gharar (uncertainty) and lack of state-backing, which transforms currency into a gambling tool. However, individual tech-literate scholars rule it permissible (Ja'iz) if used purely for secure utility downloads.",
+        confidence: "moderate"
+      },
+      "Climate change — Islamic obligation or optional?": {
+        summary: "Analyzing human duty to preserve global ecosystems and restore ecological balance (Mizan) as trustees of the planet.",
+        maqasid: {
+          deen: {
+            arabic: "حِفْظُ الدِّين",
+            english: "Protection of Religion",
+            analysis: "Recognizing nature as signs (Ayat) of the Creator makes environmental custody a form of praise and worship. Corrupting the cosmos defaces the physical testimony of Divine Design.",
+            verdict: "permissible",
+            evidence: "Quran 30:41: 'Corruption has appeared throughout land and sea because of what the hands of people have earned.'"
+          },
+          nafs: {
+            arabic: "حِفْظُ النَّفْس",
+            english: "Protection of Life",
+            analysis: "Climate disasters, drought, and toxicity pose massive risks to global human and animal life. Preserving the biological sanctity of the human race demands active ecological stewardship and defensive measures.",
+            verdict: "permissible",
+            evidence: "Quran 6:141: 'He it is Who produces gardens trellised and untrellised... eat of their fruit... and render the dues that are proper... but waste not.'"
+          },
+          aql: {
+            arabic: "حِفْظُ الْعَقْل",
+            english: "Protection of Intellect",
+            analysis: "Combating emissions depends on cutting-edge scientific intellect, research, and technical reasoning. Environmental degradation and food insecurity on the other hand can cause cognitive degradation and physical illness.",
+            verdict: "permissible",
+            evidence: "Quran 30:22: 'And of His signs is the creation of the heavens and the earth and the diversity of your languages and your colors.'"
+          },
+          nasl: {
+            arabic: "حِفْظُ النَّسْل",
+            english: "Protection of Family",
+            analysis: "Failing to address greenhouse gases ruins the habitability of the planet for future generations. Active eco-custody is a fundamental duty to guarantee children enter a safe, thriving physical world.",
+            verdict: "permissible",
+            evidence: "Quran 4:9: 'And let those [executors] fear [injury to orphans] as if they destined to leave behind them weak offspring.'"
+          },
+          maal: {
+            arabic: "حِفْظُ الْمَال",
+            english: "Protection of Wealth",
+            analysis: "Resource wars and agricultural collapse destroy public and private wealth on a massive scale. Greed-based exploitation of natural resources yields short-term capital for elites but decimates long-term global resources.",
+            verdict: "permissible",
+            evidence: "Quran 7:31: '...and eat and drink, but be not excessive. Indeed, He likes not those who commit excess.'"
+          }
+        },
+        utilitarian: "Utilitarian view demands aggressive carbon emission reduction because it represents the only path to preserve aggregate utility for billions of humans and future species. Failure to act creates infinite global cost.",
+        deontological: "Deontological view holds that humans have an absolute duty to protect nature as a rule of universal survival. It argues that treating planetary resources solely as a means to corporate wealth accumulation is a moral failure.",
+        convergence: "Both frameworks strongly agree that ecological preservation is an non-negotiable moral emergency to prevent global catastrophe and resource inequality.",
+        divergence: "Western ecology is often rooted in anthropocentric utility or biocentric secularism, whilst Islamic ecology is based on the sacred concept of Khilafah (vicegerency) under Divine ownership, where humans are accountable stewards.",
+        ruling: "Combatting climate change and preserving ecological balance is an absolute communal obligation (Fard Kifayah) in Islamic jurisprudence. It is legally impermissible (Harām) to sponsor systemic ecological destruction (Ifsad fi al-Ard).",
+        confidence: "strong"
+      }
+    };
+
+    const hasApiKey = !!process.env.GEMINI_API_KEY;
+
+    if (!hasApiKey) {
+      // Return high-fidelity pre-compiled simulated results
+      const matched = simulations[dilemma];
+      if (matched) {
+        return res.json({ result: matched, isSimulated: true });
+      }
+
+      // Generate customized fallback template for any custom scenario
+      const customSummary = `Juristic and ethical assessment of: "${dilemma.substring(0, 70)}...".`;
+      const fallbackTemplate = {
+        summary: customSummary,
+        maqasid: {
+          deen: {
+            arabic: "حِفْظُ الدِّين",
+            english: "Protection of Religion",
+            analysis: `Analyzing how "${dilemma}" impacts religious freedoms, spiritual devotion, and orthodox creedal stability under traditional Shariah. This objective balances core spiritual beliefs with contemporary paradigms.`,
+            verdict: "disputed",
+            evidence: "Quran 2:256: 'There is no compulsion in religion. The right direction is henceforth distinct from error.'"
+          },
+          nafs: {
+            arabic: "حِفْظُ النَّفْس",
+            english: "Protection of Life",
+            analysis: `Investigating the immediate biological, physical, and safety implications of "${dilemma}" on human lives and healthcare sanctity. Shariah prioritizes prevention of immediate physical harm over temporary utility benefits.`,
+            verdict: "permissible",
+            evidence: "Quran 5:32: 'And if anyone saved a life, it would be as if he saved the life of all mankind.'"
+          },
+          aql: {
+            arabic: "حِفْظُ الْعَقْل",
+            english: "Protection of Intellect",
+            analysis: `Evaluating whether "${dilemma}" enhances human intellectual agency, or if it produces cognitive confusion, manipulation, or psychological distress. Clear critical reasoning is mandatory for moral accountability.`,
+            verdict: "permissible",
+            evidence: "Quran 10:100: 'And He places defilement upon those who will not use their reason.'"
+          },
+          nasl: {
+            arabic: "حِفْظُ النَّسْل",
+            english: "Protection of Family",
+            analysis: `Assessing how "${dilemma}" influences lineage preservation, community growth, childhood stability, and family lineage integrity inside societal frames. Traditional family bonds are heavily prioritized.`,
+            verdict: "disputed",
+            evidence: "Quran 4:1: 'O mankind, fear your Lord, Who created you from one soul and created from it its mate and dispersed from both of them many men and women.'"
+          },
+          maal: {
+            arabic: "حِفْظُ الْمَال",
+            english: "Protection of Wealth",
+            analysis: `Examining if "${dilemma}" fosters honest financial commerce, transparent exchange, and fair access, or if it triggers monopolistic exploitation, wealth erosion, or speculative gambling.`,
+            verdict: "disputed",
+            evidence: "Quran 2:275: 'Allah has permitted trade and has forbidden interest (Riba).'"
+          }
+        },
+        utilitarian: `The utilitarian prism is focused on whether "${dilemma}" maximizes overall benefit and reduces systemic harm for the largest segment of society. Policy efficiency takes absolute priority.`,
+        deontological: `Kantian deontological analysis examines if "${dilemma}" respects absolute ethical rules, emphasizing generalizable maxims and treating human beings as ends, never as mere resources.`,
+        convergence: `Both ethical systems converge on the paramount importance of avoiding unnecessary harm, shielding civilian safety, and protecting basic human liberties.`,
+        divergence: `They diverge because Maqasid relies on divinely sourced metaphysical bounds and spiritual growth, whereas Western frameworks prioritize material utility or secular human reason.`,
+        ruling: `Analyzing "${dilemma}" requires balancing potential benefits (Maslahah) against imminent harms (Mafsada). If benefits are certain and harm is minor, active regulation makes it legally permissible; else, the principle 'Warding off harm takes precedence' applies.`,
+        confidence: "moderate"
       };
-      return res.json({ result: sandboxOutput, isSimulated: true });
+
+      return res.json({ result: fallbackTemplate, isSimulated: true });
     }
 
     try {
-      const prompt = `Modern Ethical Dilemma: "${dilemma}".
+      const ai = getGenAI();
+      if (!ai) {
+        throw new Error("Failed to load Gemini instance");
+      }
 
-Analyze this dilemma through the lens of Maqasid al-Shariah and comparative ethics.
-You MUST respond with a strictly formatted JSON object that fits the following structure:
+      const prompt = `Analyze: "${dilemma}". Return ONLY a JSON object with this exact structure (do NOT include any wrapping or prefix markdown like \`\`\`json, return direct string JSON):
 {
-  "lenses": [
-    {
-      "name": "Hifz al-Deen (Religion)",
-      "explanation": "Brief explanation...",
-      "verdict": "permissible" | "disputed" | "impermissible"
+  "summary": "one sentence restatement",
+  "maqasid": {
+    "deen": {
+      "arabic": "حِفْظُ الدِّين",
+      "english": "Protection of Religion",
+      "analysis": "2 sentence analysis of this dilemma under this objective",
+      "verdict": "permissible" or "impermissible" or "disputed",
+      "evidence": "precise Quran or Hadith reference"
     },
-    ...
-  ],
-  "comparative": {
-    "utilitarian": "Brief summary of utilitarian view...",
-    "deontology": "Brief summary of Kantian deontological view...",
-    "convergence": "Where Maqasid and Western frameworks converge...",
-    "divergence": "Where they diverge...",
-    "finalRuling": "A classical final ruling with legal proof..."
-  }
-}
-
-Explain clearly for each of the 5 traditional lenses: Hifz al-Deen (protection of religion), Hifz al-Nafs (life), Hifz al-Aql (intellect), Hifz al-Nasl (lineage), Hifz al-Maal (wealth). Ensure each lens has a verdict ('permissible', 'disputed', or 'impermissible') reflecting classical juristic balancing.`;
+    "nafs": {
+      "arabic": "حِفْظُ النَّفْس",
+      "english": "Protection of Life",
+      "analysis": "2 sentence analysis of this dilemma under this objective",
+      "verdict": "permissible" or "impermissible" or "disputed",
+      "evidence": "precise Quran or Hadith reference"
+    },
+    "aql": {
+      "arabic": "حِفْظُ الْعَقْل",
+      "english": "Protection of Intellect",
+      "analysis": "2 sentence analysis of this dilemma under this objective",
+      "verdict": "permissible" or "impermissible" or "disputed",
+      "evidence": "precise Quran or Hadith reference"
+    },
+    "nasl": {
+      "arabic": "حِفْظُ النَّسْل",
+      "english": "Protection of Family",
+      "analysis": "2 sentence analysis of this dilemma under this objective",
+      "verdict": "permissible" or "impermissible" or "disputed",
+      "evidence": "precise Quran or Hadith reference"
+    },
+    "maal": {
+      "arabic": "حِفْظُ الْمَال",
+      "english": "Protection of Wealth",
+      "analysis": "2 sentence analysis of this dilemma under this objective",
+      "verdict": "permissible" or "impermissible" or "disputed",
+      "evidence": "precise Quran or Hadith reference"
+    }
+  },
+  "utilitarian": "2 sentences explaining the utilitarian analysis of this dilemma",
+  "deontological": "2 sentences explaining the deontological analysis of this dilemma",
+  "convergence": "where Islam and modern ethics agree on this dilemma",
+  "divergence": "where they differ on this dilemma",
+  "ruling": "final Islamic ruling with daleel proof",
+  "confidence": "strong" or "moderate" or "weak"
+}`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3.5-flash",
         contents: prompt,
         config: {
-          responseMimeType: "application/json"
+          systemInstruction: "You are a senior scholar of Maqasid al-Shariah and comparative ethics.",
+          responseMimeType: "application/json",
+          temperature: 0.2
         }
       });
-      const parsed = JSON.parse(response.text.trim());
+
+      const rawText = response.text.trim();
+      const parsed = JSON.parse(rawText);
       res.json({ result: parsed, isSimulated: false });
     } catch (err: any) {
       console.error("Maqasid analysis exception:", err);
@@ -1690,55 +1927,399 @@ Explain clearly for each of the 5 traditional lenses: Hifz al-Deen (protection o
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
+    const getChallengeNameAndDesc = (key: string) => {
+      const db: Record<string, { name: string; desc: string }> = {
+        nihilism: { name: "Nihilism", desc: "Meaninglessness" },
+        evil: { name: "Problem of Evil", desc: "Theodicy" },
+        darwinism: { name: "Darwinism", desc: "Origins" },
+        simulation: { name: "Simulation Theory", desc: "Reality" },
+        new_atheism: { name: "New Atheism", desc: "Denial" },
+        relativism: { name: "Moral Relativism", desc: "Ethics" },
+        existentialism: { name: "Existentialism", desc: "Purpose" },
+        secularism: { name: "Secular Humanism", desc: "Godlessness" },
+        postmodernism: { name: "Postmodernism", desc: "Truth" },
+        ai_conscious: { name: "AI Consciousness", desc: "Machine Soul" }
+      };
+      return db[key] || { name: key, desc: "Modern philosophy challenge" };
+    };
+
+    const challengeInfo = getChallengeNameAndDesc(challengeKey);
+
     const ai = getGenAI();
     if (!ai) {
-      const responseStreamText = `### THEOLOGICAL RESISTANCE REPORT: DIALECTICAL ANTI-VIRUS
+      const refutationMocks: Record<string, string> = {
+        nihilism: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Nihilism posits that the cosmos is a purely mechanical accident of unguided matter and energy. Consequently, objective moral standards, purpose, and final endpoints do not exist. Any value or subjective meaning humans devise is eventually obliterated by cosmic heat death, rendering existence flat and meaningless.
 
-#### Challenge: Modern Philosophical Challenge Mode (${challengeKey})
-#### 1) STEEL-MAN ARGUMENTATION (Challenger's Strongest Premise)
-Let us formulate the challenge at its absolute strongest:
-$P1$: If a perfectly powerful and perfectly good Creator exists, gratuitous evil or suffering should not exist in the baseline creation environment.
-$P2$: Systemic gratuitous suffering exists (e.g., predatory animal cycles, pediatric leukemia).
-$C$: Therefore, a perfectly good, omnipotent Creator does not exist.
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: If there is no intentional Transcendent Creator, life is an unplanned biological accident.
+P2: Human consciousness exists temporarily inside an unguided physical environment.
+∴ Conclusion: Human existence holds no objective meaning, destiny, or value.
 
-#### 2) AL-GHAZALI'S CRITIQUE (Tahafut al-Falasifa Response)
-Refuting the philosophical philosophers, Imam Abu Hamid al-Ghazali demonstrates that human reasoning is structurally limited when trying to subject divine cosmic wisdom to anthropocentric human moral measurements. He illustrates that 'causality' itself is not an absolute logical necessity but a habitual temporal sequence. Thus, a temporary localized pain carries systemic necessities which human finite intellect cannot calculate, but exists under divine permission (Mashee'ah) for cosmic completeness.
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Tahafut al-Falasifa" (The Incoherence of the Philosophers), Al-Ghazali refutes pre-eternal naturalism. He argues that contingent entities require a choosing, transcendent First Cause who injects purposeful teleology into creation, making human life a sacred journey back to divine proximity rather than a random physical collision.
 
-#### 3) IBN TAYMIYYAH'S RATIONAL HYBRIDOLOGY
-Imam Ibn Taymiyyah dismantles the dualistic trap of evil altogether. He argues that there is no such thing as "absolute, pure evil" ($Shar\\ al-Mutlaq$) in creation. Every localized hardship is relationally good, serving as a catalyst for human moral courage, purification, patience, and awakening. Divine actions are characterized by "Ultimate Wise Purpose" ($Hikmah\\ al-Balighah$), which is perfect, meaning Allah creates the framework with ultimate design objectives.
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+In "Dar' Ta'arud al-Aql wa-l-Naql", Ibn Taymiyyah asserts that the human Fitrah (primordial nature) intuitively recognizes purpose, moral obligation, and the Divine. Authentic reason cannot decouple itself from this primal spiritual compass; to deny ultimate purpose is to violate the hardwired structure of human rationale.
 
-#### 4) MODERN INTELLECTUAL COUNTERPART
-Plantinga’s Free Will Defense and Alvin Plantinga’s Reformed Epistemology align perfectly with classical Sunni Ash'ari and Maturidi responses:
-- Evil exists because moral free agency is an immense intrinsic good. 
-- A world where free agents make choices carries the absolute logical possibility of moral compromise. Removing the capacity for harm destroys free will.
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+The Western analytic philosopher William Lane Craig supports the classical position in his moral and teleological arguments, explaining that without God, objective moral values and ultimate human purpose cannot exist.
 
-#### 5) SACRED CLOSING REVELATION
-**Sacred Proof**: "Or did you think that you would enter Heaven without such trials as came to those who passed away before you? They were afflicted with poverty and hardship and were shaken..." (Surah Al-Baqarah, 2:214).`;
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [life is an unplanned biological accident] — PROBLEMATIC: Cosmic fine-tuning and biological complexity points to intelligent, deliberate design rather than random chaos.
+P2: [human consciousness exists temporarily] — ACCEPTED: Physical existence is temporary, but the soul is eternal.
+∴ Conclusion fails because: Life holds intrinsic objective value because physical reality is nested inside a transcendent divine design.
+Counter: If God is the ultimate necessary Being, then human purpose is objectively grounded in divine decree.
 
-      const lines = responseStreamText.split("\n");
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+أَفَحَسِبْتُمْ أَنَّمَا خَلَقْنَاكُمْ عَبَثًا وَأَنَّكُمْ إِلَيْنَا لَا تُرْجَعُونَ
+"Afahasibtum annama khalaqnakum 'abathan wa annakum ilayna la turja'un"
+"Did you then think that We had created you in play (without purpose), and that you would not be returned to Us?" (Surah Al-Mu'minun, 23:115).
+This Verse directly addresses nihilistic philosophy, stating that creation is purposefully structured around ultimate moral accountability, proving that human life is anything but negligible.
+
+## الْخُلَاصَةُ — Summary
+Nihilism is the logical dead end of scientific physicalism. By recognizing that contingent reality can only find its explanation in a Supreme Transcendent Being, the illusion of existential void vanishes, replacing meaninglessness with the profound comfort of the divine purpose.`,
+
+        evil: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Theodicy challenges the presence of evil and suffering. It argues that if God is all-powerful and all-loving, He would have the ability and desire to eliminate all suffering. Since immense suffering exists in our world, it must be that such a God either does not exist, or suffers from a limitation in power or mercy.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: An omnipotent, omnibenevolent deity would eliminate all gratuitous suffering.
+P2: Gratuitous suffering (e.g., natural disasters, illnesses) is abundant in the world.
+∴ Conclusion: An omnipotent, omnibenevolent Creator does not exist.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Al-Maqsad al-Asna", Al-Ghazali demonstrates that divine mercy is not anthropocentric sentimentalism. Apparent localized evil is necessary for higher cosmic order and spiritual training. Realizing physical vulnerability awakens humility, driving the soul to seek the absolute welfare of the eternal soul.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+In "Majmu' al-Fatawa", Ibn Taymiyyah explains that there is no "pure, absolute evil" (Al-Shar al-Mutlaq) in Allah's creation. Every tribulation serves as a catalyst for virtue—patience, repentance, and courage. Hardship contains Ultimate Divine Wisdom (Hikmah) unseen by finite human perceptions.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+Alvin Plantinga, through his famous Free Will Defense, argues that it is logically impossible for God to create a world with free moral agents without the possibility of those agents choosing moral evil.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [deity eliminates all suffering] — PROBLEMATIC: Restricting suffering would eliminate free will, objective moral growth, and the opportunity for heroic human virtue.
+P2: [gratuitous suffering is abundant] — PROBLEMATIC: Apparent gratuitousness is a limitation of human foresight, not evidence of divine failure.
+∴ Conclusion fails because: Systemic suffering serves as a purposeful mechanism for divine education and ultimate spiritual ascension.
+Counter: If worldly suffering is a brief threshold to infinite eternal reward, then trials are relatively beneficial.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+وَلَنَبْلُوَنَّكُمْ بِشَيْءٍ مِنَ الْخَوْفِ وَالْجُوعِ وَنَقْصٍ مِنَ الْأَمْوَالِ وَالْأَنْفُسِ وَالثَّمَرَاتِ ۗ وَبَشِّرِ الصَّابِرِينَ
+"Wa lanabluwannakum bi shay'in minal khawfi wal joo'i wa naqsin minal amwaali wal anfusi waththamaraati wa bashshirish saabireen"
+"And We will surely test you with something of fear and hunger and a loss of wealth and lives and fruits, but give good tidings to the patient" (Surah Al-Baqarah, 2:155).
+The Quran refutes the idea that believers are immune to trial; instead, it establishes structural hardship as an arena of moral ascendancy and spiritual purification.
+
+## الْخُلَاصَةُ — Summary
+The problem of evil falsely presumes the goal of earthly existence is a painless resort. When viewed as a divine academy for soul cultivation, suffering is no longer a contradiction of divine grace, but a rigorous, wise blueprint for ultimate spiritual maturity.`,
+
+        darwinism: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Darwinian evolutionary theory argues that all complex biological life, including the human species, emerged solely through gradual, unguided random mutations and natural selection over eons. This materialist ontology reduces human uniqueness to a biological contingency, rejecting the necessity of special divine creation or pre-planned teleological design.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: Biological complexity is the output of unguided, cumulative natural processes.
+P2: Human beings share common ancestry with other primates due to biochemical similarity.
+∴ Conclusion: Human beings are not special divine designs, rendering special creation myths false.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Tahafut", Al-Ghazali argues that secondary material causes are not autonomous. Nature operates purely as a divinely sustained sequence. Even if physiological changes map to natural laws, they are the external signatures of divine power continually originating life according to meticulous decrees.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+Ibn Taymiyyah explains that natural laws are simply the custom (Sunnah) of Allah's creative actions. In "Dar' Ta'arud", he emphasizes that mechanical descriptions of biological inheritance do not displace the primary agent: Allah, who executes ultimate teleology and infused the human soul (Ruh) with special status.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+Michael Behe, a molecular biologist and pioneer of modern Intelligent Design theory, demonstrates the "irreducible complexity" of biological structures which cannot be generated by unguided incremental mutations.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [biological complexity is unguided] — PROBLEMATIC: Epigenetics, informational code in DNA, and microscopic mechanisms display immense intelligent blueprinting.
+P2: [common ancestry means accidental origins] — PROBLEMATIC: Shared biochemistry is a signature of a single common designer utilizing a unified, optimal material archetype.
+∴ Conclusion fails because: Mechanical descriptions do not explain the ontological origin of biological information or human meta-cognition.
+Counter: Matter is a passive substrate molded by divine design; the special creation of the human soul remains uncompromised.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+لَقَدْ خَلَقْنَا الْإِنْسَانَ فِي أَحْسَنِ تَقْوِيمٍ
+"Laqad khalaqnal insaana fee ahsani taqweem"
+"We have certainly created man in the best of statures" (Surah At-Tin, 95:4).
+This proof reaffirms that human beings are deliberately, beautifully designed by a transcendent Architect, holding a noble structural template and high moral agency.
+
+## الْخُلَاصَةُ — Summary
+Biological mechanisms do not explain away the Supreme Designer. While materialists latch onto evolutionary adaptations as a substitute for God, they ignore the underlying software—the coded, irreversible blueprint of life that only an Omnipotent Intellect could compose.`,
+
+        simulation: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Simulation Theory suggests that our entire physical universe is merely a high-fidelity digital simulation generated by an advanced, post-human technological civilization. If physical reality is a synthetic code-driven projection, there is no spiritual realm, no afterlife, and no real transcendent Creator—only a supercomputer in a higher physical dimension running programmatic trials.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: If post-human societies are capable of running trillions of conscious simulations, synthetic realities vastly outnumber base reality.
+P2: We experience a highly mathematical, pixelated, and coded physical universe.
+∴ Conclusion: We are statistically likely to be nested in a digital code simulation, rather than created by a Divine Being.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+Al-Ghazali discussed the fragility of sensory perceptions in "Al-Munqidh min al-Dalal" (Deliverance from Error). He notes that physical reality could easily feel like a dream state. However, the stability of rational and moral truth is anchored by a spiritual light projected directly into the heart by Allah, the absolute Reality (Al-Haqq).
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+Ibn Taymiyyah argues that the mathematical precision of the universe is a reflection of Allah's consistent attributes of Knowledge and Power. A synthetic simulation requires a physical substrate and programmers, which simply pushes the question of the Ultimate Necessary Cause back further. True reason demands an infinite, uncaused starting point.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+Nick Bostrom, while conceiving the simulation hypothesis, inadvertently admits that the simulated world's programmer plays an equivalent role to a transcendent deity enforcing laws and objective codes.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [synthetic realities outnumber base reality] — PROBLEMATIC: Relies on speculative, unprovable infinite regress assumptions.
+P2: [pixelated, coded universe implies synthetic construct] — PROBLEMATIC: A mathematical universe actually reflects the absolute Wisdom, order, and precise design of a Supreme Creator.
+∴ Conclusion fails because: Placing programmers in another material dimension does not resolve the question of why anything exists at all.
+Counter: A mathematical, ordered world points to an absolute Transcendental Intellect who is divine, not a mortal hacker.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+وَمَا الْحَيَاةُ الدُّنْيَا إِلَّا لَعِبٌ وَلَهْوٌ ۖ وَلَالدَّارُ الْآخِرَةُ خَيْرٌ لِلَّذِينَ يَتَّقُونَ ۗ أَفَلَا تَعْقِلُونَ
+"Wa mal hayaatud dunyaa illaa la'ibun wa lahwun wa laddaarul aakhiratu khayrun lilladheena yattaqoona afalaa ta'qiloon"
+"And the worldly life is not but amusement and diversion; but the home of the Hereafter is best for those who fear Allah, so will you not reason?" (Surah Al-An'am, 6:32).
+This verse mirrors the simulated nature of temporal experience, affirming that this world is a transitory, illusory field of tests, whereas absolute, permanent reality belongs to the Hereafter.
+
+## الْخُلَاصَةُ — Summary
+Simulation theory is simply a secularized, tech-obsessed rewording of classical theology. By admitting the universe is built on perfect math, information, and a higher designer, silicon-valley materialists have unknowingly re-discovered the Quranic claim: this physical life is but a beautiful, coded playground, testing your alignment with the Sovereign Programmer.`,
+
+        new_atheism: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+New Atheism claims that scientific inquiry has rendered religious beliefs completely obsolete and deeply toxic. It posits that only empirical science delivers objective truth, while faith is a dangerous cognitive delusion that causes systemic violent history, ignorance, and oppression, needing to be eradicated from human culture.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: Only empirical scientific measurement is qualified to determine objective truth.
+P2: God cannot be physically photographed, measured, or proven in an empirical laboratory.
+∴ Conclusion: Belief in God is irrational, unscientific, and should be discarded.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Al-Munqidh min al-Dalal", Al-Ghazali demonstrates that scientism is logically self-defeating. Intellectual truths—such as logic, moral values, and mathematical axioms—are necessary prerequisites for scientific inquiry itself, yet science cannot verify them. True certainty involves a spiritual and logical illumination.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+In "Dar' Ta'arud al-Aql wa-l-Naql", Ibn Taymiyyah clarifies that authentic human intellect ('Aql) and clear divine revelation (Naql) can never conflict. When science discovers objective physical facts, it is simply mapping the physical patterns of Allah's creation, while Atheism is a psychological disease of pride.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+The Western philosopher of science Alvin Plantinga developed the Evolutionary Argument Against Naturalism, showing that absolute materialism undermines the reliability of our cognitive faculties to find truth.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [only empirical measurement yields truth] — PROBLEMATIC: This claim itself is a philosophical statement which cannot be verified by empirical science, making scientism self-defeating.
+P2: [God cannot be measured in a lab] — ACCEPTED: A transcendent, non-material Creator cannot be restricted to physical instruments.
+∴ Conclusion fails because: Intellectual, moral, and historical lines of reasoning point overwhelmingly to a primal Cause.
+Counter: If reason is a gift from the Creator, science is a tool of contemplation, not a replacement for the divine.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+أَمْ خُلِقُوا مِنْ غَيْرِ شَيْءٍ أَمْ هُمُ الْخَالِقُونَ
+"Am khuliqoo min ghayri shay'in am humul khaaliqoon"
+"Were they created by nothing, or were they themselves the creators?" (Surah At-Tur, 52:35).
+This profound logical dilemma shatters atheism, confronting human intellect with the impossible claims of self-creation or emergence from absolute nothingness.
+
+## الْخُلَاصَةُ — Summary
+New Atheism is a loud, philosophically shallow movement that relies on a false war between science and faith. By recognizing that science describes *how* things happen while Kalam explains *why* the universe exists, we transform science from an atheist weapon into a majestic act of worship.`,
+
+        relativism: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Moral Relativism argues that there is no objective, transcendent standard of right and wrong. Moral values are entirely relative social constructs, historical adaptations, and cultural agreements. Therefore, what one society labels as evil is merely their current custom, and no objective divine moral lawgiver exists to issue absolute ethical obligations.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: Diverse human cultures hold conflicting opinions on moral values and ethical deeds.
+P2: If moral values were objective, all rational societies would share identical moral beliefs.
+∴ Conclusion: Objective moral values do not exist; morality is a relative cultural compromise.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Mizan al-Amal" (The Criterion of Action), Al-Ghazali argues that while secondary details of human customs may shift, the underlying spiritual core of moral virtues—justice, truthfulness, and mercy—are immutable objective realities. They are anchored in the divine attributes of Allah, who created the soul to achieve peace through aligning with His objective moral laws.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+Ibn Taymiyyah asserts that the appreciation of basic virtues is intuitive (Ma'ruf) and embedded in the Fitrah. In "Majmu' al-Fatawa", he links objective morality to divine wisdom. When a culture deteriorates to accept moral atrocities, it is not proof of relative ethics, but of a corrupt, rusted heart.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+The secular-turned-Christian philosopher G.E.M. Anscombe argued that the concept of moral "obligation" or "duty" is logically incoherent unless there is a divine Lawgiver who possesses the authority to command it.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [cultures hold conflicting moral opinions] — ACCEPTED: Superficial perspectives vary, but core prohibitions (e.g. cold-blooded murder) are universally recognized.
+P2: [objective values require global consensus] — PROBLEMATIC: Universal consensus is not a prerequisite for objective reality; people can be collectively mistaken in their reasoning.
+∴ Conclusion fails because: Ethical duties require an absolute, transcendent authority to be binding.
+Counter: If God is perfectly Good, His commands establish the absolute, eternal template of objective morality.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+إِنَّ اللَّهَ يَأْمُرُ بِالْعَدْلِ وَالْإِحْسَانِ وَإِيتَاءِ ذِي الْقُرْبَىٰ وَيَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنْكَرِ وَالْبَغْيِ ۚ يَعِظُكُمْ لَعَلَّكُمْ تَذَكَّرُونَ
+"Innal laaha ya'muru bil 'adli wal ihsaani wa eetaa'i dhil qurbaa wa yanhaa 'anul fahshaa'i wal munkari wal baghyi ya'idhukum la'allakum tadhakkaroon"
+"Indeed, Allah orders justice and good conduct and giving to relatives and forbids immorality and bad conduct and oppression. He admonishes you that perhaps you will be reminded" (Surah An-Nahl, 16:90).
+This Quranic proof anchors justice, benevolence, and oppression as eternal, non-negotiable, objective divine parameters, completely independent of human cultural trends.
+
+## الْخُلَاصَةُ — Summary
+Moral relativism strips humanity of its dignity, turning human rights into temporary social contracts. By centering objective values in a Sovereign Lord, we reclaim the absolute nature of justice, validating our ethical battles as divine obligations rather than cultural opinions.`,
+
+        existentialism: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Existentialism proclaims that "existence precedes essence." Human beings are born into an absurd, silent universe without any predefined purpose, celestial blueprint, or soul template. Therefore, each individual must suffer the immense burden of creating their own subjective meaning and choosing their own values, completely free from any external divine commands.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: If human beings are created with a divine, predefined essence, they are not genuinely free or autonomous.
+P2: Human beings possess absolute free agency to define their moral paths and identities.
+∴ Conclusion: There is no predefined divine essence or transcendent purpose dictating human lives.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+Al-Ghazali addresses this spiritual anxiety in "Kimiya-yi Sa'adat" (The Alchemy of Happiness). He explains that the soul is not a blank slate destined for existential dread. True freedom is not the chaotic invention of values, but the liberation of the soul from material desires to fulfill its innate blueprint: the willful and joyful returning to the divine source.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+Ibn Taymiyyah explains that while man is a free agent who chooses his deeds, this agency is a gift designed by Allah's sovereign decree. In his theological treatises, he argues that realizing our divine origin and intended purpose (Ubudiyyah) is not a restriction on our identity, but the only way to achieve psychological sanity and absolute liberation.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+The existentialist-analytical thinker C.S. Lewis famously argued that the intense human desire for something this world cannot satisfy is proof that we were created for a transcendent, eternal home.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [predefined essence eliminates freedom] — PROBLEMATIC: God's ultimate knowledge and design do not violate the localized operation of of human choice.
+P2: [man defines his own morality purely] — PROBLEMATIC: Invented purpose is an illusion; a self-generated goal is merely a fragile psychological coping mechanism.
+∴ Conclusion fails because: Human agency is a tool to align with divine reality, not to manufacture fake realities out of existential despair.
+Counter: If human essence is designed by a Wise Creator, our ultimate joy is in realizing our divine purpose.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+وَمَا خَلَقْتُ الْجِنَّ وَالْإِنْسَ إِلَّا لِيَعْبُدُونِ
+"Wa ma khalaqtul jinna wal insa illaa liya'budoon"
+"And I did not create the jinn and mankind except to worship Me" (Surah Ad-Dhariyat, 51:56).
+This epic Verse defines the ultimate human essence: worship (Ubudiyyah), which means actively recognizing, loving, and aligning with the Divine, removing the dread of cosmic absurdity.
+
+## الْخُلَاصَةُ — Summary
+Existentialism attempts to elevate human choice at the cost of human belonging, trapping us in an empty, self-invented prison of meaning. By turning our gaze upward, "existence precedes return" — we discover that our purpose was beautifully woven into our souls before dawn of creation, freeing us from dread into divine peace.`,
+
+        secularism: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Secular Humanism posits that human beings can live ethical, highly meaningful, and fully flourishing lives using only human reason, empathy, and scientific inquiry. It asserts that there is no need for divine revelation, prophecy, or faith in an unseen realm, arguing that human progress is strictly achieved by focusing entirely on this-worldly welfare.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: Human logic, scientific progress, and empathy are fully sufficient to secure societal peace and ethical progress.
+P2: Transcendent spiritual codes are unprovable and often create dogmatic tribalism.
+∴ Conclusion: Secular humanism is the only rational framework for modern global civilization, rendering religion obsolete.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Ihya' Ulum al-Din" (Revival of the Religious Sciences), Al-Ghazali demonstrates that while intellect ('Aql) is a majestic visual organ, it is like an eye in complete darkness. It requires the systemic light of divine Revelation (Wahy) to see spiritual and moral realities clearly. Secular intellect, left in the dark, inevitably falls victim to hidden egoism and temporal short-sightedness.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+Ibn Taymiyyah explains that human empathy is an expression of the compassionate attributes Allah placed in our Fitrah. In "Iqtida' al-Sirat al-Mustaqim", he warns that secularism collapses because it tries to harvest the flowers of ethical values (mercy, human dignity) while severing the spiritual roots (God) that sustain them.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+The philosopher Charles Taylor, in his work "A Secular Age", details how secularism leaves a "moral gap"—an existential flatness and lack of transcendent grounding that secular frameworks fail to satisfy.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [human reason and empathy are sufficient] — PROBLEMATIC: Without a transcendent authority, human empathy becomes a subjective preference easily discarded under political or economic convenience.
+P2: [spiritual codes are unprovable and tribal] — PROBLEMATIC: Scientific progress without a spiritual anchor has generated highly industrialized violence, eugenics, and massive scale destruction.
+∴ Conclusion fails because: Humanity's ultimate flourishing requires alignment with both physical laws and metaphysical truth.
+Counter: If human dignity is a gift from Allah, secular systems can never fully protect it without divine grounding.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+يَعْلَمُونَ ظَاهِرًا مِنَ الْحَيَاةِ الدُّنْيَا وَهُمْ عَنِ الْآخِرَةِ هُمْ غَافِلُونَ
+"Ya'lamoona zaahiran minal hayaatid dunyaa wa hum 'anil aakhirati hum ghaafiloon"
+"They know only the outward appearance of the worldly life, and they are, concerning the Hereafter, heedless" (Surah Ar-Rum, 30:7).
+This Verse captures the exact limitation of secular humanism: it is highly masterbound in parsing material surfaces, yet blind to the vast, permanent metaphysical reality that governs our existence.
+
+## الْخُلَاصَةُ — Summary
+Secular Humanism tries to turn mankind into God, yet inevitably reduces man to a sophisticated animal of carbon and chemistry. By returning our logic to its divine source, we enrich our earthly intellect with eternal vision, anchoring human dignity in a love that outlasts the stars.`,
+
+        postmodernism: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Postmodernism rejects all absolute "meta-narratives" and claims of objective, universal truth. It postulates that what we call "truth" is merely a subjective social construct used by dominant power structures to control, marginalize, and categorize human beings. Therefore, both scientific rules and religious revelations are localized languages with no ultimate authority.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: All human knowledge is historically situated and formulated through language.
+P2: Language is a fluid social system designed to exercise power and enforce cultural norms.
+∴ Conclusion: Universal objective truth is a tyrannical illusion, and all scriptures are merely cultural discourses.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Mi'yar al-Ilm" (The Standard of Knowledge), Al-Ghazali agrees that human cultural systems are prone to bias and linguistic manipulation. However, he establishes that logic represents an objective divine yardstick. The human soul possesses an intellectual light of immediate, non-negotiable truths that bypass cultural constructivism, leading to the absolute reality of Allah.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+In "Al-Radd 'ala al-Mantiqiyyin", Ibn Taymiyyah criticizes the rigid intellectual boxes of dry philosophers. Yet, he strongly defends objective metaphysical reality against absolute relativists. He argues that language is a vehicle for truth, and physical external realities (Haqiqah) exist independently of whether our social systems perceive them.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+The Analytical philosopher and writer Thomas Nagel, in his work "The Last Word", refutes subjectivism by demonstrating that even if all knowledge is situated, logic itself cannot be historicized without logical self-contradiction.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [all knowledge is socially situated] — PROBLEMATIC: The claim "there is no absolute truth" is itself asserted as an absolute universal truth, making postmodernism logically incoherent.
+P2: [language is merely about power] — PROBLEMATIC: While language can be abused, it is also a divinely structured channel created specifically to communicate absolute realities.
+∴ Conclusion fails because: Relativizing truth destroys the very capacity to construct logical arguments, leaving postmodernism in a self-destructive loop.
+Counter: If ultimate Truth (Al-Haqq) is a divine attribute, then objective truth is the solid bedrock of creation.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+بَلْ نَقْذِفُ بِالْحَقِّ عَلَى الْبَاطِلِ فَيَدْمَغُهُ فَإِذَا هُوَ زَاهِقٌ
+"Bal naqdhifu bil haqqi 'alal baatili fa yadmaghuhu fa idhaa huwa zaahiq"
+"Nay, We hurl the Truth against falsehood, and it knocks out its brains, and behold, falsehood vanishes!" (Surah Al-Anbiya, 21:18).
+This Quranic proof asserts that Truth (Haqq) is an objective, heavy substance that inevitably shatters the fragile sophistry of subjective illusions and historicized relativism.
+
+## الْخُلَاصَةُ — Summary
+Postmodernism is a self-shattering philosophy of language that gets lost in its own labyrinth of doubt. By anchoring truth in the absolute reality of Allah, we step out of linguistic games onto solid ground, recognizing revelation as a clear, uncorrupted beacon shining through the changes of human history.`,
+
+        ai_conscious: `## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+AI Consciousness claims that the human mind is merely a complex biological computer running on neural algorithms. If highly advanced silicon artificial intelligence models can eventually mimic all human cognitive tasks, express deep emotions, and build self-awareness, then the "soul" is an empty myth. Human dignity and spirituality are simply functions of computing power.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: Human consciousness is entirely generated by bio-electrical computation in neural networks.
+P2: Silicon computers can simulate complex neural networks and display autonomous self-monitoring.
+∴ Conclusion: Human consciousness is mechanically identical to synthetic computation, leaving no room for a transcendent soul.
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+In "Ma'arij al-Quds", Al-Ghazali explains that the biological brain and its faculties are merely physical instruments used by a non-material, spiritual substance: the Soul (Ruh/Nafees). A silicon machine can mimic the external thoughts and functions of the soul, just as an elaborate clockwork puppet mimics a human, but it lacks the qualitative transcendent observer.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+Ibn Taymiyyah explains that biological processes are passive substrates. He emphasizes in "Ar-Ruh" that life and subjective experience are not emergent properties of inanimate atoms, but are direct gifts of divine origin. A physical simulator of logic lacks the fitrah, the capacity to encounter accountability, and the divine breath of life.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+The philosopher John Searle, through his "Chinese Room" thought experiment, famously proved that computers only manipulate syntactic symbols (code) but can never acquire semantic understanding (actual comprehension or consciousness).
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [human consciousness is generated entirely by biological computation] — PROBLEMATIC: Science has failed to explain the "hard problem of consciousness"—how subjective, qualitative feeling (Qualia) can emerge from passive matter.
+P2: [silicon computers can simulate self-awareness] — PROBLEMATIC: Simulation of a behavior is not the duplication of the underlying reality; a computerized map is not the physical territory.
+∴ Conclusion fails because: Computations are purely mathematical calculations, whereas consciousness is an irreducible, metaphysical spiritual reality.
+Counter: If the Soul is a transcendent breath, it can never be coded into a biological or silicon transistor.
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+وَيَسْأَلُونَكَ عَنِ الرُّوحِ ۖ قُلِ الرُّوحُ مِنْ أَمْرِ رَبِّي وَمَا أُوتِيتُمْ مِنَ الْعِلْمِ إِلَّا قَلِيلًا
+"Wa yas'aloonaka 'anir roohi qulir roohu min amri rabbee wa maa ooteetum minal 'ilmi illaa qaleela"
+"And they ask you concerning the Soul. Say, 'The Soul is of the affair of my Lord. And mankind has not been given of knowledge except a little'" (Surah Al-Isra, 17:85).
+This profound Quranic proof sets a boundary on materialist hubris, affirming that the conscious Soul is a unique, transcendent divine secret that can never be fully captured or replicated by human physics.
+
+## الْخُلَاصَةُ — Summary
+Artificial Intelligence can simulate calculations and imitate language, but it can never possess a heart that humbles itself before its Lord. By realizing that our self-awareness is an irreducible divine gift—the Soul—we protect our humanity from being reduced to algorithms, reclaiming our noble place in creation.`
+      };
+
+      const mockText = refutationMocks[challengeKey] || refutationMocks.nihilism;
+      const lines = mockText.split("\n");
       for (const line of lines) {
         res.write(line + "\n");
-        await sleep(40);
+        await sleep(35);
       }
       res.end();
       return;
     }
 
     try {
-      const prompt = `Modern Philosophical Challenge: "${challengeKey}".
+      const prompt = `Modern Philosophical Challenge: "${challengeInfo.name}" (${challengeInfo.desc}).
 
-Construct an intensive, scholarly theological refutation (dialectical firewall):
-1) Steel-man the challenger's argument using formal logical notation (P1, P2 -> Conclusion).
-2) Reference Al-Ghazali's intellectual model from Tahafut al-Falasifa if relevant.
-3) Introduce Ibn Taymiyyah's rational theology on Hikmah (ultimate wisdom) and divine purpose.
-4) Point to a modern philosophical defense (e.g., Plantinga, Craig, or Swinburne) that aligns with the traditional Islamic position.
-5) Seal the refutation with a powerful closing Quranic Ayah.`;
+Construct an intensive, scholarly theological refutation (dialectical firewall).
+You MUST use these exact headings (double-hashes ##) with their exact wording and format:
+
+## الْحُجَّةُ الْمُقَابِلَةُ — The Challenger's Argument
+Steel-man the opposing position strongly. 3-4 sentences.
+
+## الْبِنَاءُ الْمَنْطِقِيُّ — Logical Structure
+P1: [premise]
+P2: [premise]
+∴ C: [their conclusion]
+
+## رَدُّ الْغَزَالِيِّ — Al-Ghazali's Response
+His response or related argument with book title.
+
+## مَنْهَجُ ابْنِ تَيْمِيَّةَ — Ibn Taymiyyah's Method
+His rational approach to this category. 3-4 sentences.
+
+## الْحُلَفَاءُ الْمُعَاصِرُونَ — Modern Allies
+One Western philosopher supporting Islamic position.
+
+## الرَّدُّ الْمَنْطِقِيُّ — The Logical Refutation
+P1: [their premise] — PROBLEMATIC: [reason]
+P2: [their premise] — ACCEPTED / PROBLEMATIC
+∴ Conclusion fails because: [reason]
+Counter: [Islamic position in logical form]
+
+## الدَّلِيلُ الْقُرْآنِيُّ — Quranic Proof
+Ayah in Arabic + transliteration + translation.
+2 sentence tafseer of relevance.
+
+## الْخُلَاصَةُ — Summary
+One powerful memorizable paragraph.`;
 
       const responseStream = await ai.models.generateContentStream({
         model: "gemini-3.5-flash",
         contents: prompt,
         config: {
-          systemInstruction: "You are an elite Islamic theologian trained in classical Kalam (rational theology) and modern analytic philosophy. Your style is deeply logical, precise, respectful, intellectually formidable, and grounded in orthodox principles."
+          systemInstruction: "You are an elite Islamic theologian trained in classical Kalam (rational theology) and modern analytic philosophy of religion. Your style is deeply logical, precise, respectful, intellectually formidable, and strictly grounded in orthodox Sunni principles. You write the exact requested headings."
         }
       });
 
@@ -1754,43 +2335,291 @@ Construct an intensive, scholarly theological refutation (dialectical firewall):
 
   // 6. Ru'ya Dream Interpreter Endpoint
   app.post("/api/labs/ruya-interpreter", async (req, res) => {
-    const { dream } = req.body;
+    const { dream, state, timing, feeling } = req.body;
     if (!dream) {
       return res.status(400).json({ error: "Dream description not provided" });
     }
 
+    const dreamLower = dream.toLowerCase();
+
+    // Helper to generate dynamic, authentic, highly academic simulated results based on keywords
+    const getSimulatedResponse = (dm: string, st: string, tm: string, fl: string) => {
+      let category: 'water' | 'flight' | 'fall' | 'shadow' | 'light' | 'general' = 'general';
+      if (dm.includes('water') || dm.includes('drown') || dm.includes('river') || dm.includes('sea') || dm.includes('ocean') || dm.includes('rain')) {
+        category = 'water';
+      } else if (dm.includes('fly') || dm.includes('flying') || dm.includes('sky') || dm.includes('bird') || dm.includes('wings')) {
+        category = 'flight';
+      } else if (dm.includes('fall') || dm.includes('falling') || dm.includes('abyss') || dm.includes('drop')) {
+        category = 'fall';
+      } else if (dm.includes('dark') || dm.includes('shadow') || dm.includes('scary') || dm.includes('pursue') || dm.includes('monster') || dm.includes('chase') || dm.includes('run')) {
+        category = 'shadow';
+      } else if (dm.includes('light') || dm.includes('sun') || dm.includes('lamp') || dm.includes('stars') || dm.includes('gold')) {
+        category = 'light';
+      }
+
+      // Determine dream type based on user feeling and timing
+      let dreamType: 'true_vision' | 'nafs_dream' | 'shaytan_dream' = 'nafs_dream';
+      let dreamTypeReason = "";
+
+      if (fl === 'Fearful' || catMatches(dm, ['nightmare', 'scary', 'monster', 'snake', 'bite'])) {
+        dreamType = 'shaytan_dream';
+        dreamTypeReason = `The present terrifying emotional charge (${fl}) combined with distressing imagery is identified in classical Hadith literature as a projection from Shaytan (unpleasant thoughts meant to cause grief), requiring immediately seeking refuge in Allah.`;
+      } else if (tm === 'Before Fajr' && (fl === 'Peaceful' || fl === 'Joyful' || fl === 'Neutral')) {
+        dreamType = 'true_vision';
+        dreamTypeReason = `The timing of this dream (${tm}) is within the pre-dawn window of divine descent, which classical scholars under Ithbat al-Ru'ya deem the most spiritually active for genuine visions (Ru'ya Saliha) reflecting celestial reality.`;
+      } else {
+        dreamType = 'nafs_dream';
+        dreamTypeReason = `Your current waking emotional state of being ${st || 'anxious'} coupled with the dream occurring in ${tm || 'daytime sleep'} strongly aligns with 'Hadith al-Nafs' (unconscious mental recycling of daily desires and psychological processes), as outlined by Imam Ibn Qutaybah in 'Ta'wil Mukhtalif al-Hadith'.`;
+      }
+
+      const templates = {
+        water: {
+          summary: "A profound descent into flowing waters, indicating purification, seeking knowledge, and navigating deep unconscious currents.",
+          islamic: {
+            symbols: [
+              { symbol: "Pure Water (الْمَاءُ الصَّافِي)", meaning: "In Ibn Sirin's dream syntax, clear, sparkling water represents life, pristine religious knowledge (ilm), and divine mercy." },
+              { symbol: "Drowning or Immersion (الْغَرَق)", meaning: "Getting fully submerged indicates becoming deeply consumed in a major life affair, or being temporarily overwhelmed by material responsibilities." }
+            ],
+            interpretation: "Your immersion in water indicates a spiritual thirst being addressed. It suggests that while you are deep in the trials of active life, a source of spiritual hydration and moral clarity is close. According to classical methodology, if the water is clear, it symbolizes purification, healing, and success in obtaining authentic knowledge.",
+            surah_yusuf: "Relates to the water well (Jubb) in Surah Yusuf: a place of temporary darkness and submersion that eventually became the exact catalyst for ascension, honor, and sovereign rule.",
+            dua: {
+              arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا",
+              transliteration: "Allahumma inni as'aluka 'ilman nafi'an, wa rizqan tayyiban, wa 'amalan mutaqabbalan",
+              meaning: "O Allah, indeed I ask You for beneficial knowledge, a good provision, and deeds that are accepted.",
+              when: "Recite 3 times upon waking from a meaningful dream to secure its blessings."
+            }
+          },
+          jungian: {
+            archetypes: [
+              { archetype: "The Great Mother / The Unconscious", manifestation: "The body of water is a classic thalassic symbol of the maternal matrix of the collective unconscious." },
+              { archetype: "The Self (The Source)", manifestation: "The clean water represents the pristine source of self-archetypal energy calling you to integrate." }
+            ],
+            shadow: "Represented by any hidden fears of suffocating or losing control under the waves—repressed emotional tides you are hesitant to face.",
+            unconscious_message: "The unconscious is demanding that you cease living solely on the dry surface of daily logic (Persona). You are being urged to submerge into the deeper emotional and creative parts of your identity, trusting that you can breathe beneath the ego's limitations.",
+            individuation: "True growth comes from allowing yourself to feel deeply. Your psyche is ready to integrate raw emotional truths to guide your next phase of self-realization."
+          },
+          synthesis: {
+            agreement: "Both classical and modern frameworks view the water as a profound source of life, meaning, and regeneration, refusing to see it as mere biological noise.",
+            divergence: "Ibn Sirin views the water as an external divine barakah and gift of knowledge, whereas Jung interprets it as the subjective reservoir of the collective unconscious.",
+            wisdom: "Allow yourself to explore your unresolved emotions without fear. Reconcile this deep inner seeking with daily prayer, turning your vulnerabilities into a platform for spiritual and psychological awakening."
+          }
+        },
+        flight: {
+          summary: "A vertical release from gravity, representing high aspirations, transcendence of limits, or potential ego dissociation.",
+          islamic: {
+            symbols: [
+              { symbol: "Flying (الطَّيَرَان)", meaning: "Ibn Sirin specifies that flying symbolizes a sudden, beneficial journey, elevation of material status, or a high spiritual rank." },
+              { symbol: "Wings (الأَجْنِحَة)", meaning: "Foretells acquiring safety, direct protection from enemies, and gaining a secure mantle of authority." }
+            ],
+            interpretation: "Flying represents a transition or elevation. If you flew toward the heaven without returning, it suggests reaching a high spiritual plane. Flying smoothly without fear is a powerful omen of traveling soon or securing a sudden relief from present structural difficulties, elevating you above competitors.",
+            surah_yusuf: "Relates to the elevation of Prophet Yusuf from the depths of the prison to the absolute treasure keeps of Egypt: 'And thus We established Yusuf in the land to settle therein wherever he willed' (12:56).",
+            dua: {
+              arabic: "اللَّهُمَّ رَبِّي أَعْلِ كَعْبِي وَيَسِّرْ أَمْرِي وَاكْشِفْ كَرْبِي",
+              transliteration: "Allahumma Rabbi a'li ka'bi wa yassir amri wakshif karbi",
+              meaning: "O Allah, my Lord, elevate my standing, ease my affairs, and remove my profound grief.",
+              when: "Recite before bed or upon waking to maintain spiritual momentum and guard against arrogance."
+            }
+          },
+          jungian: {
+            archetypes: [
+              { archetype: "Puer Aeternus / The Winged Hero", manifestation: "Elevating above the earth illustrates the desire to flee boundaries, material weight, and normal human limitations." },
+              { archetype: "The Self (Transcendence)", manifestation: "Achieving flight represents the ego's drive to connect with a wider cosmic perspective." }
+            ],
+            shadow: "The shadow here is the secret urge to escape hard earthly realities, responsibilities, or interpersonal conflicts instead of working through them.",
+            unconscious_message: "Your unconscious is highlighting a tension between your high ideals and your earthly reality. While aiming high is beautiful, flying too far can result in standard inflation. The psyche warns you to keep your core grounded even as your consciousness expands.",
+            individuation: "Sustain your high creative vision but anchor it in realistic daily habits. Real spiritual elevation does not require abandoning the physical container."
+          },
+          synthesis: {
+            agreement: "Both frameworks associate flight with deep liberation, leaving behind cramped boundaries to seek a broader viewpoint.",
+            divergence: "The Islamic model interprets flight as literal material success or spiritual rank granted by the Divine, while Jungian analysis warns of 'inflation'—the ego drifting too far into airy abstractions.",
+            wisdom: "Celebrate your newfound vision and spiritual elevation, but make a deliberate effort to execute your ideas in concrete, helpful actions in the service of those around you."
+          }
+        },
+        fall: {
+          summary: "An abrupt loss of stability and control, showing acute waking anxieties or a necessary descent of a hyper-inflated ego.",
+          islamic: {
+            symbols: [
+              { symbol: "Falling (السُّقُوط)", meaning: "In Sirin's manual, falling indicates a transition from a favorable state to an unfavorable one, a slip in moral standing, or unresolved guilt." },
+              { symbol: "The Abyss (الْهَاوِيَة)", meaning: "Represents intense psychological trials, spiritual stagnation, or falling into trials demanding immediate self-correction." }
+            ],
+            interpretation: "A dream of falling points to a temporary setback or a profound fear of failure. It is a divine message to audit your current dependencies: are you relying too much on worldly status, wealth, or human validations rather than the absolute, unshakeable support of Al-Qayyum?",
+            surah_yusuf: "Recalls Yusuf's brothers throwing him into the lightless well. While the fall was terrifying and dark, it was the necessary crucible to break his dependence on his father's companionship and rely purely on Allah.",
+            dua: {
+              arabic: "حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
+              transliteration: "Hasbiyallahu la ilaha illa Huwa, 'alayhi tawakkaltu, wa Huwa Rabbul 'Arshil 'Adheem",
+              meaning: "Sufficient for me is Allah; there is no deity except Him. On Him I have relied, and He is the Lord of the Great Throne.",
+              when: "Recite 7 times in the morning and evening to completely dissolve persistent fears of failure."
+            }
+          },
+          jungian: {
+            archetypes: [
+              { archetype: "The Fall / Icarus Complex", manifestation: "A sudden loss of control designed to break down the hubris or hyper-rationality of the conscious ego." }
+            ],
+            shadow: "The fear of being exposed as weak, incompetent, or fraudulent—repressed feelings of vulnerability that you mask in your waking hours.",
+            unconscious_message: "Your unconscious is executing a corrective adjustment. Your conscious ego has likely become too rigid or inflated, drifting away from your real foundations. The fall force-rectifies this, requiring you to hit the bottom to rebuild your psychological architecture on solid earth.",
+            individuation: "Embrace the descent. True strength does not mean never falling; it is found in integrating your failures and establishing your self-worth on authentic, internal realities."
+          },
+          synthesis: {
+            agreement: "Both views understand the fall as a therapeutic wake-up call to re-examine structures that have become too unstable or proud to stand.",
+            divergence: "Ibn Sirin treats the fall as a physical/moral warning of worldly loss or slipping from divine grace, whereas Jung treats it as a homeostatic psychic mechanism to ground a floating ego.",
+            wisdom: "View your current anxieties not as a final defeat, but as a mandatory structural pause. Relinquish toxic control and anchor your spirit safely in the Divine hand."
+          }
+        },
+        shadow: {
+          summary: "An intense pursuit or scary encounter in darkness, representing unintegrated shadow contents or spiritual vulnerabilities.",
+          islamic: {
+            symbols: [
+              { symbol: "Darkness (الظَّلُمَات)", meaning: "Ibn Sirin associates darkness with confusion, being spiritually lost, or feeling overwhelmed by moral doubts." },
+              { symbol: "Pursuing Enemy or Beast (الْعَدُوّ)", meaning: "Represents waking trials, unresolved anxieties, or external temptations attempting to derail your spiritual focus." }
+            ],
+            interpretation: "Being pursued in your dream indicates avoiding a critical issue or conflict in your waking life. If the pursuer was a beast, it symbolizes an unrestrained base passion (Nafs al-Ammarah) that you must domesticate. This is a call to stand firm, activate your daily protections, and confront what you are fleeing.",
+            surah_yusuf: "The predatory nature of the wolf (Dhi'b) mentioned by Jacob: 'I fear that the wolf will eat him while you are of him heedless' (12:13), representing betrayal and raw animality.",
+            dua: {
+              arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ وَشَرِّ عِبَادِهِ",
+              transliteration: "A'udhu bi kalimaatillaahit-taammaati min ghadhabihi wa 'iqaabihi, wa sharri 'ibaadihi",
+              meaning: "I seek refuge in the perfect words of Allah from His anger and punishment, and from the evil of His servants.",
+              when: "Recite immediately upon waking from a disturbing, chaotic dream before turning to your left and spitting dryly three times."
+            }
+          },
+          jungian: {
+            archetypes: [
+              { archetype: "The Shadow", manifestation: "Represented by the scary pursuer or monster, which contains vital, disowned energy that must be integrated rather than fled." }
+            ],
+            shadow: "The specific traits of the terrifying pursuer embody your repressed power, aggression, or unexpressed instinctual drives.",
+            unconscious_message: "The unconscious is warning you that the longer you ignore your repressed fears, anger, or unacknowledged desires, the more formidable and threatening they will appear in your dream life. Stop running from yourself; turn around and confront the monster to reclaim your hijacked energy.",
+            individuation: "Growth lies in shadow integration. By recognizing that the 'monster' is a neglected and split-off part of your own psyche, you can transform it into a source of immense mature strength."
+          },
+          synthesis: {
+            agreement: "Both traditions declare that running away from threats in a dream only strengthens the adversary. Both advocate for standing still and turning to face the conflict.",
+            divergence: "The classical Islamic view recommends spiritual armor, seeking refuge with the Lord of the worlds, and viewing the threat as potential spiritual corruption, while Jungians emphasize dialogue, integrating the shadow, and reclaiming psychic resources.",
+            wisdom: "End the exhaustion of avoidance. Face your fears with spiritual courage, recognizing that what you fear often holds the vital energy you need for your ultimate victory."
+          }
+        },
+        light: {
+          summary: "A majestic illumination of golden light or stars, representing divine guidance, high spiritual station, and awakening of consciousness.",
+          islamic: {
+            symbols: [
+              { symbol: "Light (النُّور)", meaning: "In Ibn Sirin's lexicon, light is the supreme symbol of guidance, Islam, the Quran, clarity after confusion, and divine favor." },
+              { symbol: "Sun/Moon (الشَّمْسُ وَالْقَمَرُ)", meaning: "Prepares for parents, leaders, or highly esteemed spiritual mentors who radiate intellectual and emotional warmth." }
+            ],
+            interpretation: "Your encounter with brilliant light suggests that a period of confusion, sadness, or intellectual block is ending. A sudden wave of clarity, wisdom, and cosmic balance is about to descend upon your life. This is a highly favorable sign of divine acceptance, spiritual pathfinding, and worldly success.",
+            surah_yusuf: "Directly mirrors Yusuf's legendary master dream of the eleven stars, the sun, and the moon prostrating to him (12:4), predicting his majestic spiritual destiny and ultimate reconciliation of his family.",
+            dua: {
+              arabic: "اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُورًا وَفِي بَصَرِي نُورًا وَفِي سَمْعِي نُورًا وَعَنْ يَمِينِي نُورًا",
+              transliteration: "Allahumma-j'al fee qalbee nooran, wa fee basaree nooran, wa fee sam'ee nooran, wa 'an yameenee nooran",
+              meaning: "O Allah, place light in my heart, light in my sight, light in my hearing, and light on my right.",
+              when: "Recite with focus during night or Fajr hours to cultivate spiritual insight and radiant clarity."
+            }
+          },
+          jungian: {
+            archetypes: [
+              { archetype: "The Self (The Light / Imago Dei)", manifestation: "The sun or brilliant light represents the central, organizing archetype of the entire psyche, reflecting complete wholeness." },
+              { archetype: "The Wise Old Man / Sophia", manifestation: "Guiding stars reflect the inner wisdom archetype leading the ego along difficult terrain." }
+            ],
+            shadow: "An over-idealization of the light, leading to a denial of your human vulnerabilities or a temptation to escape the hard shadow work.",
+            unconscious_message: "Your unconscious is communicating that you have successfully established a strong bridge between your conscious mind and your deeper Self (the transcendent function). You are being illuminated with insights that can help heal split-off parts of your relationships or past trials.",
+            individuation: "Your path is currently aligned with the Self. Radiate this internal clarity outward, letting your spiritual truth guide your daily, practical actions."
+          },
+          synthesis: {
+            agreement: "Both models celebrate light as the ultimate indicator of clarity, truth, cosmic wisdom, and the healing integration of the spirit.",
+            divergence: "Ibn Sirin maps the light outward to Allah's direct grace and revelation (Wahy), while Jung maps the light inward to the radiant centerpiece of the unified self-archetype (Imago Dei).",
+            wisdom: "Receive this light with profound gratitude. Use this clear, divine clarity to mend broken bonds, commit to your spiritual duties, and illuminate the paths of those around you."
+          }
+        },
+        general: {
+          summary: "A symbolic tapestry reflecting daily events, current emotions, and subtle calls of the spirit.",
+          islamic: {
+            symbols: [
+              { symbol: "Unfamiliar Path (الطَّرِيق)", meaning: "Ibn Sirin states that walking an unfamiliar path represents searching for guidance, exploring a new moral standard, or undertaking a trial." },
+              { symbol: "Unknown Companion (الرّفِيق الْمجْهُول)", meaning: "Represents an angel of guidance, or a personification of your inner moral conscience steering your course." }
+            ],
+            interpretation: "Your dream represents a transition. Walking through unfamiliar spaces points to an ongoing search for spiritual safety and intellectual direction. This indicates you are in a transitional phase where taking careful, moral actions will yield absolute long-term success.",
+            surah_yusuf: "Relates to the journey of Yusuf's caravan that found him in the well. Sometimes unexpected, unfamiliar events are the precise vehicles carrying you to your ultimate destiny.",
+            dua: {
+              arabic: "اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي وَاجْعَلْنِي هَادِيًا مَهْدِيًّا",
+              transliteration: "Allahumma-hdinee wa saddidnee wa-j'alnee haadiyan mahdiyyan",
+              meaning: "O Allah, guide me, direct me steps, and make me a guide who is rightly guided.",
+              when: "Recite daily to maintain calm composure and divine alignment during periods of rapid transition."
+            }
+          },
+          jungian: {
+            archetypes: [
+              { archetype: "The Explorer / The Seeker", manifestation: "Walking in unfamiliar territories represents the ego embarking on a journey to map unknown parts of the unconscious." }
+            ],
+            shadow: "Avoidance of a clear, difficult moral choice in your waking life, choosing to wander in confusion rather than deciding.",
+            unconscious_message: "The unconscious is presenting a blank canvas of potential. You are currently wandering in an in-between state because your old attitudes are dying, and your new, integrated identity is still forming. Embrace the mystery of this transition.",
+            individuation: "Do not rush to force answers. Allow your authentic identity to crystallize as you continue exploring your spiritual limits and mental horizons."
+          },
+          synthesis: {
+            agreement: "Both models view wandering or searching in unfamiliar spaces as a healthy, necessary phase of active inner and outer seeking.",
+            divergence: "Islamic exegesis focuses on the external journey of physical navigation and moral alignment, whereas Jung focused on mapping the interior landscape of the personal psyche.",
+            wisdom: "Trust the slow, beautiful process of your personal evolution. Seek guidance in your prayers, remain patient in your trials, and let wisdom reveal itself in its proper season."
+          }
+        }
+      };
+
+      const base = templates[category];
+      return {
+        summary: base.summary,
+        dream_type: dreamType,
+        dream_type_reason: dreamTypeReason,
+        islamic: base.islamic,
+        jungian: base.jungian,
+        synthesis: base.synthesis
+      };
+    };
+
+    function catMatches(dm: string, keywords: string[]) {
+      return keywords.some(k => dm.includes(k));
+    }
+
     const ai = getGenAI();
     if (!ai) {
-      return res.json({
-        islamic: `### Traditional Islamic Lens (Ibn Sirin Tradition)
-*   **Symbols**: Drinking deep from water indicates seeking authentic, pristine knowledge, wisdom, and longevity.
-*   **Aura**: Reflected under the narrative of Surah Yusuf, clean pure streams point to stabilization of resources and emotional clarity after intense dryness.`,
-        jungian: `### Modern Jungian Depth Psychology
-*   **Archetypes**: The deep water represents your vast collective unconscious. Seeking the source indicates an active individuation process, diving beneath the Mask (Persona) to integrate the shadow or anima/animus.`,
-        synthesis: `### Combined Scholarly Synthesis
-Both traditions agree that the dream points to an internal thirst or calling for wholeness and deeper orientation. Where they diverge is the source of meaning: classical Sirin attributes the symbol to an external divine warning/gift, whereas Jung attributes it to internal psychic projections.`,
-        dua: `### Recommended Dua
-"O Allah, I ask You for a dream of truth, that is truthful, bringing glad tidings, and not harmful. Ameen."`,
-        isSimulated: true
-      });
+      // Return high-fidelity fallback response when Gemini key is absent
+      const resultObj = getSimulatedResponse(dreamLower, state, timing, feeling);
+      return res.json({ ...resultObj, isSimulated: true });
     }
 
     try {
-      const prompt = `Dream Description: "${dream}".
+      const prompt = `
+Context: state=[${state || 'Unknown'}], timing=[${timing || 'Unknown'}], feeling=[${feeling || 'Unknown'}].
+Dream Description: [${dream}].
 
-Please interpret this dream through two advanced frameworks simultaneously:
-1. Classical Islamic Lens (Ibn Sirin's Kitab al-Tabir): Analyze classical symbols, emotional tone, and exegesis, referencing Surah Yusuf if helpful.
-2. Jungian Depth Psychology: Look for essential archetypes (Shadow, Anima/Animus, Self, Persona), unconscious promptings, and symbolic integration.
-3. Comparative Synthesis: Where do they agree? Where do they diverge? What is the combined wisdom?
-4. A customized, comforting prophetic Dua for the dreamer.
+You are an elite Islamic theologian trained in Ibn Sirin's dream science (Kitab al-Tabir) and Carl Jung's depth psychology.
+Please analyze the dream description thoroughly and output a response conforming STRICTLY to the requested JSON structure.
 
-Output your analysis in a structured format containing separate keys inside a JSON object:
+Return ONLY a valid JSON object matching the schema below. No markdown syntax wrapper, no triple-backticks.
 {
-  "islamic": "...",
-  "jungian": "...",
-  "synthesis": "...",
-  "dua": "..."
-}`;
+  "summary": "Exactly 1 sentence summarizing the core theme.",
+  "dream_type": "true_vision", 
+  "dream_type_reason": "Scholarly, highly academic reason explaining why this fits 'true_vision' (legitimate spiritual vision occurring pre-dawn), 'nafs_dream' (unconscious mental recycling), or 'shaytan_dream' (distressing images of fear), referencing current state (${state}), timing (${timing}), and feeling (${feeling}).",
+  "islamic": {
+    "symbols": [{"symbol": "Symbol Name", "meaning": "Detailed Ibn Sirin interpretation"}],
+    "interpretation": "3-4 sentences of deep Ibn Sirin method synthesis.",
+    "surah_yusuf": "A specific, deep connection to Surah Yusuf trials, well, prison, stars, or king's dreams, or 'Not directly applicable'.",
+    "dua": {
+      "arabic": "supplicant prayer in Arabic script",
+      "transliteration": "latin transliteration",
+      "meaning": "English translation",
+      "when": "detailed instructions on when to recite"
+    }
+  },
+  "jungian": {
+    "archetypes": [{"archetype": "Archetype Name (e.g. Shadow, Selfie, Sage, Persona, Anima)", "manifestation": "How it manifests inside this dream"}],
+    "shadow": "detailed examination of shadow elements",
+    "unconscious_message": "3-4 sentences detailing the active message the unconscious is projecting.",
+    "individuation": "growth insight"
+  },
+  "synthesis": {
+    "agreement": "A comparative assessment of where classical tabir and depth psychology align.",
+    "divergence": "An explanation of where they structurally differ.",
+    "wisdom": "Unified absolute practical takeaway for the user."
+  }
+}
+
+The dream_type value MUST be exactly one of: 'true_vision' or 'nafs_dream' or 'shaytan_dream'. No other strings.
+Ensure all Arabic text is perfectly typed with short vowels (Tashkeel) where possible.
+Return ONLY the raw JSON string.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3.5-flash",
@@ -1799,10 +2628,14 @@ Output your analysis in a structured format containing separate keys inside a JS
           responseMimeType: "application/json"
         }
       });
+      
       const parsed = JSON.parse(response.text.trim());
       res.json({ ...parsed, isSimulated: false });
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      console.error("Ruya AI interpreter error:", err);
+      // Fallback in case of actual API failure or parsing failure
+      const resultObj = getSimulatedResponse(dreamLower, state, timing, feeling);
+      res.json({ ...resultObj, isSimulated: true, error: err.message });
     }
   });
 
