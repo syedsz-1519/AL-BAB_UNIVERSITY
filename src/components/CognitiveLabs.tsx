@@ -9,9 +9,10 @@ import {
 interface CognitiveLabsProps {
   currentTheme: 'parchment' | 'space';
   onNavigateToPortal?: () => void;
+  onNavigateToSection?: (section: string) => void;
 }
 
-export default function CognitiveLabs({ currentTheme, onNavigateToPortal }: CognitiveLabsProps) {
+export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavigateToSection }: CognitiveLabsProps) {
   const isSpace = currentTheme === 'space';
   const [activeLab, setActiveLab] = useState<string | null>(null);
   
@@ -683,6 +684,10 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal }: Cogn
                     id={`lab-card-${lab.id}`}
                     key={lab.id}
                     onClick={() => {
+                      if (lab.id === 'nafs' && onNavigateToSection) {
+                        onNavigateToSection('nafs-assessment');
+                        return;
+                      }
                       setActiveLab(lab.id);
                       window.scrollTo({ top: document.getElementById('cognitive-labs')?.offsetTop || 300, behavior: 'smooth' });
                     }}

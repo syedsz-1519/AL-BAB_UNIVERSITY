@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { COURSES } from '../data';
 import D3ProgressChart from './D3ProgressChart';
+import TazkiyahAnalytics from './TazkiyahAnalytics';
 
 interface DashboardPortalProps {
   currentTheme: 'parchment' | 'space';
@@ -1487,6 +1488,9 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                     />
                   </div>
                 </div>
+
+                {/* TAZKIYAH AND EMOTIONAL REGULATION TRENDS CHART MODULE */}
+                <TazkiyahAnalytics currentTheme={currentTheme} />
 
                 {/* SCHOLAR REFLECTION AND CRITIQUE SUBMISSION FORMS */}
                 <div className={`p-6 sm:p-8 rounded border shadow-sm

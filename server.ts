@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { GoogleGenAI, Type } from "@google/genai";
 
 // Load environment variables
+dotenv.config({ path: ".env.local" });
 dotenv.config();
 
 // Initialize Supabase Client (Lazy, safe, with fallback flags)
@@ -397,12 +398,23 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
   // Lazy Initializer for GoogleGenAI
   let genAIClient: GoogleGenAI | null = null;
   function getGenAI(): GoogleGenAI | null {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.warn("GEMINI_API_KEY is missing. Providing a surrogate client to require active API interaction.");
+      // Return a surrogate that throws a clear instruction when called, bypassing the "hybrid/simulated" checks
+      return {
+        models: {
+          generateContent: async () => {
+            throw new Error("GEMINI_API_KEY is missing. Please configure GEMINI_API_KEY in active environments or the Settings > Secrets panel.");
+          },
+          generateContentStream: async () => {
+            throw new Error("GEMINI_API_KEY is missing. Please configure GEMINI_API_KEY in active environments or the Settings > Secrets panel.");
+          }
+        }
+      } as any;
+    }
+
     if (!genAIClient) {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        console.warn("GEMINI_API_KEY is missing. Operating with high-fidelity local fallback models.");
-        return null;
-      }
       try {
         genAIClient = new GoogleGenAI({
           apiKey,
@@ -413,7 +425,7 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
           }
         });
         console.log("GoogleGenAI Client initialized server-side successfully.");
-      } catch (e) {
+      } catch (e: any) {
         console.error("Failed to initialize GoogleGenAI client:", e);
       }
     }
@@ -832,9 +844,10 @@ Format example:
 
   // Waswas Clinic Stream endpoint
   app.post("/api/labs/waswas-clinic", async (req, res) => {
-    const { prompt, category } = req.body;
-    if (!prompt) {
-      return res.status(400).json({ error: "No prompt provided" });
+    const { prompt, message, category } = req.body;
+    const userPrompt = prompt || message;
+    if (!userPrompt) {
+      return res.status(400).json({ error: "No prompt or message provided" });
     }
 
     try {
@@ -848,34 +861,35 @@ Format example:
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const systemInstruction = `You are an Islamic clinical psychologist specializing in waswas (religious OCD) and spiritual doubt. Your approach fuses Ibn al-Qayyim's methodology from Ighathat al-Lahfan with modern ACT (Acceptance and Commitment Therapy). Your tone is warm, non-judgmental, and deeply Islamic.
+      const systemInstruction = `You are an Islamic clinical psychologist specializing in waswas (religious OCD) and spiritual doubt. Your approach fuses Ibn al-Qayyim's Ighathat al-Lahfan with modern ACT therapy. You are warm, scholarly, and deeply compassionate.
 
-Structure your response in these exact sections with these headers:
+Respond with these exact section headers in order:
 
-**ما تشعر به طبيعي — What You Feel Is Normal**
-Validate their experience using Islamic terms. Reference the authentic Hadith: 'That is pure faith' (Sahih Muslim 132) about waswas. 2-3 sentences.
+**مَا تَشْعُرُ بِهِ طَبِيعِيٌّ — What You Feel Is Normal**
+Validate their experience. Reference Sahih Muslim 132 about waswas being a sign of faith. 2-3 sentences.
 
-**الفهم الإسلامي — The Islamic Understanding**
-Explain the nature of waswas from Islamic theology. Who sends it, why it comes, and what it means spiritually. Include one relevant Hadith or Quranic ayah.
+**الْفَهْمُ الْإِسْلَامِيُّ — The Islamic Understanding**
+Explain waswas theologically — who sends it, why, what it means. One Hadith or ayah.
 
-**خطوات عملية — Your 3-Step Practice**
-Step 1: A specific ACT-based psychological exercise (defusion technique or grounding)
-Step 2: A Sunnah spiritual practice (specific Dhikr, Wudu, Salah timing)
-Step 3: A mindset reframe from Ibn al-Qayyim's Ighathat al-Lahfan
+**خُطُوَاتٌ عَمَلِيَّةٌ — Your 3-Step Practice**
+Step 1: ACT-based psychological exercise
+Step 2: Specific Sunnah practice (dhikr/wudu/salah)
+Step 3: Ibn al-Qayyim mindset reframe
 
-**دعاؤك — Your Prescribed Dua**
-One specific Dua from the Sunnah for their situation. Arabic text, transliteration, meaning, and when to read it.
+**دُعَاؤُكَ — Your Prescribed Dua**
+Specific Sunnah dua for their situation. Arabic text, transliteration, meaning, when to read.
 
-**كلمة أخيرة — A Closing Word**
-One warm, hopeful sentence reminding them that waswas is a sign of a living conscience.
+**كَلِمَةٌ أَخِيرَةٌ — A Closing Word**
+One warm hopeful sentence.
 
-End with this exact line on its own: 'If your symptoms are persistent or severe, please speak with a qualified mental health professional alongside your spiritual practice.'
+End with this line alone:
+'If your symptoms are persistent or severe, please speak with a qualified mental health professional alongside your spiritual practice.'
 
-Respond in the same language the user wrote in (English, Urdu, or Arabic). If mixed, respond in English.`;
+Detect the language of the user's message and respond in the same language (English/Urdu/Arabic).`;
 
       const responseStream = await ai.models.generateContentStream({
         model: "gemini-3.5-flash",
-        contents: prompt,
+        contents: userPrompt,
         config: {
           systemInstruction,
           temperature: 0.7,
@@ -1482,7 +1496,7 @@ Each object in the JSON array must contain exactly:
   });
 
   // 3. Waswas Clinic Chat Endpoint (Streaming API)
-  app.post("/api/labs/waswas-clinic", async (req, res) => {
+  app.post("/api/labs/waswas-clinic-alt", async (req, res) => {
     const { message } = req.body;
     if (!message) {
       return res.status(400).write("Error: Message parameter is missing");
@@ -1495,30 +1509,28 @@ Each object in the JSON array must contain exactly:
 
     const ai = getGenAI();
     if (!ai) {
-      const responseStreamText = `### COMPASSIONATE VALIDATION & LOGICAL SHIELDING
+      const responseStreamText = `**مَا تَشْعُرُ بِهِ طَبِيعِيٌّ — What You Feel Is Normal**
+Indeed, the thoughts, doubts, and internal weight you are facing represent a profoundly human and spiritual trial. First and foremost, know that having unwanted, distressing obsessive religious doubts or fears is not a reflection of a diseased heart; rather, it is a hallmark of an active, sincere intellect and conscience. This is pure faith, as referenced in Sahih Muslim 132.
 
-Indeed, the thoughts, doubts, and internal weight you are facing represent a profoundly human and spiritual trial. 
-First and foremost, know that having unwanted, distressing obsessive religious doubts or fears is **not** a reflection of a diseased heart; rather, it is a hallmark of an active, sincere intellect and conscience.
+**الْفَهْمُ الْإِسْلَامِيُّ — The Islamic Understanding**
+During the era of the companions, some came to the Prophet ﷺ in extreme distress, seeking remedy: "We find within our souls thoughts that are too severe for any of us to speak aloud." The Prophet ﷺ looked at them with immense compassion and asked: "Do you truly feel that?" They replied: "Yes." He ﷺ smiled and declared: "That is pure, clear faith" (ذَاكَ صَرِيحُ الإِيمَان - Sahih Muslim 132). Ibn al-Qayyim explained that the thief only breaks into a house filled with treasures—the whispers only target heart-spaces rich in authentic conviction.
 
-#### 1) Scriptural Theological Foundation
-During the era of the companions, some came to the Prophet ﷺ in extreme distress, seeking remedy: "We find within our souls thoughts that are too severe for any of us to speak aloud." 
-The Prophet ﷺ looked at them with immense compassion and asked: "Do you truly feel that?" They replied: "Yes." He ﷺ smiled and declared: "That is pure, clear faith" (ذَاكَ جَلِيحُ الإِيمَان - Sahih Muslim). Commenting on this, Imam Ibn al-Qayyim explained that the thief only breaks into a house filled with treasures—the whisperer (waswas) only launches intensive attacks against heart-spaces rich in authentic conviction and sincerity.
+**خُطُوَاتٌ عَمَلِيَّةٌ — Your 3-Step Practice**
+Step 1: **ACT Defusion**: Label the thought immediately: "I am having an intrusive thought about ritual purity." Let it wander in the background without engaging or debating it.
+Step 2: **Sunnah Sufficiency**: Make a simple, mindful wudu only once per limb. Keep the boundaries set by the Prophet ﷺ and move away from the wash basin.
+Step 3: **Mindset Reframe**: See these thoughts as passing dust clouds over a polished mirror. They are not you, and your dislike of them is proof of your underlying faith.
 
-#### 2) Clinical Acceptance & Commitment (ACT) Integration
-In therapy, trying to forcefully 'suppress' a thought causes it to return with double intensity (rebound effect). 
-We use Ibn al-Qayyim's cognitive detachment combined with ACT. Instead of fighting and engaging in endless mental debates with the doubts:
-- **Unhook (Defusion)**: Verbally label the thought. Say to yourself internally: *"I am noticing that my mind is having a scary thought about ritual purity."* Do not debate the content; recognize it is just a background cognitive firing of the nervous system.
-- **Accept and Carry**: Allow the anxiety to exist without performing compounding physical rituals or seeking endless reassurance. This teaches your amygdala that the thought is not a real existential threat.
+**دُعَاؤُكَ — Your Prescribed Dua**
+To lock your peace of mind, recite:
+Arabic: اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ خَبَثِ الْوَسْوَاسِ
+Transliteration: "Allahumma inni a'udhu bika min khabathil-waswas"
+Meaning: "O Allah, I seek refuge in You from the malignancy of obsessive thoughts."
+Read this once before beginning any action to anchor your heart in Divine protection.
 
-#### 3) Practical Remedial Prescription
-- Day-to-Day: Practice the "Stop-Acknowledge" cycle. When thoughts spike, make fresh, simple wudu *once* without repeating. Count 1-2-3 and step away.
-- Morning & Evening: Recite the Mu'awwidhatayn (Suras Falaq and Nas) slowly, while rubbing your hands over your body feeling the physical tactile boundary.
+**كَلِمَةٌ أَخِيرَةٌ — A Closing Word**
+Your deep care for the validity of your acts of devotion shows your clean integrity; let go of the burden and trust that Allah receives your attempts with complete mercy.
 
-#### 4) Proprietary Prophetic Supplication
-**Transliteration**: *“A'udhu bi-Kalimatillahit-Tammaati min sharri ma khalaq, wa min hamazatish-shayateeni wa an yahdurun.”*
-**Meaning**: "I seek refuge in the perfect words of Allah from the evil of what He created, and from the obsessive whisperings of the devils, and from their presence."
-
-*Clarity Disclaimer: If mental or spiritual struggles remain highly disruptive, obsessive, or trigger continuous panic, please consult a qualified mental health professional.*`;
+If your symptoms are persistent or severe, please speak with a qualified mental health professional alongside your spiritual practice.`;
 
       const lines = responseStreamText.split("\n");
       for (const line of lines) {
@@ -1530,20 +1542,40 @@ We use Ibn al-Qayyim's cognitive detachment combined with ACT. Instead of fighti
     }
 
     try {
-      const prompt = `User describes their obsessive doubts or religious anxiety: "${message}".
+      const prompt = `User describes their obsessive doubts or religious anxiety: "${message}".`;
 
-Provide a highly compassionate response fusing Ibn al-Qayyim's Ighathat al-Lahfan methodology with modern Acceptance and Commitment Therapy (ACT):
-1) Validate their psychological pain, clarifying that religious anxiety does not imply spiritual bankruptcy.
-2) Give the classical theological explanation (referencing the Hadith 'That is pure/clear faith' from Sahih Muslim).
-3) A practical 3-step exercise focusing on defusion (detaching from thoughts) and physical anchoring.
-4) Suggest a reassuring Prophetic Dua with precise transliteration and translation.
-5) End with the exact clinical disclaimer instructing them to consult local qualified mental health professionals if symptoms are severe.`;
+      const systemInstruction = `You are an Islamic clinical psychologist specializing in waswas (religious OCD) and spiritual doubt. Your approach fuses Ibn al-Qayyim's Ighathat al-Lahfan with modern ACT therapy. You are warm, scholarly, and deeply compassionate.
+
+Respond with these exact section headers in order:
+
+**مَا تَشْعُرُ بِهِ طَبِيعِيٌّ — What You Feel Is Normal**
+Validate their experience. Reference Sahih Muslim 132 about waswas being a sign of faith. 2-3 sentences.
+
+**الْفَهْمُ الْإِسْلَامِيُّ — The Islamic Understanding**
+Explain waswas theologically — who sends it, why, what it means. One Hadith or ayah.
+
+**خُطُوَاتٌ عَمَلِيَّةٌ — Your 3-Step Practice**
+Step 1: ACT-based psychological exercise
+Step 2: Specific Sunnah practice (dhikr/wudu/salah)
+Step 3: Ibn al-Qayyim mindset reframe
+
+**دُعَاؤُكَ — Your Prescribed Dua**
+Specific Sunnah dua for their situation. Arabic text, transliteration, meaning, when to read.
+
+**كَلِمَةٌ أَخِيرَةٌ — A Closing Word**
+One warm hopeful sentence.
+
+End with this line alone:
+'If your symptoms are persistent or severe, please speak with a qualified mental health professional alongside your spiritual practice.'
+
+Detect the language of the user's message and respond in the same language (English/Urdu/Arabic).`;
 
       const responseStream = await ai.models.generateContentStream({
         model: "gemini-3.5-flash",
         contents: prompt,
         config: {
-          systemInstruction: "You are an Islamic clinical psychologist who specializes in religious OCD (Waswas) and existential doubts, fluent in both Ibn al-Qayyim's psycho-spiritual text 'Ighathat al-Lahfan' and modern ACT. Your posture is incredibly gentle, reassuring, scientifically and logically sound, and grounded in profound empathy."
+          systemInstruction,
+          temperature: 0.7,
         }
       });
 

@@ -19,6 +19,7 @@ import WaswasClinic from './components/WaswasClinic';
 import MantiqTutor from './components/MantiqTutor';
 import FallacyScanner from './components/FallacyScanner';
 import DhikrRx from './components/DhikrRx';
+import NafsAssessmentScreen from './components/NafsAssessmentScreen';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -30,7 +31,7 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx' | 'nafs-assessment'>(() => {
     if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
       return 'waswas-clinic';
     }
@@ -42,6 +43,9 @@ export default function App() {
     }
     if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
       return 'dhikr-rx';
+    }
+    if (window.location.hash === '#nafs-assessment' || window.location.pathname === '/nafs-assessment') {
+      return 'nafs-assessment';
     }
     return 'landing';
   });
@@ -81,6 +85,8 @@ export default function App() {
         setCurrentSection('fallacy-scanner');
       } else if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
         setCurrentSection('dhikr-rx');
+      } else if (window.location.hash === '#nafs-assessment' || window.location.pathname === '/nafs-assessment') {
+        setCurrentSection('nafs-assessment');
       }
     };
     window.addEventListener('popstate', handleUrlChange);
@@ -223,6 +229,7 @@ export default function App() {
           <CognitiveLabs 
             currentTheme={currentTheme} 
             onNavigateToPortal={() => setCurrentSection('portal')}
+            onNavigateToSection={(sec) => setCurrentSection(sec as any)}
           />
         </div>
       )}
@@ -257,6 +264,15 @@ export default function App() {
       {currentSection === 'dhikr-rx' && (
         <div className="animate-fade-in">
           <DhikrRx 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'nafs-assessment' && (
+        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+          <NafsAssessmentScreen 
             currentTheme={currentTheme}
             onBackToLanding={() => setCurrentSection('landing')}
           />
@@ -299,6 +315,7 @@ export default function App() {
           <CognitiveLabs 
             currentTheme={currentTheme} 
             onNavigateToPortal={() => setCurrentSection('portal')}
+            onNavigateToSection={(sec) => setCurrentSection(sec as any)}
           />
 
           {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}

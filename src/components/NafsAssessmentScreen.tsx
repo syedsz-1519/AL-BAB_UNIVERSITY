@@ -42,167 +42,167 @@ interface JournalEntry extends NafsAnalysisResult {
 const NAFS_QUESTIONS: Question[] = [
   {
     id: 1,
-    topic: "Anger Control (Al-Ghadab)",
-    q: "When triggered by conflict, betrayal, or severe frustration, how do you handle your anger?",
+    topic: "Reaction to Sin (Dhanb)",
+    q: "When you commit a sin, what is your first reaction?",
     options: [
-      { key: "A", text: "I explode immediately, saying or doing hurtful things that I rarely regret later." },
-      { key: "B", text: "I vent or react aggressively, but feel immense remorse and guilt shortly after." },
-      { key: "C", text: "I struggle deeply to keep silent, internally processing the heat with deep difficulty." },
-      { key: "D", text: "By God's grace, my heart remains calm; I easily forgive and seek peaceful resolution." }
+      { key: "A", text: "I feel nothing and move on" },
+      { key: "B", text: "I feel guilt but keep repeating it" },
+      { key: "C", text: "I feel deep remorse and immediately seek forgiveness" },
+      { key: "D", text: "I feel guilty for a while then forget" }
     ]
   },
   {
     id: 2,
-    topic: "Self-Awareness (Basiat al-Nafs)",
-    q: "How aware are you of your own internal motivations, biases development, and hidden hypocrisies?",
+    topic: "Daily Prayers (Salah)",
+    q: "How do you feel about your daily prayers?",
     options: [
-      { key: "A", text: "I rarely look inward; I assume my intentions are always pure and normal." },
-      { key: "B", text: "I want to be aware, but I often avoid self-reflection until a major slip forces me." },
-      { key: "C", text: "I constantly audit my thoughts, often feeling distressed by my hidden inner faults." },
-      { key: "D", text: "I possess deep, tranquil self-witnessing and easily spot and correct egoistic movements." }
+      { key: "A", text: "I rarely pray or find it burdensome" },
+      { key: "B", text: "I pray but often with a distracted heart" },
+      { key: "C", text: "I pray consistently and feel peace in them" },
+      { key: "D", text: "I pray sometimes, guilt when I miss" }
     ]
   },
   {
     id: 3,
-    topic: "Reaction to Sin & Mistakes (Dhanb)",
-    q: "What is your immediate response when you commit a sin, step out of character, or slip ethically?",
+    topic: "Response to Injustice (Muzalamah)",
+    q: "When someone wrongs you, you typically:",
     options: [
-      { key: "A", text: "I rationalize it, brush it off, or ignore it as a minor, normal occurrence." },
-      { key: "B", text: "I feel deeply crushed with self-blame, occasionally feeling unworthy of forgiveness." },
-      { key: "C", text: "I immediately recognize the mistake, seek sincere forgiveness, and correct my path." },
-      { key: "D", text: "My soul is so vigilant that even a minor distraction feels heavy, and I turn to God instantly." }
+      { key: "A", text: "Plan revenge or stay very angry" },
+      { key: "B", text: "Feel anger but eventually let it go" },
+      { key: "C", text: "Forgive quickly, remembering Allah sees all" },
+      { key: "D", text: "Stay upset for days but don't act on it" }
     ]
   },
   {
     id: 4,
-    topic: "Spiritual Consistency (Istiqamah)",
-    q: "How consistent are you with your daily spiritual routines, prayers, and acts of worship?",
+    topic: "Remembrance of Death (Dhikr al-Mawt)",
+    q: "How often do you remember death?",
     options: [
-      { key: "A", text: "Highly erratic; I perform rituals mechanically and find them a heavy burden." },
-      { key: "B", text: "I fluctuate wildly, performing them beautifully on good days and neglecting them on bad days." },
-      { key: "C", text: "I am mostly stable, pulling myself back to consistency even through low phases." },
-      { key: "D", text: "I find absolute rest in worship; consistency is natural and brings me deep serenity." }
+      { key: "A", text: "Almost never — it makes me uncomfortable" },
+      { key: "B", text: "Occasionally when something triggers it" },
+      { key: "C", text: "Regularly — it keeps me focused on the akhirah" },
+      { key: "D", text: "Sometimes, but I push the thought away" }
     ]
   },
   {
     id: 5,
     topic: "Relationship with Quran (Al-Quran)",
-    q: "How does the Qur'an affect your internal state, mental dialogue, or practical routine?",
+    q: "Your relationship with the Quran is:",
     options: [
-      { key: "A", text: "I rarely read or contemplate it; it does not play an active role in my life." },
-      { key: "B", text: "I read it occasionally but struggle to focus, feeling disconnected from its message." },
-      { key: "C", text: "I engage with it regularly and feel moved, though I struggle to implement all it teaches." },
-      { key: "D", text: "It is the companion of my heart; listening or reciting it fills my soul with profound tranquility." }
+      { key: "A", text: "Distant — I rarely open it" },
+      { key: "B", text: "Inconsistent — I go through phases" },
+      { key: "C", text: "Regular — it is part of my daily routine" },
+      { key: "D", text: "I read it sometimes but without understanding" }
     ]
   },
   {
     id: 6,
-    topic: "Envy (Hasad)",
-    q: "When you witness someone else receiving blessings, success, or high honor, how do you feel?",
+    topic: "Social Comparison (Hasad or Ghibtah)",
+    q: "When you see someone better than you, you feel:",
     options: [
-      { key: "A", text: "I feel a bitter sting of irritation and secret resentment, wishing they would lose those blessings." },
-      { key: "B", text: "I feel a flash of envy, but immediately blame myself and try to suppress the negative feeling." },
-      { key: "C", text: "I wish for similar blessings for myself, while hoping they also keep theirs without any harm." },
-      { key: "D", text: "My heart is deeply content; I rejoice in God's bounty to others and pray for their increase." }
+      { key: "A", text: "Envy — I wish they did not have what they have" },
+      { key: "B", text: "A mix of envy and admiration" },
+      { key: "C", text: "Motivation — I make dua for them and myself" },
+      { key: "D", text: "Indifferent mostly" }
     ]
   },
   {
     id: 7,
-    topic: "Gratitude (Shukr)",
-    q: "During times of ease, comfort, and luxury, do you remember who bestowed those blessings on you?",
+    topic: "Anger Control (Al-Ghadab)",
+    q: "How do you handle your anger?",
     options: [
-      { key: "A", text: "I take them for granted and rarely attribute my success to anything but my own hard work." },
-      { key: "B", text: "I feel temporary gratitude but easily slip back into complaining when the minor things go wrong." },
-      { key: "C", text: "I make a conscious effort to thank God daily, striving to use my blessings in positive ways." },
-      { key: "D", text: "Every breath feels like an immense gift; my soul is in a state of perpetual, tranquil gratitude." }
+      { key: "A", text: "I express it fully, often harshly" },
+      { key: "B", text: "I hold it inside until I explode" },
+      { key: "C", text: "I say Audhu Billah and remove myself" },
+      { key: "D", text: "I try to control it but often fail" }
     ]
   },
   {
     id: 8,
-    topic: "Repentance Habits (Tawbah)",
-    q: "What is your pattern of seeking turning back to God in repentance (Tawbah)?",
+    topic: "Solitude Thoughts (Khilwah)",
+    q: "When you are alone, your mind typically goes to:",
     options: [
-      { key: "A", text: "I only repent during major crises or when facing severe external difficulties." },
-      { key: "B", text: "I repent often but feel suspicious of myself, doubting if my repentance was truly accepted." },
-      { key: "C", text: "I make daily repentance an active practice, trusting in the beautiful mercy of the Creator." },
-      { key: "D", text: "My turning back is constant; I live in a state of perpetual return and absolute confidence in divine mercy." }
+      { key: "A", text: "Desires, entertainment, or worldly concerns" },
+      { key: "B", text: "A mix of dunya and occasional spiritual thoughts" },
+      { key: "C", text: "Reflection, dhikr, or planning good deeds" },
+      { key: "D", text: "Anxiety about dunya matters" }
     ]
   },
   {
     id: 9,
-    topic: "Materialism & Attachment (Dunya)",
-    q: "How strongly are your happiness and peace dependent on material success, status, or praise?",
+    topic: "Treatment of Subordinates (Al-Mu'amalah)",
+    q: "How do you treat people below you (in status/age)?",
     options: [
-      { key: "A", text: "Completely; my mood is entirely governed by my financial status and how people view me." },
-      { key: "B", text: "I am highly attached; I crave comfort and feel intense grief and panic when material aspects slip." },
-      { key: "C", text: "I work to keep my hands busy with the world but strive to keep my heart detached from it." },
-      { key: "D", text: "The world has no weight in my heart; whether wealth stays or goes, my inner peace is untouched." }
+      { key: "A", text: "With little patience or consideration" },
+      { key: "B", text: "Fairly, but only when it suits me" },
+      { key: "C", text: "With kindness and humility, as the Prophet taught" },
+      { key: "D", text: "Depends heavily on my mood" }
     ]
   },
   {
     id: 10,
-    topic: "Pride & Humility (Kibr vs. Tawadu)",
-    q: "How do you feel when your advice is rejected or when you are corrected by others?",
+    topic: "Ethical Boundaries (Halal and Haram)",
+    q: "Your attitude toward halal and haram boundaries:",
     options: [
-      { key: "A", text: "I feel highly insulted, defensive, and immediately look for flaws in the other person." },
-      { key: "B", text: "I feel a surge of pride, but I catch myself and struggle to accept the correction with grace." },
-      { key: "C", text: "I listen carefully and accept the correction, even if it feels slightly uncomfortable." },
-      { key: "D", text: "I am genuinely grateful for being corrected, viewing it as a precious gift of purification." }
+      { key: "A", text: "I often cross them without much thought" },
+      { key: "B", text: "I try but frequently justify exceptions" },
+      { key: "C", text: "I am careful and feel discomfort near boundaries" },
+      { key: "D", text: "I follow rules publicly but less so privately" }
     ]
   },
   {
     id: 11,
-    topic: "Patience under Calamity (Sabr)",
-    q: "When faced with sudden tragedy, delay, or severe financial or health distress, what happens?",
+    topic: "Response to Blessings (Shukr)",
+    q: "When a blessing comes, your first thought is:",
     options: [
-      { key: "A", text: "I fall into absolute anger, helplessness, or despair, questioning the justice of my circumstances." },
-      { key: "B", text: "My heart is deeply shaken with fear and distress, but I pray for patience and try to cope." },
-      { key: "C", text: "I accept the decree with patience, working through the pain with prayer and steady action." },
-      { key: "D", text: "I feel deep, unshakeable contentment (Rida), knowing that whatever happens is for my spiritual growth." }
+      { key: "A", text: "Pride — I deserved this through my own effort" },
+      { key: "B", text: "Relief and happiness, forgetting to thank Allah" },
+      { key: "C", text: "Alhamdulillah — gratitude to Allah immediately" },
+      { key: "D", text: "Happy but credit feels split between me and Allah" }
     ]
   },
   {
     id: 12,
-    topic: "Gossip & Speech (Hifz al-Lisan)",
-    q: "How do you conduct yourself in social conversations involving gossip, sarcasm, or backbiting?",
+    topic: "Integrity (Ikhlas)",
+    q: "How consistent is your character in public vs private?",
     options: [
-      { key: "A", text: "I participate actively, finding enjoyment in analyzing others' flaws." },
-      { key: "B", text: "I listen and sometimes join in, but feel heavy guilt afterwards and regret my words." },
-      { key: "C", text: "I try to change the subject or quietly walk away, praying for those being discussed." },
-      { key: "D", text: "I speak only what is good or remain silently engaged in remembrance, keeping my tongue pure." }
+      { key: "A", text: "Very different — I am a different person in private" },
+      { key: "B", text: "Somewhat different — I try harder when watched" },
+      { key: "C", text: "Consistent — I act as if Allah always watches" },
+      { key: "D", text: "Mostly consistent but with some private lapses" }
     ]
   },
   {
     id: 13,
-    topic: "Vain Desires (Hawa al-Nafs)",
-    q: "When your base desires (comfort, pleasure, procrastination) clash with your noble spiritual duties?",
+    topic: "Decision-Making (Istikharah & Tawakkul)",
+    q: "When making a major decision, you:",
     options: [
-      { key: "A", text: "I instantly submit to my lower desires with no struggle or fight." },
-      { key: "B", text: "I struggle heavily; I often fail but feel a severe, painful inner reproach after slipping." },
-      { key: "C", text: "I usually overcome my lower desires, though it requires constant self-discipline and willpower." },
-      { key: "D", text: "My lower desires are fully submissive to my spiritual intellect; doing good brings me joy." }
+      { key: "A", text: "Follow your desires first, justify later" },
+      { key: "B", text: "Consider deen but often let dunya win" },
+      { key: "C", text: "Make istikharah and seek the choice Allah wills" },
+      { key: "D", text: "Worry a lot but rarely involve Allah consciously" }
     ]
   },
   {
     id: 14,
-    topic: "Sincerity of Actions (Ikhlas)",
-    q: "When performing good deeds, helper activities, or charity work, what is your primary driver?",
+    topic: "Self-Examination (Muhasabah)",
+    q: "How do you feel about your current spiritual state?",
     options: [
-      { key: "A", text: "I crave public recognition, praise, or social status above all else." },
-      { key: "B", text: "I hope to please God, but I am frequently distracted and worried about whether others notice my work." },
-      { key: "C", text: "I actively fight to keep my deeds hidden, striving solely for the sake of the Divine." },
-      { key: "D", text: "I perform deeds purely out of ecstatic love for the Creator, completely indifferent to human praise or blame." }
+      { key: "A", text: "Content — I am fine as I am" },
+      { key: "B", text: "Concerned but unsure how to change" },
+      { key: "C", text: "Always seeking improvement — never complacent" },
+      { key: "D", text: "Guilty but stuck in the same patterns" }
     ]
   },
   {
     id: 15,
-    topic: "Cognitive Distortions of Hope (Amal)",
-    q: "How do you view your death, the afterlife, and your ultimate spiritual destination?",
+    topic: "Supplication (Dua)",
+    q: "What best describes your relationship with dua?",
     options: [
-      { key: "A", text: "I completely block out any thoughts of death, living as though I will remain forever on earth." },
-      { key: "B", text: "I think of it with dread and intense terror, which paralyzes me rather than motivating me." },
-      { key: "C", text: "I reflect on it regularly to maintain balance, hoping for mercy while striving to prepare." },
-      { key: "D", text: "I view it with tranquil longing—a return to the Beloved, supported by a lifetime of sincere devotion." }
+      { key: "A", text: "I rarely make dua or feel disconnected from it" },
+      { key: "B", text: "I make dua only when in need or trouble" },
+      { key: "C", text: "I make dua regularly, in ease and hardship" },
+      { key: "D", text: "I try to make dua but feel my heart is not present" }
     ]
   }
 ];
@@ -272,7 +272,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
         // All 15 finished! Trigger calculation
         submitAssessment(updatedAnswers);
       }
-    }, 400); // 400ms transition delay requested
+    }, 500); // 500ms transition delay requested
   };
 
   const submitAssessment = async (finalAnswers: Record<number, 'A' | 'B' | 'C' | 'D'>) => {
@@ -477,53 +477,43 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
-            className={`border rounded-md shadow-lg p-8 md:p-12 relative overflow-hidden transition-all duration-300
+            className={`border rounded-md shadow-lg p-8 md:p-12 relative overflow-hidden transition-all duration-300 max-w-2xl mx-auto
               ${isSpace 
                 ? 'bg-stone-950/90 border-gold/20 text-stone-100' 
-                : 'bg-[#FDFBF7] border-stone-200/95 text-stone-900'
+                : 'bg-[#F5F0E8] border-[#C4A35A]/50 text-[#8B1A1A]'
               }
             `}
             id="nafs-intro-panel"
           >
             {/* Soft watermark Arabic calligraphy background */}
-            <div className="absolute right-4 bottom-4 text-stone-200 dark:text-stone-900/40 select-none pointer-events-none font-serif text-7xl md:text-9xl opacity-30 tracking-widest">
-              نَفْس
+            <div className="absolute right-4 bottom-4 text-stone-300 dark:text-stone-900/40 select-none pointer-events-none font-serif text-7xl md:text-9xl opacity-20 tracking-widest">
+              تَزْكِيَة
             </div>
 
             <div className="max-w-2xl mx-auto space-y-6 text-center">
-              <span className="text-3xl sm:text-4xl text-crimson dark:text-gold font-arabic block font-bold mb-2">
-                نَفْس
+              <span className="text-4xl text-[#8B1A1A] dark:text-gold font-arabic block font-bold mb-2">
+                نَفْسٌ تَتَزَكَّى
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight text-stone-900 dark:text-white leading-tight">
-                Discover Your Spiritual Psychology Stage
+              <h2 className="font-serif text-3xl font-extrabold tracking-tight text-stone-900 dark:text-white leading-none">
+                Nafs Assessment
               </h2>
-              <div className="w-16 h-[2px] bg-gold mx-auto my-4"></div>
-              
-              <p className="text-stone-600 dark:text-stone-300 font-serif leading-relaxed text-sm sm:text-base">
-                Under classical Islamic sciences, primarily defined by Imam Ibn al-Qayyim al-Jawziyyah (Tazkiyah al-Nafs), the soul develops across three primary stages: the impulsive commanding state, the active self-reproaching state, and the serene tranquil state.
+              <p className="text-stone-600 dark:text-stone-300 font-serif text-sm">
+                Discover your spiritual psychology stage based on the three Quranic stages of the soul
               </p>
+              <div className="w-16 h-[2px] bg-[#C4A35A] mx-auto my-4"></div>
               
-              <p className="text-stone-500 dark:text-stone-400 text-xs sm:text-sm font-sans italic">
-                This academic 15-question diagnostic uses classical benchmarks combined with modern Cognitive Behavioral Therapy (CBT-reframe) metrics to map your current dominant soul frequency. It requires full honesty.
+              <p className="text-stone-500 dark:text-stone-400 text-[13px] leading-relaxed font-sans max-w-md mx-auto">
+                Answer 15 honest questions. Gemini will map your inner state to Nafs al-Ammara, Nafs al-Lawwama, or Nafs al-Mutmainna — and give you a personalized 7-day Tazkiyah prescription.
               </p>
 
-              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
+              <div className="pt-6">
                 <button
                   onClick={handleStartQuiz}
-                  className="font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold border border-transparent font-bold tracking-widest px-8 py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer min-h-[44px]"
+                  className="w-full font-mono text-xs uppercase bg-[#8B1A1A] dark:bg-gold text-white dark:text-space hover:opacity-90 border border-transparent font-bold tracking-widest py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer min-h-[44px]"
                   id="begin-assessment-btn"
                 >
-                  Begin Assessment <ArrowRight className="inline-block h-4 w-4 ml-1" />
+                  Begin Assessment →
                 </button>
-                {journal.length > 0 && (
-                  <button
-                    onClick={() => setStep(5)}
-                    className="font-mono text-xs uppercase border border-stone-300 dark:border-stone-700 bg-transparent text-stone-700 dark:text-gold-light hover:bg-stone-100 dark:hover:bg-stone-900 tracking-widest px-8 py-4 rounded-sm transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 min-h-[44px]"
-                    id="view-journal-btn"
-                  >
-                    <History className="h-4 w-4 text-gold" /> My Journal History ({journal.length})
-                  </button>
-                )}
               </div>
             </div>
           </motion.div>
@@ -536,23 +526,23 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`border rounded-md shadow-lg p-6 sm:p-10 transition-all duration-300
+            className={`border rounded-md shadow-lg p-6 sm:p-10 transition-all duration-300 max-w-2xl mx-auto
               ${isSpace 
                 ? 'bg-stone-950/90 border-gold/15' 
-                : 'bg-[#FDFBF7] border-stone-200'
+                : 'bg-[#F5F0E8] border-[#C4A35A]/50'
               }
             `}
           >
             {/* Progress metrics */}
-            <div className="flex justify-between items-center text-xs font-mono tracking-widest uppercase mb-4 text-stone-500 dark:text-stone-400">
-              <span className="text-gold font-bold">Question {currentQuestionIndex + 1} of 15</span>
-              <span>{NAFS_QUESTIONS[currentQuestionIndex].topic}</span>
+            <div className="flex justify-between items-center text-xs font-mono tracking-widest uppercase mb-4 text-[#8B1A1A] dark:text-gold font-bold animate-fade-in">
+              <span>Question {currentQuestionIndex + 1} of 15</span>
+              <span className="opacity-75">{NAFS_QUESTIONS[currentQuestionIndex].topic}</span>
             </div>
 
-            {/* Seamless gold progress bar */}
-            <div className="w-full bg-stone-200 dark:bg-stone-800 h-[3px] rounded-full mb-8 relative overflow-hidden">
+            {/* Seamless gold progress bar with cream background */}
+            <div className="w-full bg-[#E8E2D5] dark:bg-stone-850 h-[6px] rounded-full mb-8 relative overflow-hidden">
               <motion.div 
-                className="bg-gold h-full rounded-full"
+                className="bg-[#8B1A1A] dark:bg-gold h-full rounded-full"
                 initial={{ width: `${(currentQuestionIndex / 15) * 100}%` }}
                 animate={{ width: `${((currentQuestionIndex + 1) / 15) * 100}%` }}
                 transition={{ duration: 0.3 }}
@@ -560,12 +550,12 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             </div>
 
             {/* Question Screen */}
-            <div className="space-y-6">
+            <div className="space-y-6 text-center">
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-stone-900 dark:text-white leading-snug">
-                {NAFS_QUESTIONS[currentQuestionIndex].q}
+                "{NAFS_QUESTIONS[currentQuestionIndex].q}"
               </h3>
 
-              <div className="grid grid-cols-1 gap-4 pt-4" id="nafs-options-container">
+              <div className="grid grid-cols-1 gap-4 pt-4 text-left" id="nafs-options-container">
                 {NAFS_QUESTIONS[currentQuestionIndex].options.map((option) => {
                   const isSelected = selectedOption === option.key;
                   return (
@@ -574,21 +564,21 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                       onClick={() => handleOptionSelect(option.key)}
                       disabled={selectedOption !== null}
                       id={`option-btn-${option.key}`}
-                      className={`text-left border transition-all duration-300 px-6 py-4 rounded-sm relative overflow-hidden flex gap-4 items-center cursor-pointer select-none group min-h-[64px]
+                      className={`text-left border transition-all duration-300 px-6 py-4 rounded-sm relative overflow-hidden flex gap-4 items-center cursor-pointer select-none group min-h-[60px]
                         ${isSelected
-                          ? 'border-gold bg-gold/10 text-stone-900 dark:text-white shadow-md ring-1 ring-gold/30'
+                          ? 'bg-[#8B1A1A] border-[#8B1A1A] text-white shadow-md'
                           : isSpace
                             ? 'border-stone-800 bg-stone-900/40 hover:border-gold/50 hover:bg-gold/5 hover:text-white'
-                            : 'border-stone-200 bg-stone-50 hover:border-crimson/50 hover:bg-crimson/5 hover:text-stone-900 hover:shadow-sm'
+                            : 'border-[#8B1A1A]/35 bg-[#FFFDF9] hover:border-[#8B1A1A] hover:bg-[#8B1A1A]/5 hover:text-stone-900 hover:shadow-sm'
                         }
                       `}
                     >
                       <span className={`font-mono text-xs font-bold h-7 w-7 rounded-sm flex items-center justify-center border transition-colors
                         ${isSelected
-                          ? 'bg-gold border-gold text-white'
+                          ? 'bg-transparent border-white text-white'
                           : isSpace
                             ? 'bg-stone-800 border-stone-700 text-stone-400 group-hover:border-gold/50 group-hover:text-gold'
-                            : 'bg-white border-stone-300 text-stone-500 group-hover:border-crimson/40 group-hover:text-crimson'
+                            : 'bg-[#FDFBF7] border-stone-300 text-stone-500 group-hover:border-[#8B1A1A]/50 group-hover:text-[#8B1A1A]'
                         }
                       `}>
                         {isSelected ? <Check className="h-4 w-4" /> : option.key}
@@ -611,33 +601,34 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-center py-16 px-6 border border-stone-250 dark:border-stone-800 bg-[#FDFBF7] dark:bg-stone-950/80 rounded-md shadow-lg"
+            className="text-center py-20 px-6 border border-[#C4A35A]/50 bg-[#F5F0E8] dark:bg-stone-950/80 rounded-md shadow-lg max-w-2xl mx-auto"
           >
-            {/* Arabic geometric Islamic ornament rotates gracefully */}
+            {/* Pulsing Amiri text with rotating frame */}
             <div className="relative w-32 h-32 mx-auto mb-8 flex items-center justify-center">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-                className="absolute inset-0 border border-dashed border-gold/30 rounded-full"
+                className="absolute inset-0 border border-dashed border-[#C4A35A]/30 rounded-full"
               />
               <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ repeat: Infinity, duration: 16, ease: "linear" }}
-                className="absolute w-24 h-24 border border-indigo-900/10 dark:border-gold/10 rounded-full flex items-center justify-center"
-              />
-              <span className="font-arabic text-4xl text-crimson dark:text-gold animate-pulse font-extrabold select-none">
-                نَفْس
-              </span>
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                className="absolute w-24 h-24 rounded-full flex items-center justify-center"
+              >
+                <span className="font-arabic text-5xl text-[#8B1A1A] dark:text-gold select-none font-bold">
+                  نَفْس
+                </span>
+              </motion.div>
             </div>
 
             <h3 className="font-serif text-2xl font-bold tracking-tight text-stone-900 dark:text-white mb-2">
-              Analysing your Nafs...
+              Analysing your Nafs with Gemini...
             </h3>
-            <p className="text-xs font-mono tracking-widest text-gold dark:text-gold uppercase animate-pulse">
-              Measuring Tazkiyah against the scrolls of Ibn al-Qayyim (RA)...
+            <p className="font-arabic text-xl tracking-wider text-[#8B1A1A] dark:text-gold font-bold mb-4">
+              بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </p>
-            <p className="text-xs text-stone-500 max-w-sm mx-auto mt-4 leading-relaxed font-serif">
-              Reading alignment coefficients of anger, sincerity, and gratitude scales to generate your custom 7-day Tazkiyah prescription.
+            <p className="text-xs text-stone-500 max-w-sm mx-auto leading-relaxed font-serif">
+              Measuring Tazkiyah al-Nafs parameters against classical scientific rubrics and Ibn al-Qayyim's spiritual psychology structures...
             </p>
           </motion.div>
         )}
@@ -657,7 +648,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
               className={`border rounded-md shadow-2xl p-6 sm:p-10 relative overflow-hidden transition-all duration-300
                 ${isSpace 
                   ? 'bg-stone-950/95 border-gold/25 text-stone-100' 
-                  : 'bg-[#F9F5EE] border-stone-250/90 text-charcoal'
+                  : 'bg-[#F9F5EE] border-[#C4A35A]/55 text-charcoal'
                 }
               `}
               id="nafs-scroll-card"
@@ -668,130 +659,137 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
 
               <div className="relative z-10 space-y-8 py-2">
                 
-                {/* Visual badge top ornament */}
-                <div className="text-center space-y-2">
-                  <span className="text-xs font-mono tracking-[0.3em] text-stone-500 uppercase block">
-                    Predominant Spiritual Stage
-                  </span>
+                {/* 2-Column Responsive Layout */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                   
-                  {/* Phase Gold Badge */}
-                  <div className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-gold/45 bg-gold/5 rounded-full text-gold-light tracking-widest text-xs uppercase font-semibold font-mono animate-fade-in shadow-inner">
-                    <Award className="h-4 w-4 text-gold" />
-                    Nafs al-{result.stage}
+                  {/* LEFT COLUMN: Stage particulars */}
+                  <div className="space-y-6 text-center md:text-left">
+                    <div className="space-y-2 text-center">
+                      <span className="text-xs font-mono tracking-[0.3em] text-stone-500 uppercase block">
+                        Predominant Spiritual Stage
+                      </span>
+                      
+                      <h2 className="font-arabic text-4xl sm:text-5xl font-black text-[#8B1A1A] dark:text-gold tracking-wide mt-2">
+                        {result.arabic}
+                      </h2>
+
+                      {/* Phase Gold Badge (gold bg, maroon text) */}
+                      <div className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#C4A35A] text-[#8B1A1A] rounded-full tracking-widest text-xs uppercase font-bold shadow-inner mt-2">
+                        <Award className="h-4 w-4 text-[#8B1A1A]" />
+                        Nafs al-{result.stage}
+                      </div>
+                    </div>
+
+                    {/* Quranic Ayah centered in a beautifully bordered gold frame box */}
+                    <div className="p-6 bg-[#FFFDF9] dark:bg-stone-900/50 border-2 border-double border-[#C4A35A]/70 rounded-sm text-center font-arabic text-lg sm:text-xl leading-loose dark:text-stone-100 text-[#2B2B2B] shadow-inner font-bold" id="ayah-arabic-container">
+                      {result.ayah}
+                    </div>
+
+                    {/* Short description profile (14px font, relaxed leading) */}
+                    <div className="space-y-3 text-left">
+                      <h4 className="font-serif text-sm font-bold uppercase tracking-widest text-[#8B1A1A] dark:text-gold border-b border-stone-200 dark:border-stone-850 pb-1.5">
+                        Spiritual Character Profile
+                      </h4>
+                      <p className="font-serif text-sm sm:text-[14px] leading-relaxed text-stone-700 dark:text-stone-300">
+                        {result.profile}
+                      </p>
+                    </div>
+
+                    {/* Quote from Ibn al-Qayyim (italic, maroon text) below the profile */}
+                    <blockquote className="border-l-4 border-[#8B1A1A] pl-5 py-2 italic font-serif text-sm sm:text-base text-[#8B1A1A] dark:text-stone-450 leading-relaxed bg-[#FFFDF9]/60 dark:bg-stone-900/20 pr-4 text-left">
+                      "{result.ibn_qayyim_quote}"
+                      <span className="block mt-2 font-mono text-[10px] tracking-widest uppercase text-[#C4A35A] dark:text-gold/85 font-bold not-italic">
+                        — Ibn al-Qayyim al-Jawziyyah
+                      </span>
+                    </blockquote>
                   </div>
 
-                  <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-black text-crimson dark:text-gold tracking-wide mt-2">
-                    {result.arabic}
-                  </h2>
-                </div>
+                  {/* RIGHT COLUMN: 7-day Tazkiyah Prescription accordion */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 pb-1 border-b border-stone-200 dark:border-stone-850">
+                      <Calendar className="h-5 w-5 text-[#8B1A1A] dark:text-gold" />
+                      <h4 className="font-serif text-md font-bold uppercase tracking-widest text-[#2B2B2B] dark:text-gold">
+                        7-day Tazkiyah Prescription
+                      </h4>
+                    </div>
 
-                {/* Arabic Quranic Ayah in Amiri font */}
-                <div className="p-6 bg-stone-100/50 dark:bg-stone-900/50 border border-stone-250 dark:border-stone-800 rounded-sm text-center font-arabic text-xl sm:text-2xl leading-loose dark:text-stone-100 text-[#2B2B2B] shadow-inner font-bold" id="ayah-arabic-container">
-                  {result.ayah}
-                </div>
-
-                {/* Two-sentence Spiritual Psychology Profile */}
-                <div className="space-y-3">
-                  <h4 className="font-serif text-lg font-bold uppercase tracking-widest text-[#2B2B2B] dark:text-gold border-b border-stone-200 dark:border-stone-800 pb-1.5">
-                    Spiritual Character Profile
-                  </h4>
-                  <p className="font-serif text-base sm:text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-                    {result.profile}
-                  </p>
-                </div>
-
-                {/* Ibn al-Qayyim Quote */}
-                <blockquote className="border-l-4 border-gold pl-5 py-2 italic font-serif text-sm sm:text-base text-stone-600 dark:text-stone-400 leading-relaxed bg-stone-100/30 dark:bg-stone-900/20 pr-4">
-                  "{result.ibn_qayyim_quote}"
-                  <span className="block mt-2 font-mono text-[10px] tracking-widest uppercase text-gold dark:text-gold/80 font-bold not-italic">
-                    — Ibn al-Qayyim al-Jawziyyah
-                  </span>
-                </blockquote>
-
-                {/* 7-DAY ACCORDION TAZKIYAH REGIMEN */}
-                <div className="space-y-4 pt-4">
-                  <div className="flex items-center gap-2 pb-1 border-b border-stone-200 dark:border-stone-850">
-                    <Calendar className="h-5 w-5 text-gold" />
-                    <h4 className="font-serif text-lg font-bold uppercase tracking-widest text-[#2B2B2B] dark:text-gold">
-                      7-day tazkiyah purification course
-                    </h4>
-                  </div>
-
-                  <div className="space-y-2" id="nafs-accordion-days-regimen">
-                    {result.prescription.map((day) => {
-                      const isOpen = openDay === day.day;
-                      return (
-                        <div 
-                          key={day.day}
-                          className={`border rounded-sm overflow-hidden transition-all duration-350
-                            ${isOpen
-                              ? 'border-gold bg-gold/5 dark:bg-gold-[5%]'
-                              : isSpace
-                                ? 'border-stone-800 bg-stone-900/30 hover:bg-stone-900/50'
-                                : 'border-stone-200 bg-stone-50/50 hover:bg-stone-100/40'
-                            }
-                          `}
-                        >
-                          <button
-                            onClick={() => setOpenDay(isOpen ? 0 : day.day)}
-                            id={`accordion-toggle-day-${day.day}`}
-                            className="w-full text-left px-5 py-3.5 flex justify-between items-center cursor-pointer font-serif text-sm sm:text-base font-bold text-stone-700 dark:text-stone-300 group select-none min-h-[44px]"
+                    <div className="space-y-2" id="nafs-accordion-days-regimen">
+                      {result.prescription.map((day) => {
+                        const isOpen = openDay === day.day;
+                        return (
+                          <div 
+                            key={day.day}
+                            className={`border rounded-sm overflow-hidden transition-all duration-300
+                              ${isOpen
+                                ? 'border-[#C4A35A] bg-[#C4A35A]/5 dark:bg-[#C4A35A]/10'
+                                : isSpace
+                                  ? 'border-stone-800 bg-stone-900/30 hover:bg-stone-900/50'
+                                  : 'border-[#C4A35A]/20 bg-white hover:bg-stone-50'
+                              }
+                            `}
                           >
-                            <span className="flex items-center gap-2.5">
-                              <span className={`font-mono text-xs text-stone-400 w-5 h-5 rounded-full flex items-center justify-center border font-bold
-                                ${isOpen ? 'border-gold text-gold bg-gold/10' : 'border-stone-500'}`}
-                              >
-                                {day.day}
+                            <button
+                              onClick={() => setOpenDay(isOpen ? 0 : day.day)}
+                              id={`accordion-toggle-day-${day.day}`}
+                              className="w-full text-left px-5 py-3.5 flex justify-between items-center cursor-pointer font-serif text-sm sm:text-base font-bold text-stone-700 dark:text-stone-300 group select-none min-h-[44px]"
+                            >
+                              <span className="flex items-center gap-2.5">
+                                <span className={`font-mono text-xs text-stone-400 w-5 h-5 rounded-full flex items-center justify-center border font-bold
+                                  ${isOpen ? 'border-[#C4A35A] text-[#8B1A1A] bg-[#C4A35A]/25' : 'border-stone-500'}`}
+                                >
+                                  {day.day}
+                                </span>
+                                Day {day.day} — Spiritual Regimen
                               </span>
-                              Day {day.day} — Spiritual Regimen
-                            </span>
-                            <span className={`text-xs font-mono tracking-widest uppercase transition-all duration-300
-                              ${isOpen ? 'text-gold font-bold rotate-90 scale-105' : 'text-stone-400 group-hover:text-stone-700'}`}
-                            >
-                              {isOpen ? "Close" : "Open"}
-                            </span>
-                          </button>
+                              <span className={`text-xs font-mono tracking-widest uppercase transition-all duration-300
+                                ${isOpen ? 'text-[#8B1A1A] dark:text-gold font-bold rotate-90 scale-105' : 'text-stone-400 group-hover:text-stone-700'}`}
+                              >
+                                {isOpen ? "Close" : "Open"}
+                              </span>
+                            </button>
 
-                          {isOpen && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              transition={{ duration: 0.25 }}
-                              className="px-5 pb-5 border-t border-dashed border-stone-250 dark:border-stone-800 pt-3.5 space-y-4 font-sans text-xs sm:text-sm"
-                            >
-                              <div className="space-y-1.5 bg-stone-100/60 dark:bg-stone-905/40 p-3 rounded-sm border-l-2 border-crimson dark:border-gold">
-                                <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-crimson dark:text-gold block">
-                                  Daily Litanies / Adhkar Prescription
-                                </span>
-                                <p className="font-serif text-[#2B2B2B] dark:text-stone-300 leading-relaxed text-sm">
-                                  {day.dhikr}
-                                </p>
-                              </div>
-                              <div className="space-y-1.5 p-3 rounded-sm border-l-2 border-slate-500 bg-stone-100/30 dark:bg-stone-900/10">
-                                <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#555] dark:text-stone-400 block">
-                                  Practical CBT-Cognitive Action Step
-                                </span>
-                                <p className="font-serif text-[#3B3B3B] dark:text-stone-300 leading-relaxed text-sm">
-                                  {day.action}
-                                </p>
-                              </div>
-                            </motion.div>
-                          )}
-                        </div>
-                      );
-                    })}
+                            {isOpen && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                transition={{ duration: 0.25 }}
+                                className="px-5 pb-5 border-t border-dashed border-stone-250 dark:border-stone-800 pt-3.5 space-y-4 font-sans text-xs sm:text-sm"
+                              >
+                                <div className="space-y-1.5 bg-stone-100/60 dark:bg-stone-905/40 p-3 rounded-sm border-l-2 border-[#8B1A1A] dark:border-gold">
+                                  <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#8B1A1A] dark:text-gold block">
+                                    Daily Litanies / Adhkar Prescription
+                                  </span>
+                                  <p className="font-serif text-[#2B2B2B] dark:text-stone-300 leading-relaxed text-sm">
+                                    {day.dhikr}
+                                  </p>
+                                </div>
+                                <div className="space-y-1.5 p-3 rounded-sm border-l-2 border-slate-500 bg-stone-100/30 dark:bg-stone-900/10">
+                                  <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#555] dark:text-stone-400 block">
+                                    Practical CBT-Cognitive Action Step
+                                  </span>
+                                  <p className="font-serif text-[#3B3B3B] dark:text-stone-300 leading-relaxed text-sm">
+                                    {day.action}
+                                  </p>
+                                </div>
+                              </motion.div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
+
                 </div>
 
                 {/* Closing Encouragement */}
-                <div className="pt-4 text-center">
+                <div className="pt-4 text-center border-t border-stone-200 dark:border-stone-800">
                   <p className="font-serif italic text-sm text-stone-600 dark:text-stone-300 max-w-xl mx-auto leading-relaxed">
                     "{result.encouragement}"
                   </p>
                 </div>
 
                 {/* ACTION BUTTONS */}
-                <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6 border-t border-stone-200 dark:border-stone-800">
+                <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6 mt-4">
                   <button
                     onClick={handleStartQuiz}
                     className="font-mono text-xs uppercase border border-stone-300 dark:border-stone-700 bg-transparent hover:bg-stone-100 dark:hover:bg-stone-900 text-stone-700 dark:text-gold-light tracking-widest px-6 py-3.5 rounded-sm transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 min-h-[44px]"
@@ -806,24 +804,22 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                     className={`font-mono text-xs uppercase border tracking-widest px-6 py-3.5 rounded-sm transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 min-h-[44px]
                       ${isSaved
                         ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-400 cursor-default shadow-inner'
-                        : isSpace
-                          ? 'bg-gold hover:bg-white text-[#8B1A1A] hover:text-[#8B1A1A] border-transparent font-bold hover:scale-[1.01]'
-                          : 'bg-crimson hover:bg-black text-white border-transparent font-bold hover:scale-[1.01]'
+                        : 'bg-[#8B1A1A] hover:opacity-90 text-white border-transparent font-bold'
                       }
                     `}
                     id="save-to-journal-btn"
                   >
                     {saveLoading ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin text-gold" /> Saving to Journal...
+                        <RefreshCw className="h-4 w-4 animate-spin text-gold" /> Saving to Ledger...
                       </>
                     ) : isSaved ? (
                       <>
-                        <BookmarkCheck className="h-4 w-4 text-emerald-400" /> Saved into your Journal!
+                        <BookmarkCheck className="h-4 w-4 text-emerald-400" /> Saved to Spiritual Ledger!
                       </>
                     ) : (
                       <>
-                        <Bookmark className="h-4 w-4" /> Save to My Journal
+                        <Bookmark className="h-4 w-4" /> Save to Spiritual Ledger
                       </>
                     )}
                   </button>
