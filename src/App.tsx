@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GraduationCap } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import GlobeSection from './components/GlobeSection';
@@ -16,21 +17,27 @@ import FiqhRuling from './components/FiqhRuling';
 import CognitiveLabs from './components/CognitiveLabs';
 import WaswasClinic from './components/WaswasClinic';
 import MantiqTutor from './components/MantiqTutor';
+import FallacyScanner from './components/FallacyScanner';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
 
 export default function App() {
   const [currentTheme, setCurrentTheme] = useState<'parchment' | 'space'>('parchment');
+  const [isThemeTransitioning, setIsThemeTransitioning] = useState<boolean>(false);
+  const [previousTheme, setPreviousTheme] = useState<'parchment' | 'space' | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner'>(() => {
     if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
       return 'waswas-clinic';
     }
     if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
       return 'mantiq-tutor';
+    }
+    if (window.location.hash === '#fallacy-scanner' || window.location.pathname === '/fallacy-scanner') {
+      return 'fallacy-scanner';
     }
     return 'landing';
   });
@@ -66,6 +73,8 @@ export default function App() {
         setCurrentSection('waswas-clinic');
       } else if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
         setCurrentSection('mantiq-tutor');
+      } else if (window.location.hash === '#fallacy-scanner' || window.location.pathname === '/fallacy-scanner') {
+        setCurrentSection('fallacy-scanner');
       }
     };
     window.addEventListener('popstate', handleUrlChange);
@@ -105,6 +114,8 @@ export default function App() {
   }, [currentTheme]);
 
   const handleToggleTheme = () => {
+    setPreviousTheme(currentTheme);
+    setIsThemeTransitioning(true);
     setCurrentTheme(prev => (prev === 'parchment' ? 'space' : 'parchment'));
   };
 
@@ -135,6 +146,26 @@ export default function App() {
         }
       `}
     >
+      {/* FULL-SCREEN OVERLAY FOR CHROMATIC THEMATIC CROSS-FADE TRANSITION */}
+      <AnimatePresence>
+        {isThemeTransitioning && previousTheme && (
+          <motion.div
+            key={`theme-transition-${previousTheme}`}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            onAnimationComplete={() => {
+              setIsThemeTransitioning(false);
+              setPreviousTheme(null);
+            }}
+            className={`fixed inset-0 z-[9999] pointer-events-none transition-colors duration-200 ${
+              previousTheme === 'space' ? 'bg-[#020509]' : 'bg-[#FAF6EF]'
+            }`}
+          />
+        )}
+      </AnimatePresence>
+
       {/* EXQUISITE NAV HEADER */}
       <Header 
         currentTheme={currentTheme}
@@ -202,6 +233,15 @@ export default function App() {
       {currentSection === 'mantiq-tutor' && (
         <div className="animate-fade-in">
           <MantiqTutor 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'fallacy-scanner' && (
+        <div className="animate-fade-in">
+          <FallacyScanner 
             currentTheme={currentTheme}
             onBackToLanding={() => setCurrentSection('landing')}
           />

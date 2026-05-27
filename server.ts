@@ -828,6 +828,7 @@ Format example:
   // History and Persistence local in-memory stores
   const localCognitiveSaves: any[] = [];
   const localWaswasSaves: Record<string, any[]> = {};
+  const localFallacyScans: Record<string, any[]> = {};
 
   // Waswas Clinic Stream endpoint
   app.post("/api/labs/waswas-clinic", async (req, res) => {
@@ -1059,6 +1060,85 @@ Return ONLY this JSON, nothing else:
       res.json({ questions });
     } catch (e: any) {
       console.error("Mantiq quiz JSON generation failed:", e);
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // Fallacy Scan Endpoint
+  app.post("/api/labs/fallacy/scan", async (req, res) => {
+    const { argument } = req.body;
+    if (!argument) {
+      return res.status(400).json({ error: "No argument text provided." });
+    }
+
+    try {
+      const ai = getGenAI();
+      if (!ai) {
+        throw new Error("No Gemini API configured on the servers.");
+      }
+
+      const systemInstruction = `You are a master of classical Islamic Mantiq (logic) and modern critical thinking. You are known for scholarly fairness — you identify fallacies without attacking the person or their faith. Maintain classical scholarly weight and high linguistic standards.
+
+Analyze the argument for logical fallacies and return ONLY a high-fidelity JSON object matching this structure:
+{
+  "argument_summary": "string (1 sentence: what claim is being made)",
+  "overall_quality": "strong" | "moderate" | "weak" | "fallacious",
+  "overall_assessment": "string (2 sentences on the argument's logical strength)",
+  "fallacies": [
+    {
+      "id": number,
+      "classical_name": "string (Arabic Mantiq term)",
+      "classical_category": "Mughalata fi al-Lafz | Mughalata fi al-Ma'na | Other",
+      "modern_name": "string (English logical fallacy name)",
+      "quote_from_text": "string (exact short quote where fallacy occurs)",
+      "explanation": "why this is a fallacy, 2-3 sentences",
+      "severity": "fatal" | "weakening" | "minor",
+      "correction": "how to reformulate this part correctly"
+    }
+  ],
+  "valid_points": ["string"] (list of logically sound parts of the argument if any),
+  "corrected_argument": "a logically improved version of their argument if it has merit, or 'This argument cannot be repaired as stated' if completely fallacious",
+  "mantiq_principle": "one relevant classical Mantiq principle that applies to this analysis, with Arabic term"
+}
+
+Ensure the response contains only the JSON. Do not add markdown blocks or wrapping tags outside the JSON representation. Ensure correct matching of brackets. All quotes in the analysis must map back to strings in the argument.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: `Scrutinize this argument for logical fallacies: "${argument}"`,
+        config: {
+          systemInstruction,
+          temperature: 0.3,
+          responseMimeType: "application/json"
+        }
+      });
+
+      const responseText = response.text || "{}";
+      const cleanedResponse = responseText.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+      const parsedResult = JSON.parse(cleanedResponse);
+
+      res.json({ result: parsedResult });
+    } catch (e: any) {
+      console.error("Fallacy scan endpoint failed:", e);
+      res.status(500).json({ error: e.message || "Failed to parse fallacy scan." });
+    }
+  });
+
+  // Fallacy Save Endpoint
+  app.post("/api/labs/fallacy/save", async (req, res) => {
+    const { uid, record } = req.body;
+    if (!uid || !record) {
+      return res.status(400).json({ error: "Missing uid or record parameters" });
+    }
+
+    try {
+      if (!localFallacyScans[uid]) {
+        localFallacyScans[uid] = [];
+      }
+      localFallacyScans[uid].unshift(record);
+      res.json({ status: "success", saved: true });
+    } catch (e: any) {
+      console.error("Fallacy save failed:", e);
       res.status(500).json({ error: e.message });
     }
   });

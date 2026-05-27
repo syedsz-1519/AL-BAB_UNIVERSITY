@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass } from 'lucide-react';
+import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert } from 'lucide-react';
 import { Language, LIST_TRANSLATIONS } from '../i18n';
 
 interface HeaderProps {
@@ -48,6 +48,7 @@ export default function Header({
     { id: 'quran-explorer', label: t.quranExplorer, icon: BookOpen },
     { id: 'fiqh-ruling', label: t.fiqhRuling, icon: HelpCircle },
     { id: 'mantiq-tutor', label: 'Mantiq Tutor', icon: Compass },
+    { id: 'fallacy-scanner', label: 'Fallacy Scanner', icon: ShieldAlert },
     { id: 'waswas-clinic', label: 'Waswas Clinic', icon: Heart },
     { id: 'cognitive-labs', label: 'Cognitive Labs', icon: Brain },
     { id: 'portal', label: t.scholasticPortal, icon: GraduationCap }
