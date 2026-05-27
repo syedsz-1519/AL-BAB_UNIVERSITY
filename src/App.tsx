@@ -14,6 +14,8 @@ import DebateArena from './components/DebateArena';
 import QuranExplorer from './components/QuranExplorer';
 import FiqhRuling from './components/FiqhRuling';
 import CognitiveLabs from './components/CognitiveLabs';
+import WaswasClinic from './components/WaswasClinic';
+import MantiqTutor from './components/MantiqTutor';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -23,7 +25,15 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs'>('landing');
+  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor'>(() => {
+    if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
+      return 'waswas-clinic';
+    }
+    if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
+      return 'mantiq-tutor';
+    }
+    return 'landing';
+  });
 
   // Multi-Language State (English, Arabic, Urdu)
   const [language, setLanguage] = useState<Language>(() => {
@@ -48,6 +58,23 @@ export default function App() {
       return next;
     });
   };
+
+  // Synchronize hash / path navigation change
+  useEffect(() => {
+    const handleUrlChange = () => {
+      if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
+        setCurrentSection('waswas-clinic');
+      } else if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
+        setCurrentSection('mantiq-tutor');
+      }
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
 
   // Sync language selection direction attributes with HTML root body
   useEffect(() => {
@@ -159,6 +186,24 @@ export default function App() {
           <CognitiveLabs 
             currentTheme={currentTheme} 
             onNavigateToPortal={() => setCurrentSection('portal')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'waswas-clinic' && (
+        <div className="animate-fade-in">
+          <WaswasClinic 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
+          />
+        </div>
+      )}
+
+      {currentSection === 'mantiq-tutor' && (
+        <div className="animate-fade-in">
+          <MantiqTutor 
+            currentTheme={currentTheme}
+            onBackToLanding={() => setCurrentSection('landing')}
           />
         </div>
       )}

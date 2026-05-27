@@ -827,6 +827,241 @@ Format example:
 
   // History and Persistence local in-memory stores
   const localCognitiveSaves: any[] = [];
+  const localWaswasSaves: Record<string, any[]> = {};
+
+  // Waswas Clinic Stream endpoint
+  app.post("/api/labs/waswas-clinic", async (req, res) => {
+    const { prompt, category } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "No prompt provided" });
+    }
+
+    try {
+      const ai = getGenAI();
+      if (!ai) {
+        throw new Error("No Gemini API configured");
+      }
+
+      res.setHeader("Content-Type", "text/plain; charset=utf-8");
+      res.setHeader("Transfer-Encoding", "chunked");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const systemInstruction = `You are an Islamic clinical psychologist specializing in waswas (religious OCD) and spiritual doubt. Your approach fuses Ibn al-Qayyim's methodology from Ighathat al-Lahfan with modern ACT (Acceptance and Commitment Therapy). Your tone is warm, non-judgmental, and deeply Islamic.
+
+Structure your response in these exact sections with these headers:
+
+**ما تشعر به طبيعي — What You Feel Is Normal**
+Validate their experience using Islamic terms. Reference the authentic Hadith: 'That is pure faith' (Sahih Muslim 132) about waswas. 2-3 sentences.
+
+**الفهم الإسلامي — The Islamic Understanding**
+Explain the nature of waswas from Islamic theology. Who sends it, why it comes, and what it means spiritually. Include one relevant Hadith or Quranic ayah.
+
+**خطوات عملية — Your 3-Step Practice**
+Step 1: A specific ACT-based psychological exercise (defusion technique or grounding)
+Step 2: A Sunnah spiritual practice (specific Dhikr, Wudu, Salah timing)
+Step 3: A mindset reframe from Ibn al-Qayyim's Ighathat al-Lahfan
+
+**دعاؤك — Your Prescribed Dua**
+One specific Dua from the Sunnah for their situation. Arabic text, transliteration, meaning, and when to read it.
+
+**كلمة أخيرة — A Closing Word**
+One warm, hopeful sentence reminding them that waswas is a sign of a living conscience.
+
+End with this exact line on its own: 'If your symptoms are persistent or severe, please speak with a qualified mental health professional alongside your spiritual practice.'
+
+Respond in the same language the user wrote in (English, Urdu, or Arabic). If mixed, respond in English.`;
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+        }
+      });
+
+      for await (const chunk of responseStream) {
+        if (chunk.text) {
+          res.write(chunk.text);
+        }
+      }
+      res.end();
+    } catch (e: any) {
+      console.error("Waswas Clinic stream failed on server, client will run elegant simulated stream:", e);
+      res.status(500).json({ error: "Stream error occurred, falling back to local sage simulator: " + e.message });
+    }
+  });
+
+  // Waswas Clinic Session Save endpoint
+  app.post("/api/labs/waswas/save", async (req, res) => {
+    const { uid, email, session } = req.body;
+    if (!uid || !session) {
+      return res.status(400).json({ error: "Missing uid or session content" });
+    }
+
+    try {
+      if (!localWaswasSaves[uid]) {
+        localWaswasSaves[uid] = [];
+      }
+      localWaswasSaves[uid].unshift(session);
+      res.json({ status: "success", savedInServerMemory: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // Mantiq Lesson Stream endpoint
+  app.post("/api/labs/mantiq/lesson", async (req, res) => {
+    const { moduleName, moduleId } = req.body;
+    if (!moduleName) {
+      return res.status(400).json({ error: "No moduleName provided" });
+    }
+
+    try {
+      const ai = getGenAI();
+      if (!ai) {
+        throw new Error("No Gemini API configured");
+      }
+
+      res.setHeader("Content-Type", "text/plain; charset=utf-8");
+      res.setHeader("Transfer-Encoding", "chunked");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const systemInstruction = `You are a master teacher of classical Islamic Logic (Mantiq), a student of Ibn Sina's Al-Shifa. Teach the module: ${moduleName}. Structure your lesson exactly as:
+
+**المفهوم — The Concept**
+Arabic term in large text, English term, etymology.
+2-sentence classical definition from Ibn Sina.
+
+**المثال الكلاسيكي — Classical Example**
+One example from classical Islamic scholarship showing this concept in use.
+
+**المثال المعاصر — Modern Example**  
+One modern real-world example using the same logical concept.
+
+**التطبيق — Practice Exercise**
+Give the student ONE exercise to attempt. 
+For Hadd: ask them to define a concept.
+For Qiyas: give two premises, ask for conclusion.
+For Burhan: give a claim, ask for proof structure.
+For Jadal: give a position, ask them to argue it.
+For Mughalata: show an argument, ask them to find the fallacy.
+
+End with: EXERCISE_START: [the exercise text] :EXERCISE_END
+
+Respond accurately, clearly, and gracefully, demonstrating deep mastery of the Al-Shifa corpus.`;
+
+      const prompt = `Please generate the full, detailed logic lesson for module ${moduleName} explaining its background, classical arguments, and practice exercise. Use standard formatting and the exact header markers.`;
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+        }
+      });
+
+      for await (const chunk of responseStream) {
+        if (chunk.text) {
+          res.write(chunk.text);
+        }
+      }
+      res.end();
+    } catch (e: any) {
+      console.error("Mantiq lesson generation stream failed:", e);
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // Mantiq Answer Evaluator endpoint
+  app.post("/api/labs/mantiq/evaluate", async (req, res) => {
+    const { moduleName, exerciseText, studentAnswer } = req.body;
+    if (!moduleName || !studentAnswer) {
+      return res.status(400).json({ error: "Missing moduleName or studentAnswer" });
+    }
+
+    try {
+      const ai = getGenAI();
+      if (!ai) {
+        throw new Error("No Gemini API configured");
+      }
+
+      const systemInstruction = `You are evaluating a student's answer to a classical Mantiq exercise on ${moduleName}.
+The exercise was: ${exerciseText}
+The student answered: ${studentAnswer}
+
+Evaluate with this exact format with these headers:
+**النتيجة — Result**: Correct / Partially Correct / Incorrect (with Arabic equivalent)
+**التحليل — Analysis**: What they got right and wrong in terms of definitions or syllogistic structures
+**التصحيح — Correction**: The correct classical logic model answer explained step-by-step
+**التشجيع — Encouragement**: One motivating sentence in the style of a classical scholar (like Ibn Sina or Farabi) to their student`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: `Evaluate the student's logic answer: "${studentAnswer}"`,
+        config: {
+          systemInstruction,
+          temperature: 0.5,
+        }
+      });
+
+      res.json({ evaluation: response.text });
+    } catch (e: any) {
+      console.error("Mantiq logic evaluation failed:", e);
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // Mantiq MCQ Quiz Generator endpoint
+  app.post("/api/labs/mantiq/quiz", async (req, res) => {
+    const { moduleName } = req.body;
+    if (!moduleName) {
+      return res.status(400).json({ error: "No moduleName provided" });
+    }
+
+    try {
+      const ai = getGenAI();
+      if (!ai) {
+        throw new Error("No Gemini API configured");
+      }
+
+      const prompt = `Generate exactly 3 MCQ questions testing ${moduleName} in classical Islamic Mantiq.
+Return ONLY this JSON, nothing else:
+[
+  {
+    "question": "string explaining logical scenario or conceptual rule in English",
+    "arabic_question": "short Arabic translation of the question",
+    "options": {
+      "A": "First answer option string",
+      "B": "Second answer option string",
+      "C": "Third answer option string",
+      "D": "Fourth answer option string"
+    },
+    "correct": "A" or "B" or "C" or "D",
+    "explanation": "Brief rationale for correct option referenced back to Ibn Sina or standard mantiq parameters"
+  }
+]`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          temperature: 0.7,
+          responseMimeType: "application/json"
+        }
+      });
+
+      const text = response.text || "[]";
+      const questions = JSON.parse(text);
+      res.json({ questions });
+    } catch (e: any) {
+      console.error("Mantiq quiz JSON generation failed:", e);
+      res.status(500).json({ error: e.message });
+    }
+  });
 
   // Helper function to delay/pulse local stream simulation
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -835,70 +1070,120 @@ Format example:
   app.post("/api/labs/nafs-assessment", async (req, res) => {
     const { answers } = req.body;
     if (!answers || !Array.isArray(answers)) {
-      return res.status(400).write("Error: Missing or invalid answers array");
+      return res.status(400).json({ error: "Missing or invalid answers array" });
     }
-
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    res.setHeader("Transfer-Encoding", "chunked");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
 
     const ai = getGenAI();
     if (!ai) {
-      // Stream premium simulated scholarly assessment
-      const responseStreamText = `[ALIGNMENT DIAGNOSIS: NAFS AL-LAWWAMA - THE SELF-BLAMING CONSCIENCE]
-
-1) NAFS STAGE & SCRIPTURAL EVIDENCE
-Your spiritual psychological profile indicates a predominant state of Nafs al-Lawwama. You are in a dynamic state of spiritual wakefulness, actively battling inner impulses yet feeling immediate regret after falling into error.
-Sacred Proof: "And I swear by the self-reproaching soul (Nafs al-Lawwama)..." (Surah Al-Qiyamah, 75:2). Traditional masters outline this as the pivot of spiritual growth—it is the soul that moves between right and wrong but commands praise because it blames itself for its shortcomings.
-
-2) PSYCHOLOGICAL PROFILE IN ISLAMIC TERMS
-Under classically formulated Ibn al-Qayyim Nafs sciences, Nafs al-Lawwama operates as a transitional spiritual state. You are neither completely commanded by lower desires (Ammara) nor fully anchored in absolute divine tranquility (Mutmainna). 
-In cognitive-behavioral terms, this manifests as high self-monitoring, acute moral awareness, and localized distress after ethical deviations. The challenge is converting self-reproach from a destructive cognitive feedback loop (unfiltered guilt) into adaptive repentance and behavioral modifications (Istiqlal).
-
-3) SEVEN-DAY TAZKIYAH COGNITIVE PRESCRIPTION
-- Day 1-2 (The Shield of Astaghfirullah): Recite "Astaghfirullah al-Azeem" 100 times after Fajr and Asr. Pair this with a cognitive pause—whenever an error occurs, do not spiral into hopelessness; write down the cognitive trigger.
-- Day 3-4 (The Litany of Constant Grounding): Read Surah Al-Qiyamah verses 1-10 with exegesis. Practice behavioral cognitive reframing: focus on divine mercy over obsessive perfectionism.
-- Day 5 (The Prayer of Renewed Alignment): Pray two rak'ahs of Salat al-Tawbah with focused presence. Actively visualize releasing the weight of past actions into divine mercy.
-- Day 6-7 (Inoculation of Sabr): Align with nature or sit in silence for 15 minutes post-Asr. Practice deep diaphragmatic breathing (Nafas al-Ruh) while internally meditating on "Ya Hayyu Ya Qayyum."
-
-4) CLASSIC ETHICAL MAXIM (IBN AL-QAYYIM Q-MEMORANDUM)
-"The soul (Nafs) is like a wild beast; if you do not busy it with truth, it will busy you with falsehood. The remorse of the Lawwama is the dawn of the Mutmainna." (Ighathat al-Lahfan, Vol. 1)`;
-
-      const lines = responseStreamText.split("\n");
-      for (const line of lines) {
-        res.write(line + "\n");
-        await sleep(60);
-      }
-      res.end();
-      return;
+      // Offline/missing key fallback has been fully engineered in the client component,
+      // but we will still return a premium default structure here so the JSON parsing doesn't break.
+      const fallbackResult = {
+        stage: "Lawwama",
+        arabic: "نَفْسُ اللَّوَّامَةِ",
+        ayah: "وَلَا أُقْسِمُ بِالنَّفْسِ اللَّوَّامَةِ (Surah Al-Qiyamah, 75:2)",
+        profile: "Your spiritual profile indicates a state of active moral response and spiritual awareness. You are highly self-observing, suffering temporary spiritual setbacks but turning immediately back with remorse and corrective energy.",
+        prescription: [
+          { day: 1, dhikr: "Recite 'Astaghfirullah' 100 times slowly.", action: "Log the exact cognitive trigger of your latest ethical slip." },
+          { day: 2, dhikr: "Recite 'Ya Razzaq' 100 times after Fajr prayer.", action: "Perform all five rituals strictly at their primary times today." },
+          { day: 3, dhikr: "Recite 'La ilaha illa-Allah' 100 times.", action: "Read Surah Al-Qiyamah with translation for 15 minutes." },
+          { day: 4, dhikr: "Recite 'Allahumma alaika tawakkaltu' 50 times.", action: "Consciously release one major worry today to divine oversight." },
+          { day: 5, dhikr: "Send blessings of Salat ala-Nabi 100 times.", action: "Make a sincere, secret prayer for anyone you have held anger toward." },
+          { day: 6, dhikr: "Recite 'Subhanallahi wa bihamdihi' 100 times.", action: "Sit in silence before sunset, tracking five blessings of the week." },
+          { day: 7, dhikr: "Recite 'Ya Hayyu Ya Qayyum' 100 times post-Asr.", action: "Create a proactive spiritual protection chart for vulnerable hours." }
+        ],
+        ibn_qayyim_quote: "The remorse of the Lawwama is the very light of the dawn of the Mutmainna. The struggle itself is a sign of spiritual vigor.",
+        encouragement: "Every fluctuation is an entry point to seek proximity to divine love. Keep climbing with hope."
+      };
+      return res.json(fallbackResult);
     }
 
     try {
-      const formattedAnswers = answers.map((a: any, i: number) => `Q${i + 1}: ${a.question}\nSelected Response: ${a.answer}`).join("\n\n");
-      const prompt = `Here are the student's selections on a spiritual psychology Nafs assessment:\n\n${formattedAnswers}\n\nPlease generate a professional, deep, and traditional psycho-spiritual analysis. Format the response exactly as:
-1) Their predominant Nafs stage out of the three traditional levels: Nafs al-Ammara, Nafs al-Lawwama, or Nafs al-Mutmainna, with Quranic Ayah proof.
-2) Psychological profile in classical Islamic terms fused with modern CBT insights.
-3) A 7-day Tazkiyah (spiritual purification) course or prescription with specific Adhkar, Quranic verses, and lifestyle modifications.
-4) One relevant quote from Ibn al-Qayyim.`;
+      const formattedAnswers = answers.map((a: any, i: number) => `Q${i + 1} Topic [${a.topic}]: ${a.question}\nSelected Choice: [${a.answerKey}] ${a.answerText}`).join("\n\n");
+      const prompt = `Here are the seeker's selections on a spiritual psychology Nafs assessment:\n\n${formattedAnswers}\n\nPlease generate a professional, deep, and traditional psycho-spiritual analysis. Determine their dominant Nafs stage out of the three traditional levels: 'Ammara', 'Lawwama', or 'Mutmainna'. Provide appropriate scriptures, 7-day Tazkiyah programs, and quotes from Imam Ibn al-Qayyim exactly matching the required JSON schema.`;
 
-      const responseStream = await ai.models.generateContentStream({
+      const response = await ai.models.generateContent({
         model: "gemini-3.5-flash",
         contents: prompt,
         config: {
-          systemInstruction: "You are an Islamic psychologist trained in traditional Tazkiyah al-Nafs (purification of the soul) of Imam Ibn al-Qayyim and contemporary Cognitive Behavioral Therapy (CBT). Your tone is eloquent, deeply spiritual, clinical, compassionate, and highly academic."
+          systemInstruction: `You are an Islamic psychologist trained in traditional Tazkiyah al-Nafs (purification of the soul) of Imam Ibn al-Qayyim and contemporary Cognitive Behavioral Therapy (CBT). Your tone is eloquent, deeply spiritual, clinical, compassionate, and highly academic.
+
+Analyze the user's responses, detect their dominant Nafs stage, and return a response strictly in JSON format matching this schema:
+{
+  "stage": "Ammara" | "Lawwama" | "Mutmainna",
+  "arabic": "Arabic name of the stage (with correct vowel diacritics/tashkeel)",
+  "ayah": "Quranic Ayah proof in Arabic AND surah:verse reference - for Amiri Arabic font rendering",
+  "profile": "2-sentence psychological + spiritual profile combining classical Tazkiyah and modern CBT",
+  "prescription": [
+    { "day": 1, "dhikr": "daily litany/dhikr prescription for Day 1", "action": "practical cognitive/behavioral action step based on the stage" },
+    ... 7 days total (day 1 to 7)
+  ],
+  "ibn_qayyim_quote": "One relevant quote from Al-Fawa'id or Madarij al-Salikin or other works of Ibn al-Qayyim regarding paths of spiritual ascent or struggles of the soul",
+  "encouragement": "One warm, deeply encouraging closing spiritual sentence"
+}`,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              stage: {
+                type: Type.STRING,
+                description: "Must be exactly one of: 'Ammara', 'Lawwama', or 'Mutmainna'"
+              },
+              arabic: {
+                type: Type.STRING,
+                description: "Arabic name of the stage (with tashkeel vowel diacritics), e.g., نَفْسُ اللَّوَّامَةِ"
+              },
+              ayah: {
+                type: Type.STRING,
+                description: "Relevant Quranic Ayah proof in Arabic + references"
+              },
+              profile: {
+                type: Type.STRING,
+                description: "A 2-sentence psychological and spiritual profile combining classical Tazkiyah and modern CBT insights"
+              },
+              prescription: {
+                type: Type.ARRAY,
+                description: "7-day purification course prescription mapping days 1 to 7",
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    day: { type: Type.INTEGER, description: "Day number from 1 to 7" },
+                    dhikr: { type: Type.STRING, description: "Daily focus litany or dhikr practice text" },
+                    action: { type: Type.STRING, description: "Practical cognitive-behavioral or lifestyle action step" }
+                  },
+                  required: ["day", "dhikr", "action"]
+                }
+              },
+              ibn_qayyim_quote: {
+                type: Type.STRING,
+                description: "One relevant quote from Ibn al-Qayyim regarding paths of spiritual struggles"
+              },
+              encouragement: {
+                type: Type.STRING,
+                description: "One warm, deeply encouraging closing spiritual sentence"
+              }
+            },
+            required: ["stage", "arabic", "ayah", "profile", "prescription", "ibn_qayyim_quote", "encouragement"]
+          }
         }
       });
 
-      for await (const chunk of responseStream) {
-        res.write(chunk.text || "");
-      }
-      res.end();
+      const responseText = response.text || "";
+      const parsedJSON = JSON.parse(responseText.trim());
+      res.json(parsedJSON);
     } catch (err: any) {
-      console.error("Nafs streaming error:", err);
-      res.write(`Error during live assessment: ${err.message}`);
-      res.end();
+      console.error("Nafs JSON generation error:", err);
+      res.status(500).json({ error: "Failed during live psycho-spiritual assessment: " + err.message });
     }
+  });
+
+  // Client Journal Registry Store for persistence audits
+  const localJournalRegistry: any[] = [];
+  app.post("/api/labs/journal/save", (req, res) => {
+    const { entry } = req.body;
+    if (entry) {
+      localJournalRegistry.unshift(entry);
+    }
+    res.json({ success: true, count: localJournalRegistry.length });
   });
 
   // 2. Mantiq Tutor Lesson Explainer Endpoint
