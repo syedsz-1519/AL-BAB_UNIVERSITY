@@ -449,23 +449,37 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
     <div className={`max-w-4xl mx-auto px-4 ${isSpace ? 'text-stone-100' : 'text-stone-800'}`}>
       
       {/* HEADER SECTION WRAPPER */}
-      <div className="flex justify-between items-center mb-8 border-b border-stone-200 dark:border-stone-800 pb-4">
-        <div>
-          <h1 className="font-serif text-3xl font-black tracking-wide text-crimson dark:text-gold flex items-center gap-2">
-            <Heart className="h-7 w-7 text-crimson dark:text-gold animate-pulse" />
-            Nafs spiritual assessment
-          </h1>
-          <p className="text-xs font-mono tracking-widest text-stone-500 dark:text-stone-400 capitalize mt-1">
-            Student: <span className="text-crimson/80 dark:text-gold-light font-bold font-sans">{userName}</span> ({userEmail})
-          </p>
-        </div>
+      <div className="flex flex-col items-center text-center mb-10 pb-6 border-b border-stone-200 dark:border-stone-800 relative" id="nafs-header">
         <button
           onClick={onBackToLanding}
-          className="text-xs font-mono tracking-widest uppercase py-2 px-4 border border-stone-300 dark:border-stone-700 bg-transparent hover:bg-stone-100 dark:hover:bg-stone-900 transition-all rounded-sm cursor-pointer"
+          className="absolute top-0 left-0 text-xs font-mono tracking-widest uppercase py-1.5 px-3.5 border border-stone-300 dark:border-stone-700 bg-transparent hover:bg-stone-100 dark:hover:bg-stone-900 transition-all rounded-sm cursor-pointer"
           id="back-to-landing-btn"
         >
-          Exit Labs
+          ← Exit Labs
         </button>
+
+        <div className="flex justify-center items-center gap-3 mb-3 mt-10 md:mt-0">
+          <div className="h-[1px] w-8 opacity-60 bg-crimson dark:bg-gold"></div>
+          <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] text-[#C4A35A] uppercase font-bold text-center">Tazkiyah & Nafs Cognitive Assessment</span>
+          <div className="h-[1px] w-8 opacity-60 bg-crimson dark:bg-gold"></div>
+        </div>
+
+        <span 
+          className="block text-crimson dark:text-gold antialiased tracking-wide font-serif mb-2 select-none font-bold"
+          style={{ fontFamily: 'Amiri, Georgia, serif', fontSize: '2.5rem', lineHeight: '1.2' }}
+          dir="rtl"
+        >
+          مُحَاسَبَةُ النَّفْس
+        </span>
+
+        <h1 className="font-serif text-2xl sm:text-3.5xl font-black tracking-wide text-stone-850 dark:text-stone-100 flex items-center justify-center gap-2">
+          <Heart className="h-6 w-6 text-crimson dark:text-gold animate-pulse" />
+          Nafs Spiritual Assessment
+        </h1>
+        
+        <p className="text-xs font-mono tracking-widest text-stone-500 dark:text-stone-400 capitalize mt-2">
+          Student: <span className="text-crimson/85 dark:text-gold-light font-bold font-sans">{userName}</span> ({userEmail})
+        </p>
       </div>
 
       <AnimatePresence mode="wait">

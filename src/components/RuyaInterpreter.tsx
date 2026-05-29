@@ -215,24 +215,27 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
           <span>Journal ({savedJournal.length})</span>
         </button>
 
-        <div className="max-w-2xl mt-4">
-          <span className="text-[#C4A35A] tracking-[0.25em] font-sans text-xs uppercase block mb-1">
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-          </span>
+        <div className="max-w-2xl mt-4 flex flex-col items-center">
+          <div className="flex justify-center items-center gap-3 mb-3">
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+            <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] text-[#C4A35A] uppercase font-bold text-center">AL-RUYA ONEIROMANCY PORTAL</span>
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+          </div>
           
           <h2 
-            className="text-[#C4A35A] text-4xl sm:text-5xl font-bold mb-2 font-serif" 
+            className="text-[#C4A35A] text-4xl sm:text-5xl font-bold mb-2 font-serif select-none" 
             style={{ fontFamily: 'Amiri, Georgia, serif' }}
+            dir="rtl"
           >
             تَفْسِيرُ الرُّؤْيَا
           </h2>
           
-          <h1 className="text-2xl sm:text-3.5xl font-serif tracking-normal mb-2 text-white font-medium">
+          <h1 className="text-2xl sm:text-3.5xl font-serif tracking-normal mb-2 text-white font-medium text-center">
             Ru'ya Interpreter
           </h1>
           
-          <p className="text-stone-300 text-sm max-w-lg mx-auto font-sans font-light leading-relaxed">
-            Through the lens of Ibn Sirin and the wisdom of Carl Jung
+          <p className="text-stone-300 text-xs sm:text-sm max-w-lg mx-auto font-sans font-light leading-relaxed text-center">
+            Bismillahi ar-Rahman ar-Rahim. Analysed through the lens of Ibn Sirin and the wisdom of Carl Jung
           </p>
         </div>
       </div>

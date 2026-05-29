@@ -149,20 +149,27 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
             ← Back to Campus
           </button>
 
+          <div className="flex justify-center items-center gap-3 mb-3">
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+            <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] text-[#C4A35A] uppercase font-bold text-center">AL-MAQASID SHARIAH ANALYZER</span>
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+          </div>
+
           {/* ARABIC CALLIGRAPHY ACCENT */}
           <span 
             className="block text-[#C4A35A] antialiased tracking-wide font-serif mb-2 select-none font-bold"
-            style={{ fontFamily: 'Amiri, Georgia, serif', fontSize: '1.9rem', lineHeight: '1.2' }}
+            style={{ fontFamily: 'Amiri, Georgia, serif', fontSize: '2.5rem', lineHeight: '1.2' }}
+            dir="rtl"
           >
             مَقَاصِدُ الشَّرِيعَة
           </span>
 
-          <h1 className="font-serif font-black text-3xl sm:text-4xl text-white tracking-wide leading-tight uppercase font-extrabold">
+          <h1 className="font-serif font-black text-2xl sm:text-3.5xl text-white tracking-wide leading-tight uppercase font-extrabold text-center">
             Maqasid Ethical Analyzer
           </h1>
           
-          <p className="text-stone-200 text-xs sm:text-sm max-w-2xl font-serif italic tracking-wide">
-            "Analyze any modern dilemma through the 5 objectives of Islamic Law"
+          <p className="text-stone-200 text-xs sm:text-sm max-w-2xl font-serif italic tracking-wide text-center">
+            Analyze any modern dilemma through the 5 essential objectives of Islamic Law.
           </p>
         </div>
       </header>

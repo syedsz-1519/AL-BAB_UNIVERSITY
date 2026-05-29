@@ -241,28 +241,28 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
             ← Back to Campus
           </button>
 
-          <span 
-            className="block text-[#C4A35A] font-serif tracking-wide italic text-xs uppercase"
-          >
-            "Armed with Al-Ghazali. Sharpened by Ibn Taymiyyah."
-          </span>
+          <div className="flex justify-center items-center gap-3 mb-3">
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+            <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] text-[#C4A35A] uppercase font-bold text-center">AL-AQEEDAH THEOLOGICAL SANCTUM</span>
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+          </div>
 
           <span 
             className="block text-[#C4A35A] antialiased tracking-wide font-serif select-none font-bold"
-            style={{ fontFamily: 'Amiri, Georgia, serif', fontSize: '2.2rem', lineHeight: '1.2' }}
+            style={{ fontFamily: 'Amiri, Georgia, serif', fontSize: '2.5rem', lineHeight: '1.2' }}
           >
             حِصْنُ الْعَقِيدَة
           </span>
 
           <h1 
-            className="font-serif font-black text-3xl sm:text-4xl text-white tracking-tight uppercase"
+            className="font-serif font-black text-2xl sm:text-3.5xl text-white tracking-tight uppercase"
             style={{ fontFamily: 'Cormorant Garamond, Amiri, Georgia, serif', fontWeight: 800 }}
           >
             Aqeedah Firewall
           </h1>
           
-          <p className="text-stone-300 text-xs sm:text-sm max-w-2xl font-serif italic tracking-wide text-white/70">
-            Refute modern philosophical challenges with Kalam and Logic
+          <p className="text-stone-300 text-xs sm:text-sm max-w-2xl font-serif italic tracking-wide text-white/75">
+            Armed with Al-Ghazali, sharpened by Ibn Taymiyyah. Refute modern philosophical challenges with Kalam and Logic.
           </p>
         </div>
       </header>

@@ -256,14 +256,20 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
           <span>Scans Journal ({savedReports.length})</span>
         </button>
 
-        <div className="max-w-2xl mt-4">
-          <span className="font-arabic text-3xl sm:text-4xl text-[#C4A35A] block mb-2 font-bold tracking-wide leading-none" style={{ fontSize: '1.8rem', color: '#C4A35A', fontFamily: 'Amiri, Georgia, serif' }}>
+        <div className="max-w-2xl mt-4 flex flex-col items-center">
+          <div className="flex justify-center items-center gap-3 mb-3">
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+            <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] text-[#C4A35A] uppercase font-bold text-center">AL-MANTIQ COGNITIVE LAB</span>
+            <div className="h-[1px] w-8 opacity-60 bg-white"></div>
+          </div>
+
+          <span className="font-arabic text-3xl sm:text-4xl md:text-5xl text-[#C4A35A] block mb-2 font-bold tracking-wide leading-none select-none" style={{ fontFamily: 'Amiri, Georgia, serif' }} dir="rtl">
             كَاشِفُ الْمُغَالَطَات
           </span>
-          <h1 className="text-2xl sm:text-4xl font-serif tracking-normal mb-1 text-white font-black cormorant">
+          <h1 className="text-2xl sm:text-3.5xl font-serif tracking-normal mb-2 text-white font-black cormorant leading-tight">
             Logical Fallacy Scanner
           </h1>
-          <p className="text-stone-300 text-xs sm:text-sm max-w-xl mx-auto font-sans font-light leading-relaxed">
+          <p className="text-stone-300 text-xs sm:text-sm max-w-xl mx-auto font-sans font-light leading-relaxed text-center">
             Test any Islamic argument with classical Mantiq and modern critical thinking
           </p>
         </div>

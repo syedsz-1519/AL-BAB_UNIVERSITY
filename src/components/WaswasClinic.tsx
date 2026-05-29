@@ -338,21 +338,24 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
         </AnimatePresence>
 
         {/* HEADER SECTION */}
-        <div 
-          className="bg-[#FFFDF9] border border-[#C4A35A]/35 shadow-md rounded-sm p-8 text-center space-y-3"
-          id="waswas-header-card"
-        >
-          <div className="font-arabic text-[1.8rem] text-[#8B1A1A] leading-none mb-1 select-none" dir="rtl">
-            وَسْوَاسٌ وَشِفَاء
+        <div className="max-w-4xl mx-auto mb-10 text-center animate-fade-in" id="waswas-header-card">
+          <div className="flex justify-center items-center gap-3 mb-3">
+            <div className="h-[1px] w-8 opacity-60 bg-[#8B1A1A]"></div>
+            <span className="font-mono text-xs tracking-[0.25em] text-[#C4A35A] uppercase font-bold">AL-NAFSI CLINICAL GATE</span>
+            <div className="h-[1px] w-8 opacity-60 bg-[#8B1A1A]"></div>
           </div>
-          <h1 className="font-serif text-[1.6rem] font-bold text-[#8B1A1A] tracking-wider uppercase select-none">
-            Waswas Clinic
+
+          <h1 className="font-arabic text-3xl sm:text-4xl md:text-5xl text-[#8B1A1A] leading-none mb-2 select-none font-bold" style={{ fontFamily: 'Amiri, Georgia, serif' }} dir="rtl">
+            وَسْوَاسٌ وَشِفَاء
           </h1>
-          <p className="text-[#555555] text-sm leading-relaxed max-w-lg mx-auto font-serif italic">
+          <h2 className="font-serif font-bold text-xl sm:text-2xl text-stone-800 mb-2">
+            Waswas Clinic
+          </h2>
+          <p className="text-[#555555] text-xs sm:text-sm leading-relaxed max-w-lg mx-auto font-serif italic mb-4">
             A safe space for spiritual doubt, obsessive thoughts, and the whispers of Shaytan
           </p>
-          <div className="pt-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50/50 border border-amber-200/60 rounded-full text-[11px] text-amber-800 leading-none font-serif">
+          <div className="flex justify-center pt-1 pb-3">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-amber-50 border border-amber-200/50 rounded-full text-[10px] text-amber-800 leading-none font-sans font-medium">
               Spiritual guidance only — not a replacement for professional mental health care
             </span>
           </div>

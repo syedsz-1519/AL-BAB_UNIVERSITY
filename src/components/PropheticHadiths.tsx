@@ -1,6 +1,7 @@
-import React from 'react';
-import { BookOpen, MessageSquareQuote, Compass, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { MessageSquareQuote, RotateCw } from 'lucide-react';
 import { HADITHS } from '../data';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface PropheticHadithsProps {
   currentTheme: 'parchment' | 'space';
@@ -8,17 +9,21 @@ interface PropheticHadithsProps {
 
 export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps) {
   const isSpace = currentTheme === 'space';
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Help map icons to cards
-  const icons = [BookOpen, Compass, Award, MessageSquareQuote];
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % HADITHS.length);
+  };
+
+  const currentHadith = HADITHS[currentIndex];
 
   return (
     <section 
       id="prophetic-hadiths-ilm"
       className={`py-20 px-6 md:px-12 border-t relative overflow-hidden transition-all duration-700
         ${isSpace 
-          ? 'bg-[#020509] border-gold/10 text-white' 
-          : 'bg-[#FAF8F5] border-stone-200 text-stone-900'
+          ? 'bg-[#020509] border-t border-gold/10 text-white' 
+          : 'bg-[#FAF8F5] border-t border-stone-200 text-stone-900'
         }
       `}
       style={{
@@ -28,109 +33,102 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
         backgroundSize: '32px 32px'
       }}
     >
-      <div className="max-w-7xl mx-auto relative z-10 text-center">
+      <div className="max-w-4xl mx-auto relative z-10 text-center">
         
         {/* SECTION HEADER BLOCK */}
-        <div className="mb-14">
-          <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full border text-[10px] font-mono tracking-[0.25em] uppercase
-            dark:border-gold/20 dark:bg-gold/5 dark:text-gold-light border-crimson/15 bg-crimson/5 text-crimson
-          ">
-            <MessageSquareQuote className="h-3.5 w-3.5 animate-pulse" />
-            Prophetic Guidance on Seeking Wisdom
+        <div className="mb-10 flex flex-col items-center">
+          <div className={`p-3 rounded-md mb-4 border
+            ${isSpace 
+              ? 'bg-gold/10 border-gold/25 text-gold' 
+              : 'bg-crimson/5 border-[#8B1A1A]/15 text-[#8B1A1A]'
+            }
+          `}>
+            <MessageSquareQuote className="h-6 w-6" />
           </div>
-          
-          <span 
-            className="font-arabic text-3xl sm:text-4xl text-[#C4A35A] block mb-3 font-semibold select-none"
-            style={{ fontFamily: 'Amiri, Georgia, serif' }}
-          >
-            أَحَادِيثُ نَبَوِيَّةٌ فِي طَلَبِ الْعِلْمِ
-          </span>
-          
-          <h2 className={`font-serif font-black text-3xl sm:text-4xl tracking-tight leading-none mb-4
+
+          <h2 className={`font-eb font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-2
             ${isSpace ? 'text-white' : 'text-[#8B1A1A]'}
           `}>
-            Prophetic Hadiths on Gathering Knowledge
+            Authentic Prophetic Hadiths
           </h2>
           
-          <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-2xl mx-auto leading-relaxed font-serif italic">
-            "The seeking of holy comprehension is a continuous celestial ascension, paving pathways through the intellect to divine proximity."
+          <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-stone-500 dark:text-zinc-400">
+            ON KNOWLEDGE & UNDERSTANDING — ULUL ALBAB
           </p>
         </div>
 
-        {/* 4 AUTHENTIC HADITHS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {HADITHS.map((hadith, index) => {
-            const IconComponent = icons[index % icons.length];
-            return (
+        {/* SINGLE SEAMLESS HADITH CARD WITH ANIMATION */}
+        <div className="relative min-h-[300px] flex items-center justify-center mb-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className={`w-full p-8 sm:p-12 rounded-sm border relative shadow-md text-center flex flex-col justify-center
+                ${isSpace 
+                  ? 'bg-[#060c16]/90 border-gold/15 text-white' 
+                  : 'bg-white border-stone-200 text-stone-900'
+                }
+              `}
+              style={{
+                borderLeft: isSpace ? '4px solid #C4A35A' : '4px solid #8B1A1A'
+              }}
+            >
+              {/* ARABIC TEXT */}
               <div 
-                key={hadith.id}
-                className={`relative p-6 border-2 rounded-sm text-left flex flex-col justify-between shadow-sm transition-all duration-350 hover:scale-[1.01] hover:shadow-md
-                  ${isSpace 
-                    ? 'bg-[#060c16]/90 border-gold/15 text-white hover:border-gold/35' 
-                    : 'bg-white border-stone-200 text-stone-900 hover:border-[#8B1A1A]/40'
-                  }
+                className={`font-arabic text-3xl sm:text-4xl text-center select-none font-bold leading-normal mb-6
+                  ${isSpace ? 'text-gold-light' : 'text-[#8B1A1A]'}
                 `}
+                dir="rtl"
+                style={{ fontFamily: 'Amiri, Georgia, serif' }}
               >
-                {/* Accent corner tag */}
-                <div className={`absolute top-0 right-0 w-8 h-8 rounded-tr-sm pointer-events-none overflow-hidden flex items-center justify-center`}>
-                  <div className={`absolute rotate-45 w-12 h-4 text-center text-[8px] font-mono font-black py-0.5 text-white
-                    ${isSpace ? 'bg-[#C4A35A]' : 'bg-[#8B1A1A]'}
-                  `}>
-                    #{index + 1}
-                  </div>
-                </div>
-
-                <div>
-                  {/* Hadith Icon */}
-                  <div className="mb-5 flex items-center gap-3">
-                    <div className={`p-2 rounded-sm border
-                      ${isSpace 
-                        ? 'bg-gold/10 border-gold/25 text-gold' 
-                        : 'bg-crimson/5 border-crimson/15 text-[#8B1A1A]'
-                      }
-                    `}>
-                      <IconComponent className="h-4.5 w-4.5" />
-                    </div>
-                  </div>
-
-                  {/* ARABIC TEXT (Styled in precise golden color) */}
-                  <div 
-                    className="text-right font-arabic select-all font-black text-lg sm:text-xl leading-relaxed sm:leading-loose text-[#C4A35A] dark:text-gold-light mb-5"
-                    style={{ fontFamily: 'Amiri, Georgia, serif' }}
-                  >
-                    {hadith.arabic}
-                  </div>
-
-                  {/* ENGLISH TRANSLATION */}
-                  <p className="font-serif italic text-sm leading-relaxed text-stone-600 dark:text-stone-300 mb-5">
-                    "{hadith.translation}"
-                  </p>
-                </div>
-
-                <div>
-                  {/* SCHOLARLY CONTEXT & COMMENTARY */}
-                  <div className={`p-3 rounded-xs border text-[11px] leading-relaxed mb-4
-                    ${isSpace 
-                      ? 'bg-black/40 border-gold/10 text-stone-350' 
-                      : 'bg-[#FAF8F5] border-stone-200 text-stone-600'
-                    }
-                  `}>
-                    <strong className={`font-mono text-[9px] uppercase tracking-wider block mb-1
-                      ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}
-                    `}>
-                      Scholarly Exegesis:
-                    </strong>
-                    {hadith.context}
-                  </div>
-
-                  {/* CITATION RECORD KEY */}
-                  <div className="border-t border-stone-200/50 dark:border-zinc-800/65 pt-3 mt-1 text-[10px] select-none font-mono text-stone-400 dark:text-stone-500 font-bold">
-                    {hadith.source}
-                  </div>
-                </div>
+                {currentHadith.arabic}
               </div>
-            );
-          })}
+
+              {/* ENGLISH TRANSLATION */}
+              <p className="font-serif italic text-lg sm:text-xl text-stone-700 dark:text-stone-350 max-w-3xl mx-auto mb-6 leading-relaxed">
+                "{currentHadith.translation}"
+              </p>
+
+              {/* CITATION PILL */}
+              <div className="mb-6 flex justify-center">
+                <span className={`px-4 py-1.5 rounded-sm text-[11px] font-mono tracking-wide uppercase border font-bold
+                  ${isSpace 
+                    ? 'bg-black/40 border-gold/20 text-gold-light' 
+                    : 'bg-crimson/5 border-[#8B1A1A]/25 text-[#8B1A1A]'
+                  }
+                `}>
+                  {currentHadith.source}
+                </span>
+              </div>
+
+              {/* CONTEXT BLOCK */}
+              <p className="text-xs text-stone-500 dark:text-zinc-450 max-w-2xl mx-auto leading-relaxed font-sans font-medium">
+                <span className={`font-black uppercase tracking-wider mr-1.5 ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}`}>
+                  Context:
+                </span>
+                {currentHadith.context}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* CYCLE CORE WISDOM BTN */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleNext}
+            className={`px-6 py-3.5 rounded-sm text-xs font-mono font-bold uppercase tracking-widest border transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.02] active:scale-[0.98]
+              ${isSpace 
+                ? 'bg-gold border-gold text-space hover:bg-white hover:text-space' 
+                : 'bg-[#8B1A1A] border-[#8B1A1A] text-[#FAF6EE] hover:bg-black hover:text-white'
+              }
+            `}
+          >
+            <RotateCw className="h-4 w-4" />
+            <span>Cycle Core Wisdom</span>
+          </button>
         </div>
 
       </div>
