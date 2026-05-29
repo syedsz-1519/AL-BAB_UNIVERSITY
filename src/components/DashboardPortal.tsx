@@ -848,7 +848,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
             University Portals
           </h2>
           <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-lg mx-auto leading-relaxed mt-2">
-            Sign into the specialized student and administration frameworks of Albab Islamic University to manage notices, covenants, and critique evaluations.
+            Sign into the specialized student and administration frameworks of <span className="text-[#8B1A1A] font-bold">Albab Islamic University</span> to manage notices, covenants, and critique evaluations.
           </p>
         </div>
 
@@ -1665,10 +1665,10 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                 
                 {/* MY COVENANT MINI CERTIFICATE CARD */}
                 <div className="relative border-4 border-double p-5 text-center font-serif bg-[#FAF6EF] text-[#1A1A1A] rounded shadow-md border-[#C9933A]/60 overflow-hidden">
-                  <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-[#8B0000]" />
-                  <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-[#8B0000]" />
+                  <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-[#8B1A1A]" />
+                  <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-[#8B1A1A]" />
                   
-                  <span className="text-[7px] tracking-[0.2em] font-mono font-black uppercase text-[#8B0000] block mt-1">
+                  <span className="text-[7px] tracking-[0.2em] font-mono font-black uppercase text-[#8B1A1A] block mt-1">
                     Albab Islamic University
                   </span>
                   
@@ -1677,7 +1677,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                   </h4>
 
                   <span className="text-[8px] uppercase tracking-widest font-mono text-stone-400 block mb-0.5">Under scholarly name of</span>
-                  <div className="font-serif italic font-extrabold text-[#8B0000] text-base leading-tight font-black border-b border-[#C9933A]/35 pb-2 mb-2">
+                  <div className="font-serif italic font-extrabold text-[#8B1A1A] text-base leading-tight font-black border-b border-[#C9933A]/35 pb-2 mb-2">
                     {activeStudent.fullName}
                   </div>
 

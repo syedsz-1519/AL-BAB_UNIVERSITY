@@ -8,6 +8,7 @@ import EditorialSection from './components/EditorialSection';
 import CurriculumInspector from './components/CurriculumInspector';
 import DashboardPortal from './components/DashboardPortal';
 import HadithDisplay from './components/HadithDisplay';
+import PropheticHadiths from './components/PropheticHadiths';
 import AdmissionPortal from './components/AdmissionPortal';
 import Footer from './components/Footer';
 import FloatingContacts from './components/FloatingContacts';
@@ -23,6 +24,7 @@ import NafsAssessmentScreen from './components/NafsAssessmentScreen';
 import MaqasidAnalyzer from './components/MaqasidAnalyzer';
 import AqeedahFirewall from './components/AqeedahFirewall';
 import RuyaInterpreter from './components/RuyaInterpreter';
+import AcademicWorld from './components/AcademicWorld';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -34,7 +36,13 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith'>(() => {
+    if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
+      return 'academic-world';
+    }
+    if (window.location.hash === '#hadith' || window.location.pathname === '/hadith') {
+      return 'hadith';
+    }
     if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
       return 'waswas-clinic';
     }
@@ -89,7 +97,9 @@ export default function App() {
   // Synchronize hash / path navigation change
   useEffect(() => {
     const handleUrlChange = () => {
-      if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
+      if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
+        setCurrentSection('academic-world');
+      } else if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
         setCurrentSection('waswas-clinic');
       } else if (window.location.hash === '#aqeedah-firewall' || window.location.pathname === '/aqeedah-firewall') {
         setCurrentSection('aqeedah-firewall');
@@ -105,6 +115,8 @@ export default function App() {
         setCurrentSection('dhikr-rx');
       } else if (window.location.hash === '#nafs-assessment' || window.location.pathname === '/nafs-assessment') {
         setCurrentSection('nafs-assessment');
+      } else if (window.location.hash === '#hadith' || window.location.pathname === '/hadith') {
+        setCurrentSection('hadith');
       }
     };
     window.addEventListener('popstate', handleUrlChange);
@@ -210,12 +222,22 @@ export default function App() {
         onLanguageChange={setLanguage}
       />
 
+      {currentSection === 'academic-world' && (
+        <div className="pt-28 pb-12 min-h-[82vh] transition-all duration-500 animate-fade-in">
+          <AcademicWorld 
+            currentTheme={currentTheme}
+            onNavigateToSection={(sec) => setCurrentSection(sec as any)}
+            language={language}
+          />
+        </div>
+      )}
+
       {currentSection === 'portal' && (
         <div className="pt-24 min-h-[85vh] transition-all duration-500 animate-fade-in">
           {/* SECURE STUDENT AND ADMINISTRATION PORTAL SECTION */}
           <DashboardPortal 
             currentTheme={currentTheme} 
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -223,6 +245,14 @@ export default function App() {
       {currentSection === 'debate' && (
         <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
           <DebateArena currentTheme={currentTheme} />
+          <div className="text-center mt-8">
+            <button
+              onClick={() => setCurrentSection('academic-world')}
+              className="font-mono text-xs uppercase px-5 py-2.5 border border-stone-300 dark:border-zinc-800 rounded hover:bg-stone-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer font-bold"
+            >
+              &larr; Back to Scholastic Universe
+            </button>
+          </div>
         </div>
       )}
 
@@ -233,12 +263,28 @@ export default function App() {
             onBookmarkAdd={handleAddBookmark} 
             bookmarkedKeys={bookmarkedKeys} 
           />
+          <div className="text-center mt-8">
+            <button
+              onClick={() => setCurrentSection('academic-world')}
+              className="font-mono text-xs uppercase px-5 py-2.5 border border-stone-300 dark:border-zinc-800 rounded hover:bg-stone-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer font-bold"
+            >
+              &larr; Back to Scholastic Universe
+            </button>
+          </div>
         </div>
       )}
 
       {currentSection === 'fiqh-ruling' && (
         <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
           <FiqhRuling currentTheme={currentTheme} />
+          <div className="text-center mt-8">
+            <button
+              onClick={() => setCurrentSection('academic-world')}
+              className="font-mono text-xs uppercase px-5 py-2.5 border border-stone-300 dark:border-zinc-800 rounded hover:bg-stone-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer font-bold"
+            >
+              &larr; Back to Scholastic Universe
+            </button>
+          </div>
         </div>
       )}
 
@@ -256,7 +302,7 @@ export default function App() {
         <div className="animate-fade-in">
           <WaswasClinic 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -265,7 +311,7 @@ export default function App() {
         <div className="animate-fade-in">
           <MantiqTutor 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -274,7 +320,7 @@ export default function App() {
         <div className="animate-fade-in">
           <FallacyScanner 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -283,7 +329,7 @@ export default function App() {
         <div className="animate-fade-in">
           <DhikrRx 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -292,7 +338,7 @@ export default function App() {
         <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
           <NafsAssessmentScreen 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -301,7 +347,7 @@ export default function App() {
         <div className="animate-fade-in">
           <MaqasidAnalyzer 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -310,7 +356,7 @@ export default function App() {
         <div className="animate-fade-in">
           <AqeedahFirewall 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
         </div>
       )}
@@ -319,8 +365,22 @@ export default function App() {
         <div className="pt-24 animate-fade-in">
           <RuyaInterpreter 
             currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('landing')}
+            onBackToLanding={() => setCurrentSection('academic-world')}
           />
+        </div>
+      )}
+
+      {currentSection === 'hadith' && (
+        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+          <HadithDisplay currentTheme={currentTheme} />
+          <div className="text-center mt-8">
+            <button
+              onClick={() => setCurrentSection('academic-world')}
+              className="font-mono text-xs uppercase px-5 py-2.5 border border-stone-300 dark:border-zinc-800 rounded hover:bg-stone-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer font-bold"
+            >
+              &larr; Back to Scholastic Universe
+            </button>
+          </div>
         </div>
       )}
 
@@ -354,13 +414,6 @@ export default function App() {
             selectedCourseId={selectedCourseId}
             onSelectCourse={handleSelectCourse}
             searchText={searchText}
-          />
-
-          {/* AI COGNITIVE LABS SECTION UNDER CURRICULUM DESIGN */}
-          <CognitiveLabs 
-            currentTheme={currentTheme} 
-            onNavigateToPortal={() => setCurrentSection('portal')}
-            onNavigateToSection={(sec) => setCurrentSection(sec as any)}
           />
 
           {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}
@@ -405,7 +458,7 @@ export default function App() {
           </section>
 
           {/* SHIELDED HADITH EXPLETIVES ACCENTS */}
-          <HadithDisplay currentTheme={currentTheme} />
+          <PropheticHadiths currentTheme={currentTheme} />
 
           {/* ALUMNI & ASSOCIATE SCHOLASTIC FOOTER FOOTPRINTS */}
           <Footer currentTheme={currentTheme} />

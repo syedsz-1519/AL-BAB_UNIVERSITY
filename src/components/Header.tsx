@@ -44,36 +44,34 @@ export default function Header({
 
   const navItems = [
     { id: 'landing', label: t.celestialGlobe },
-    { id: 'debate', label: t.debateArena, icon: Sparkles },
-    { id: 'quran-explorer', label: t.quranExplorer, icon: BookOpen },
-    { id: 'fiqh-ruling', label: t.fiqhRuling, icon: HelpCircle },
-    { id: 'aqeedah-firewall', label: 'Aqeedah Firewall', icon: ShieldCheck },
-    { id: 'ruya-interpreter', label: "Ru'ya Interpreter", icon: Moon },
-    { id: 'maqasid-analyzer', label: 'Maqasid Analyzer', icon: Scale },
-    { id: 'mantiq-tutor', label: 'Mantiq Tutor', icon: Compass },
-    { id: 'fallacy-scanner', label: 'Fallacy Scanner', icon: ShieldAlert },
-    { id: 'waswas-clinic', label: 'Waswas Clinic', icon: Heart },
-    { id: 'cognitive-labs', label: 'Cognitive Labs', icon: Brain },
-    { id: 'dhikr-rx', label: 'Dhikr Rx', icon: Heart },
-    { id: 'portal', label: t.scholasticPortal, icon: GraduationCap }
+    { 
+      id: 'academic-world', 
+      label: language === 'ar' 
+        ? 'المنظومات الأكاديمية' 
+        : language === 'ur' 
+          ? 'علمی شعبہ جات' 
+          : 'Scholastic Universe', 
+      icon: Menu 
+    }
   ];
 
   return (
     <nav 
       id="navbar" 
       dir={isRTL ? 'rtl' : 'ltr'}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6 md:px-12 backdrop-blur-md border-b
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md border-b shadow-sm
         ${isSpace 
-          ? 'bg-space/85 border-gold/15 text-white' 
-          : 'bg-[#FAF8F5]/85 border-crimson/10 text-charcoal'
+          ? 'bg-[#020509]/95 border-gold/20 text-white' 
+          : 'bg-[#FAF8F5]/95 border-crimson/15 text-charcoal'
         }
       `}
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center gap-4">
+      {/* TOP ROW: LOGO & CONTROLS */}
+      <div className="max-w-7xl mx-auto flex justify-between items-center gap-4 py-3 px-6 md:px-12">
         {/* LOGO */}
         <div className="flex items-center gap-3 shrink-0">
           <div className="relative group cursor-pointer" onClick={() => { if (onTabChange) onTabChange('landing'); else if (onGoToLanding) onGoToLanding(); }}>
-            <div className={`absolute -inset-1 blur-sm rounded-full opacity-30 group-hover:opacity-75 transition duration-300
+            <div className={`absolute -inset-1 blur-sm rounded-full opacity-35 group-hover:opacity-80 transition duration-300
               ${isSpace ? 'bg-gold' : 'bg-crimson'}
             `}></div>
             <img 
@@ -83,21 +81,73 @@ export default function Header({
             />
           </div>
           <div>
-            <h1 className={`font-serif font-black text-sm md:text-base leading-none tracking-wide
-              ${isSpace ? 'text-amber-500' : 'text-crimson'}
+            <h1 className={`font-serif font-black text-base md:text-lg leading-none tracking-wide
+              ${isSpace ? 'text-[#E8B86D]' : 'text-[#8B1A1A]'}
             `}>
               {t.title}
             </h1>
-            <p className={`text-[9px] tracking-[0.2em] font-mono font-bold mt-0.5 opacity-80
-              ${isSpace ? 'text-gold-light' : 'text-stone-500'}
+            <p className={`text-[10px] tracking-[0.2em] font-mono font-black mt-1 opacity-100
+              ${isSpace ? 'text-[#E8B86D]' : 'text-[#8B1A1A]'}
             `}>
               {t.subtitle}
             </p>
           </div>
         </div>
 
-        {/* DESKTOP NAV LINKS */}
-        <div className="hidden lg:flex gap-6 items-center font-serif text-sm font-medium">
+        {/* CONTROLS */}
+        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+          
+          {/* LANGUAGE PICKER */}
+          <div className="flex items-center gap-1.5 border border-stone-400 p-1 rounded bg-white/60 dark:bg-space-dark/40 font-mono text-[11px] hover:border-black transition-colors">
+            <LanguageButton lang="en" cur={language} onClick={onLanguageChange} />
+            <LanguageButton lang="ar" cur={language} label="عربي" onClick={onLanguageChange} />
+            <LanguageButton lang="ur" cur={language} label="اردو" onClick={onLanguageChange} />
+          </div>
+
+          {/* THEME TOGGLE */}
+          <button 
+            onClick={onToggleTheme} 
+            className={`p-2 rounded-full transition-all duration-300 relative group cursor-pointer
+              ${isSpace ? 'bg-[#2F2113]/40 text-[#EBC15A] border-2 border-gold/40' : 'bg-stone-200/90 text-black border-2 border-[#111]'}
+            `}
+            title={isSpace ? t.toggleThemeLight : t.toggleThemeDark}
+          >
+            <div className="relative h-4.5 w-4.5 transition-transform duration-500 group-hover:rotate-12">
+              {isSpace ? <Sun className="absolute inset-0 h-4.5 w-4.5" /> : <Moon className="absolute inset-0 h-4.5 w-4.5" />}
+            </div>
+          </button>
+
+          {/* ENROLL BUTTON */}
+          <button 
+            onClick={onOpenAdmission}
+            className="hidden sm:flex items-center gap-1 text-[11px] font-black tracking-widest uppercase py-2 px-4 border rounded-sm transition-all duration-300 shadow-md cursor-pointer
+              bg-crimson text-white hover:bg-black hover:border-black active:translate-y-px border-crimson
+              dark:bg-gold dark:text-space dark:hover:bg-white dark:hover:border-white dark:border-gold
+            "
+          >
+            {t.applyNow}
+          </button>
+
+          {/* MOBILE MENU TOGGLE */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer text-black dark:text-white"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* COMPREHENSIVE, PROMINENT MENU BAR WITH ALL SECTIONS (BOLD FONTS ONLY) */}
+      <div 
+        className={`hidden lg:block border-t border-b overflow-x-auto select-none
+          ${isSpace 
+            ? 'border-gold/25 bg-[#03080e]/95' 
+            : 'border-crimson/20 bg-[#FAF8F5]'
+          }
+        `}
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-8 py-1.5 px-4 md:px-8 whitespace-nowrap scrollbar-none">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
@@ -111,61 +161,24 @@ export default function Header({
                     else onGoToLanding?.();
                   }
                 }}
-                className={`flex items-center gap-1.5 py-1 px-2.5 rounded transition-all cursor-pointer bg-transparent border-none font-serif text-sm font-semibold focus:outline-none
+                className={`flex items-center gap-1 px-3 py-2 rounded transition-all duration-150 cursor-pointer text-[11px] tracking-wide font-sans select-none border-2
                   ${isActive 
-                    ? (isSpace ? 'text-gold font-bold border-b border-gold/40' : 'text-crimson font-bold border-b border-crimson/40')
-                    : 'text-stone-500 hover:text-stone-800 dark:hover:text-gold-light'
+                    ? (isSpace 
+                        ? 'bg-gold text-[#020509] border-gold font-bold shadow-md scale-102' 
+                        : 'bg-crimson text-white border-crimson font-black shadow-md scale-102'
+                      )
+                    : (isSpace 
+                        ? 'text-white hover:text-white hover:bg-gold/15 border-transparent hover:border-gold/30 font-bold' 
+                        : 'text-black hover:text-black hover:bg-crimson/10 border-transparent hover:border-[#000000]/60 font-black'
+                      )
                   }
                 `}
               >
-                {item.icon && <item.icon className="h-3.5 w-3.5 shrink-0" />}
-                <span>{item.label}</span>
+                {item.icon && <item.icon className="h-3.5 w-3.5 shrink-0 stroke-[2.5]" />}
+                <span className="font-extrabold uppercase">{item.label}</span>
               </button>
             );
           })}
-        </div>
-
-        {/* CONTROLS */}
-        <div className="flex items-center gap-2 md:gap-3 shrink-0">
-          
-          {/* LANGUAGE PICKER */}
-          <div className="flex items-center gap-1 border border-stone-200 dark:border-gold/25 p-1 rounded bg-white/40 dark:bg-space-dark/40 font-mono text-[10px]">
-            <LanguageButton lang="en" cur={language} onClick={onLanguageChange} />
-            <LanguageButton lang="ar" cur={language} label="عربي" onClick={onLanguageChange} />
-            <LanguageButton lang="ur" cur={language} label="اردو" onClick={onLanguageChange} />
-          </div>
-
-          {/* THEME TOGGLE */}
-          <button 
-            onClick={onToggleTheme} 
-            className={`p-2 rounded-full transition-all duration-300 relative group
-              ${isSpace ? 'bg-[#2F2113]/30 text-[#EBC15A] border border-gold/15' : 'bg-stone-200/50 text-stone-700 border border-stone-300/30'}
-            `}
-            title={isSpace ? t.toggleThemeLight : t.toggleThemeDark}
-          >
-            <div className="relative h-4.5 w-4.5 transition-transform duration-500 group-hover:rotate-12">
-              {isSpace ? <Sun className="absolute inset-0 h-4.5 w-4.5" /> : <Moon className="absolute inset-0 h-4.5 w-4.5" />}
-            </div>
-          </button>
-
-          {/* ENROLL BUTTON */}
-          <button 
-            onClick={onOpenAdmission}
-            className="hidden sm:flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase py-2 px-4 border rounded-sm transition-all duration-300 shadow-sm cursor-pointer
-              bg-crimson text-white hover:bg-black hover:border-black active:translate-y-px border-crimson
-              dark:bg-gold dark:text-space dark:hover:bg-white dark:hover:border-white dark:border-gold
-            "
-          >
-            {t.applyNow}
-          </button>
-
-          {/* MOBILE MENU TOGGLE */}
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full"
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
         </div>
       </div>
 

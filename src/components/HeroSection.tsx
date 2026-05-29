@@ -31,9 +31,9 @@ export default function HeroSection({ currentTheme, onApplyNow }: HeroSectionPro
           <span className={`h-[1px] w-8 ${isSpace ? 'bg-gold' : 'bg-crimson'}`} />
         </div>
 
-        <h1 className="font-serif font-black text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none mb-6">
+        <h1 className="font-serif font-black text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none mb-6 text-[#8B1A1A]">
           Albab Islamic <br />
-          <span className={isSpace ? 'text-gold' : 'text-crimson'}>University</span>
+          <span>University</span>
         </h1>
 
         <p className="font-serif italic text-xl sm:text-2xl lg:text-3xl text-stone-500 mb-6 font-medium">

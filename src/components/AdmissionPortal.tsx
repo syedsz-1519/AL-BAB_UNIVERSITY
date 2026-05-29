@@ -210,10 +210,10 @@ JazakAllah khair!`;
               <div className="absolute inset-0 opacity-10 bg-repeat bg-contain arabesque-grid pointer-events-none rounded-inner" />
 
               {/* Crimson corner ticks */}
-              <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#8B0000]" />
-              <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#8B0000]" />
+              <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#8B1A1A]" />
+              <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#8B1A1A]" />
 
-              <h4 className="text-[10px] tracking-[0.3em] font-mono font-black uppercase text-[#8B0000] mb-2 leading-none">
+              <h4 className="text-[10px] tracking-[0.3em] font-mono font-black uppercase text-[#8B1A1A] mb-2 leading-none">
                 Albab Islamic University
               </h4>
               <p className="text-[9px] uppercase tracking-widest font-mono text-[#C9933A] mb-6 block leading-none">
