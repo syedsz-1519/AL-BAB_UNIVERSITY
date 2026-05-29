@@ -232,7 +232,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
 
       {/* HEADER HERO COVER */}
       <div 
-        className="relative bg-[#8B1A1A] text-white py-14 px-6 overflow-hidden border-b-2 border-[#C4A35A] flex flex-col items-center text-center shadow-lg"
+        className="relative bg-[#8B1A1A] text-white pt-36 sm:pt-40 pb-14 px-6 overflow-hidden border-b-2 border-[#C4A35A] flex flex-col items-center text-center shadow-lg"
         style={{
           backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1.2px, transparent 1.2px)',
           backgroundSize: '20px 20px'
@@ -241,7 +241,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
         {/* Back navigation button */}
         <button 
           onClick={onBackToLanding}
-          className="absolute top-6 left-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#000]/30 py-1.5 px-3.5 rounded border border-stone-600/30 cursor-pointer shadow-md"
+          className="absolute top-28 sm:top-32 left-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#000]/30 py-1.5 px-3.5 rounded border border-stone-600/30 cursor-pointer shadow-md"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Campus</span>
@@ -250,7 +250,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
         {/* Saved archive directory toggle */}
         <button 
           onClick={() => setShowSavedList(!showSavedList)}
-          className="absolute top-6 right-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#000]/20 hover:border-[#C4A35A] py-1.5 px-3.5 rounded border border-stone-600/30 cursor-pointer shadow-md"
+          className="absolute top-28 sm:top-32 right-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#000]/20 hover:border-[#C4A35A] py-1.5 px-3.5 rounded border border-stone-600/30 cursor-pointer shadow-md"
         >
           <BookOpen className="w-4 h-4 text-[#C4A35A]" />
           <span>Scans Journal ({savedReports.length})</span>

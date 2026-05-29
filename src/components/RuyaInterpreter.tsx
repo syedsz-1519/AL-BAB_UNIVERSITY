@@ -183,7 +183,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
     <div className="min-h-screen bg-[#F5F0E8] text-stone-900 pb-16 font-serif">
       {/* STARLIT HERO BANNER */}
       <div 
-        className="relative bg-[#0A0F2E] text-white py-12 px-6 overflow-hidden border-b border-[#C4A35A]/50 flex flex-col items-center text-center"
+        className="relative bg-[#0A0F2E] text-white pt-36 sm:pt-40 pb-12 px-6 overflow-hidden border-b border-[#C4A35A]/50 flex flex-col items-center text-center"
         style={{
           backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.18) 1.2px, transparent 1.2px)',
           backgroundSize: '24px 24px'
@@ -200,7 +200,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
         {/* Back navigation button */}
         <button 
           onClick={onBackToLanding}
-          className="absolute top-6 left-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#000]/30 py-1.5 px-3 rounded border border-stone-700/50 cursor-pointer shadow-md"
+          className="absolute top-28 sm:top-32 left-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#000]/30 py-1.5 px-3 rounded border border-stone-700/50 cursor-pointer shadow-md"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Campus</span>
@@ -209,7 +209,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
         {/* Journal toggle button on header */}
         <button 
           onClick={() => setShowSavedList(!showSavedList)}
-          className="absolute top-6 right-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#0A0F2E] hover:border-[#C4A35A] py-1.5 px-3.5 rounded border border-stone-700 cursor-pointer shadow-md"
+          className="absolute top-28 sm:top-32 right-6 flex items-center gap-2 text-stone-300 hover:text-[#C4A35A] transition-colors font-mono text-xs uppercase bg-[#0A0F2E] hover:border-[#C4A35A] py-1.5 px-3.5 rounded border border-stone-700 cursor-pointer shadow-md"
         >
           <BookMarked className="w-4 h-4 text-[#C4A35A]" />
           <span>Journal ({savedJournal.length})</span>

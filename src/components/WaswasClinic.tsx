@@ -310,7 +310,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
   return (
     <div 
       id="waswas-clinic-viewport"
-      className="min-h-screen bg-[#F5F0E8] text-[#1A1A1A] font-sans pt-28 pb-20 px-4 md:px-12 arabesque-grid selection:bg-[#8B1A1A]/10"
+      className="min-h-screen bg-[#F5F0E8] text-[#1A1A1A] font-sans pt-36 md:pt-40 pb-20 px-4 md:px-12 arabesque-grid selection:bg-[#8B1A1A]/10"
     >
       <div className="max-w-2xl mx-auto space-y-6">
         

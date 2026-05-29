@@ -135,16 +135,16 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
 
   return (
     <div 
-      className="min-h-screen pb-20 pt-24 font-sans text-[#1A1A1A] selection:bg-[#8B1A1A]/10 text-left"
+      className="min-h-screen pb-20 pt-0 font-sans text-[#1A1A1A] selection:bg-[#8B1A1A]/10 text-left"
       style={{ backgroundColor: '#F5F0E8' }}
     >
       {/* MAROON HEADER BOX */}
-      <header className="relative py-12 px-6 md:px-12 text-center bg-[#8B1A1A] border-b border-[#C4A35A]/30 overflow-hidden shadow-md">
+      <header className="relative pt-36 sm:pt-40 pb-12 px-6 md:px-12 text-center bg-[#8B1A1A] border-b border-[#C4A35A]/30 overflow-hidden shadow-md">
         <div className="absolute inset-0 bg-black/10 pointer-events-none" />
         <div className="max-w-4xl mx-auto space-y-4 relative z-10 flex flex-col items-center">
           <button 
             onClick={onBackToLanding}
-            className="absolute top-0 left-0 text-white/70 hover:text-white transition-colors duration-200 text-xs font-mono uppercase tracking-widest flex items-center gap-1 bg-white/10 px-3 py-1.5 rounded-sm border border-white/10 hover:bg-white/20 select-none cursor-pointer"
+            className="absolute top-28 sm:top-32 left-6 text-white/70 hover:text-white transition-colors duration-200 text-xs font-mono uppercase tracking-widest flex items-center gap-1 bg-white/10 px-3 py-1.5 rounded-sm border border-white/10 hover:bg-white/20 select-none cursor-pointer"
           >
             ← Back to Campus
           </button>

@@ -25,6 +25,7 @@ import MaqasidAnalyzer from './components/MaqasidAnalyzer';
 import AqeedahFirewall from './components/AqeedahFirewall';
 import RuyaInterpreter from './components/RuyaInterpreter';
 import AcademicWorld from './components/AcademicWorld';
+import MobileQuickNav from './components/MobileQuickNav';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -223,7 +224,7 @@ export default function App() {
       />
 
       {currentSection === 'academic-world' && (
-        <div className="pt-28 pb-12 min-h-[82vh] transition-all duration-500 animate-fade-in">
+        <div className="pt-36 sm:pt-40 pb-12 min-h-[82vh] transition-all duration-500 animate-fade-in">
           <AcademicWorld 
             currentTheme={currentTheme}
             onNavigateToSection={(sec) => setCurrentSection(sec as any)}
@@ -233,7 +234,7 @@ export default function App() {
       )}
 
       {currentSection === 'portal' && (
-        <div className="pt-24 min-h-[85vh] transition-all duration-500 animate-fade-in">
+        <div className="pt-32 sm:pt-36 min-h-[85vh] transition-all duration-500 animate-fade-in">
           {/* SECURE STUDENT AND ADMINISTRATION PORTAL SECTION */}
           <DashboardPortal 
             currentTheme={currentTheme} 
@@ -243,7 +244,7 @@ export default function App() {
       )}
 
       {currentSection === 'debate' && (
-        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+        <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
           <DebateArena currentTheme={currentTheme} />
           <div className="text-center mt-8">
             <button
@@ -257,7 +258,7 @@ export default function App() {
       )}
 
       {currentSection === 'quran-explorer' && (
-        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+        <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
           <QuranExplorer 
             currentTheme={currentTheme} 
             onBookmarkAdd={handleAddBookmark} 
@@ -275,7 +276,7 @@ export default function App() {
       )}
 
       {currentSection === 'fiqh-ruling' && (
-        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+        <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
           <FiqhRuling currentTheme={currentTheme} />
           <div className="text-center mt-8">
             <button
@@ -289,7 +290,7 @@ export default function App() {
       )}
 
       {currentSection === 'cognitive-labs' && (
-        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+        <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
           <CognitiveLabs 
             currentTheme={currentTheme} 
             onNavigateToPortal={() => setCurrentSection('portal')}
@@ -335,7 +336,7 @@ export default function App() {
       )}
 
       {currentSection === 'nafs-assessment' && (
-        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+        <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
           <NafsAssessmentScreen 
             currentTheme={currentTheme}
             onBackToLanding={() => setCurrentSection('academic-world')}
@@ -362,7 +363,7 @@ export default function App() {
       )}
 
       {currentSection === 'ruya-interpreter' && (
-        <div className="pt-24 animate-fade-in">
+        <div className="animate-fade-in">
           <RuyaInterpreter 
             currentTheme={currentTheme}
             onBackToLanding={() => setCurrentSection('academic-world')}
@@ -371,7 +372,7 @@ export default function App() {
       )}
 
       {currentSection === 'hadith' && (
-        <div className="pt-28 pb-16 min-h-[80vh] animate-fade-in">
+        <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
           <HadithDisplay currentTheme={currentTheme} />
           <div className="text-center mt-8">
             <button
@@ -475,6 +476,14 @@ export default function App() {
 
       {/* FLOATING SOCIAL & DIRECT ADMISSIONS CHANNELS */}
       <FloatingContacts currentTheme={currentTheme} />
+
+      {/* SECURE MOBILE SCREEN MENU TOGGLE & PERSISTENT QUICK NAVIGATION */}
+      <MobileQuickNav 
+        currentTheme={currentTheme}
+        currentSection={currentSection}
+        onNavigate={(sec) => setCurrentSection(sec as any)}
+        language={language}
+      />
     </div>
   );
 }

@@ -741,7 +741,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
   return (
     <div 
       id="mantiq-tutor-container"
-      className="min-h-screen pt-28 pb-16 px-4 sm:px-6 md:px-12 bg-[#F5F0E8] text-[#1A1A1A] font-sans selection:bg-[#8B1A1A]/10 text-left"
+      className="min-h-screen pt-36 lg:pt-40 pb-16 px-4 sm:px-6 md:px-12 bg-[#F5F0E8] text-[#1A1A1A] font-sans selection:bg-[#8B1A1A]/10 text-left"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
         

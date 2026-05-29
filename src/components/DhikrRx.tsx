@@ -232,7 +232,7 @@ export default function DhikrRx({ currentTheme, onBackToLanding }: DhikrRxProps)
   };
 
   return (
-    <div className={`min-h-screen py-16 px-4 sm:px-6 md:px-12 arabesque-grid pt-28 transition-colors duration-500
+    <div className={`min-h-screen py-16 px-4 sm:px-6 md:px-12 arabesque-grid pt-36 md:pt-40 transition-colors duration-500
       ${isSpace ? 'bg-[#040815] text-white' : 'bg-[#FAF8F5] text-charcoal'}
     `}>
       {/* HEADER SECTION */}
