@@ -56,14 +56,14 @@ export default function MobileQuickNav({
 
   return (
     <div className="lg:hidden" id="mobile-quick-nav-root">
-      {/* FLOATING ACTION TRIGGER TRIGGERED AT BOTTOM LEFT */}
-      <div className="fixed bottom-4 left-4 z-50 pointer-events-auto">
+      {/* FLOATING ACTION TRIGGER TRIGGERED AT BOTTOM RIGHT (COMPACT & HIGHLY VISIBLE ON MOBILE SCREEN) */}
+      <div className="fixed bottom-24 right-4 z-[99999] pointer-events-auto">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`relative group flex h-12 w-12 items-center justify-center rounded-full shadow-2xl transition-all duration-300 transform active:scale-95 border cursor-pointer
+          className={`relative group flex h-10 w-10 items-center justify-center rounded-full shadow-2xl transition-all duration-300 transform active:scale-95 border cursor-pointer
             ${isSpace 
-              ? 'bg-[#0A0F2E]/95 border-gold/40 text-gold-light hover:border-gold shadow-[0_4px_20px_rgba(201,147,58,0.25)]' 
-              : 'bg-[#FAF8F5]/95 border-crimson/30 text-crimson hover:border-[#8B1A1A] shadow-[0_4px_20px_rgba(139,26,26,0.15)]'
+              ? 'bg-[#0A0F2E] border-gold text-gold-light hover:border-gold shadow-[0_4px_16px_rgba(201,147,58,0.4)]' 
+              : 'bg-[#8B1A1A] border-amber-200 text-white hover:border-[#8B1A1A] shadow-[0_4px_16px_rgba(139,26,26,0.35)]'
             }
           `}
           id="mobile-quick-nav-trigger"
@@ -71,8 +71,8 @@ export default function MobileQuickNav({
           title="Campus Navigation Hub"
         >
           {/* Pulsing visual indicator circle */}
-          <span className={`absolute -inset-1 rounded-full border opacity-30 animate-pulse duration-1000
-            ${isSpace ? 'border-gold' : 'border-crimson'}
+          <span className={`absolute -inset-1 rounded-full border opacity-40 animate-pulse duration-700
+            ${isSpace ? 'border-gold' : 'border-amber-400'}
           `} />
           
           <AnimatePresence mode="wait">
@@ -82,9 +82,10 @@ export default function MobileQuickNav({
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-center text-white"
               >
-                <X className="h-5.5 w-5.5" />
+                <X className="h-4.5 w-4.5 stroke-[2.5]" />
               </motion.div>
             ) : (
               <motion.div
@@ -92,10 +93,10 @@ export default function MobileQuickNav({
                 initial={{ rotate: 90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex items-center gap-1"
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-center"
               >
-                <Menu className="h-5.5 w-5.5" />
+                <Menu className="h-4.5 w-4.5 stroke-[2.5]" />
               </motion.div>
             )}
           </AnimatePresence>
