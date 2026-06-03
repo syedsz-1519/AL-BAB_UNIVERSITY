@@ -38,7 +38,7 @@ export default function App() {
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'dhikr-rx' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith'>(() => {
     if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
       return 'academic-world';
     }
@@ -59,9 +59,6 @@ export default function App() {
     }
     if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
       return 'mantiq-tutor';
-    }
-    if (window.location.hash === '#fallacy-scanner' || window.location.pathname === '/fallacy-scanner') {
-      return 'fallacy-scanner';
     }
     if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
       return 'dhikr-rx';
@@ -100,25 +97,23 @@ export default function App() {
   useEffect(() => {
     const handleUrlChange = () => {
       if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
-        setCurrentSection('academic-world');
+         setCurrentSection('academic-world');
       } else if (window.location.hash === '#waswas-clinic' || window.location.pathname === '/waswas-clinic') {
-        setCurrentSection('waswas-clinic');
+         setCurrentSection('waswas-clinic');
       } else if (window.location.hash === '#aqeedah-firewall' || window.location.pathname === '/aqeedah-firewall') {
-        setCurrentSection('aqeedah-firewall');
+         setCurrentSection('aqeedah-firewall');
       } else if (window.location.hash === '#ruya-interpreter' || window.location.pathname === '/ruya-interpreter') {
-        setCurrentSection('ruya-interpreter');
+         setCurrentSection('ruya-interpreter');
       } else if (window.location.hash === '#maqasid-analyzer' || window.location.pathname === '/maqasid-analyzer') {
-        setCurrentSection('maqasid-analyzer');
+         setCurrentSection('maqasid-analyzer');
       } else if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
-        setCurrentSection('mantiq-tutor');
-      } else if (window.location.hash === '#fallacy-scanner' || window.location.pathname === '/fallacy-scanner') {
-        setCurrentSection('fallacy-scanner');
+         setCurrentSection('mantiq-tutor');
       } else if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
-        setCurrentSection('dhikr-rx');
+         setCurrentSection('dhikr-rx');
       } else if (window.location.hash === '#nafs-assessment' || window.location.pathname === '/nafs-assessment') {
-        setCurrentSection('nafs-assessment');
+         setCurrentSection('nafs-assessment');
       } else if (window.location.hash === '#hadith' || window.location.pathname === '/hadith') {
-        setCurrentSection('hadith');
+         setCurrentSection('hadith');
       }
     };
     window.addEventListener('popstate', handleUrlChange);
@@ -163,15 +158,34 @@ export default function App() {
     setCurrentTheme(prev => (prev === 'parchment' ? 'space' : 'parchment'));
   };
 
-  const handleSelectCourse = (course: Course) => {
-    setSelectedCourseId(course.id);
+  const handleSelectCourse = (courseOrId: Course | string) => {
+    const rawId = typeof courseOrId === 'string' ? courseOrId : courseOrId.id;
+    // Map section/tool IDs to corresponding canonical course IDs in data.ts
+    const sectionToCourseMap: Record<string, string> = {
+      'quran-explorer': 'quran',
+      'hadith': 'hadith',
+      'debate': 'challenges',
+      'fiqh-ruling': 'fiqh',
+      'aqeedah-firewall': 'islamic-studies',
+      'mantiq-tutor': 'logic',
+      'fallacy-scanner': 'logic',
+      'waswas-clinic': 'psychology',
+      'dhikr-rx': 'psychology',
+      'nafs-assessment': 'psychology',
+      'ruya-interpreter': 'psychology',
+      'maqasid-analyzer': 'fiqh',
+      'portal': 'economic-studies'
+    };
+
+    const courseId = sectionToCourseMap[rawId] || rawId;
+    setSelectedCourseId(courseId);
     setCurrentSection('landing');
     setTimeout(() => {
       const el = document.getElementById('curriculum');
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
       }
-    }, 60);
+    }, 80);
   };
 
   const handleSearch = (term: string) => {
@@ -237,7 +251,10 @@ export default function App() {
         <div className="pt-36 sm:pt-40 pb-12 min-h-[82vh] transition-all duration-500 animate-fade-in">
           <AcademicWorld 
             currentTheme={currentTheme}
-            onNavigateToSection={(sec) => setCurrentSection(sec as any)}
+            onNavigateToSection={(sec) => {
+              setCurrentSection(sec as any);
+              window.scrollTo({ top: 0, behavior: 'instant' });
+            }}
             language={language}
           />
         </div>
@@ -321,15 +338,6 @@ export default function App() {
       {currentSection === 'mantiq-tutor' && (
         <div className="animate-fade-in">
           <MantiqTutor 
-            currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('academic-world')}
-          />
-        </div>
-      )}
-
-      {currentSection === 'fallacy-scanner' && (
-        <div className="animate-fade-in">
-          <FallacyScanner 
             currentTheme={currentTheme}
             onBackToLanding={() => setCurrentSection('academic-world')}
           />

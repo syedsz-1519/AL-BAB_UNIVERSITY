@@ -114,6 +114,39 @@
         }
       },
       "required": ["uid", "email", "role", "emailVerified", "phoneVerified"]
+    },
+    "AlbabQuestion": {
+      "title": "Albab Question",
+      "description": "Student question related to specific curricular courses",
+      "type": "object",
+      "properties": {
+        "courseId": {
+          "type": "string",
+          "description": "ID of the associated curricular course"
+        },
+        "courseName": {
+          "type": "string",
+          "description": "Name of the associated course"
+        },
+        "studentName": {
+          "type": "string",
+          "description": "Name of the student or scholar posting"
+        },
+        "questionText": {
+          "type": "string",
+          "description": "The detailed content of the question"
+        },
+        "uid": {
+          "type": "string",
+          "description": "FirebaseAuth User UID or guest"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["courseId", "courseName", "studentName", "questionText", "uid"]
     }
   },
   "firestore": {
@@ -124,6 +157,10 @@
     "/users/{userId}": {
       "schema": "AlbabUser",
       "description": "Profiles and roles for students and administrators"
+    },
+    "/albab_questions/{questionId}": {
+      "schema": "AlbabQuestion",
+      "description": "Collection of discussion questions posted by students"
     }
   }
 }

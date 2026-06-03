@@ -4,6 +4,14 @@ import {
   ShieldCheck, Moon, GraduationCap, HelpCircle, ArrowRight, Search, Zap 
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import CourseDiscussionFeed from './CourseDiscussionFeed';
+
+const quranImage = '/src/assets/images/regenerated_image_1780496980571.jpg';
+const hadithImage = '/src/assets/images/regenerated_image_1780496982318.jpg';
+const debateImage = '/src/assets/images/regenerated_image_1780496984747.jpg';
+const fiqhImage = '/src/assets/images/regenerated_image_1780496986546.jpg';
+const aqeedahImage = '/src/assets/images/regenerated_image_1780496988162.jpg';
+const mantiqImage = '/src/assets/images/regenerated_image_1780496989795.jpg';
 
 interface AcademicWorldProps {
   currentTheme: 'parchment' | 'space';
@@ -49,7 +57,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Explore the Divine Text with word-by-word syntax, grammar mappings, thematic analysis, and recitation audio tracks.',
       icon: BookOpen,
       tags: ['Syntax & Grammar', 'Root Analysis', 'Interactive Audio'],
-      imageUrl: 'https://images.unsplash.com/photo-1609599006353-e629f1d00f18?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: quranImage
     },
     {
       id: 'hadith',
@@ -60,7 +68,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Authentic Prophetic narrations with chain of transmission (Isnad) maps, grading, and thematic schemas.',
       icon: BookOpen,
       tags: ['Sihah al-Sittah', 'Isnad Mapping', 'Grade Verification'],
-      imageUrl: 'https://images.unsplash.com/photo-1584281723171-897db642284e?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: hadithImage
     },
     {
       id: 'debate',
@@ -71,7 +79,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Structured AI-moderated virtual disputation chambers covering theological, philosophical, and legal paradigms.',
       icon: Sparkles,
       tags: ['Dialectical Kalam', 'AI Scholarly Peer', 'Tanzil & Ta\'wil'],
-      imageUrl: 'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: debateImage
     },
     {
       id: 'fiqh-ruling',
@@ -82,7 +90,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Interactive legal inquiry module parsing complex juristic cases across major schools of Islamic law.',
       icon: HelpCircle,
       tags: ['Comparative Fiqh', 'Iftaa Simulation', 'Usul Principles'],
-      imageUrl: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: fiqhImage
     },
     {
       id: 'aqeedah-firewall',
@@ -93,7 +101,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Refutational logic system counteracting secular challenges using classical Kalam models.',
       icon: ShieldCheck,
       tags: ['Problem of Evil Refuted', 'Formal Syllogisms', 'Rational Theology'],
-      imageUrl: 'https://images.unsplash.com/photo-1531315630201-bb15abeb1653?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: aqeedahImage
     },
     {
       id: 'mantiq-tutor',
@@ -104,18 +112,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Comprehensive tutor for classical Aristotelian-Islamic logic teaching Hadd and Qiyas.',
       icon: Compass,
       tags: ['Syllogistic Dialectic', 'Formal Definitions', 'Logical Certainty'],
-      imageUrl: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&h=600&q=80'
-    },
-    {
-      id: 'fallacy-scanner',
-      title: 'Mughalata Fallacy Scanner',
-      arabic: 'كاشف مغالطات السفسطة',
-      category: 'theology',
-      categoryLabel: 'Theology & Dialectics',
-      summary: 'Critique engine scanning modern text to flag sophistical logic traps and cognitive flaws.',
-      icon: ShieldAlert,
-      tags: ['Fallacy Extraction', 'Security Scorecard', 'Dialectical Audit'],
-      imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: mantiqImage
     },
     {
       id: 'waswas-clinic',
@@ -391,6 +388,9 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
           })}
         </motion.div>
       )}
+
+      {/* DISCUSSIONS FEED SECTION */}
+      <CourseDiscussionFeed currentTheme={currentTheme} />
 
       {/* SYSTEM DIRECTORY FOOTER BRIEFING */}
       <div className={`mt-16 p-8 border text-center rounded-sm max-w-3xl mx-auto space-y-3

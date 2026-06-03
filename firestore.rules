@@ -80,5 +80,31 @@ service cloud.firestore {
 
       allow delete: if isAdmin();
     }
+
+    // Validation Blueprint for Discussion Questions
+    function isValidAlbabQuestion(data) {
+      return data.courseId is string && data.courseId.size() <= 100 &&
+             data.courseName is string && data.courseName.size() <= 200 &&
+             data.studentName is string && data.studentName.size() <= 150 &&
+             data.questionText is string && data.questionText.size() <= 2000 &&
+             data.uid is string && data.uid.size() <= 128;
+    }
+
+    // Strict albab_questions matching block
+    match /albab_questions/{questionId} {
+      allow read: if true;
+      
+      allow create: if isValidId(questionId) && 
+                      isValidAlbabQuestion(request.resource.data) &&
+                      request.resource.data.createdAt == request.time;
+               
+      allow update: if (isSignedIn() && isAdmin()) || 
+                      (resource.data.uid != 'guest' && resource.data.uid == request.auth.uid && 
+                       isValidAlbabQuestion(request.resource.data) &&
+                       request.resource.data.uid == resource.data.uid &&
+                       request.resource.data.createdAt == resource.data.createdAt);
+                      
+      allow delete: if isSignedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
   }
 }
