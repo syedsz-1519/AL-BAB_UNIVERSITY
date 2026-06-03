@@ -238,7 +238,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-sm transition-all duration-300 border cursor-pointer whitespace-nowrap
+              className={`px-2.5 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest rounded-sm transition-all duration-300 border cursor-pointer whitespace-nowrap
                 ${selectedCategory === cat.id
                   ? (isSpace 
                       ? 'bg-gold text-space border-gold font-bold shadow-md' 
@@ -356,7 +356,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
 
                     {/* Launch trigger action bar */}
                     <div className="pt-2 border-t border-[#8B1A1A]/10 dark:border-gold/10">
-                      <div className={`w-full py-1.5 px-3 rounded-xs text-[10.5px] font-mono font-bold uppercase tracking-wider border transition-all duration-300 flex items-center justify-between group-hover:bg-[#8B1A1A] dark:group-hover:bg-gold-light group-hover:text-white dark:group-hover:text-space
+                      <div className={`w-full py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-xs text-[9.5px] sm:text-[10.5px] font-mono font-bold uppercase tracking-wider border transition-all duration-300 flex items-center justify-between group-hover:bg-[#8B1A1A] dark:group-hover:bg-gold-light group-hover:text-white dark:group-hover:text-space
                         ${isSpace 
                           ? 'border-gold/30 text-gold' 
                           : 'border-[#8B1A1A]/30 text-[#8B1A1A]'

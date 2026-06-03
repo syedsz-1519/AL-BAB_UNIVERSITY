@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "AlbabCourse": {
+      "title": "Albab Course",
+      "description": "An academic course in Albab Islamic University",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Course title in English"
+        },
+        "arabicTitle": {
+          "type": "string",
+          "description": "Course title in Arabic"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "Divine Text & Tradition",
+            "Theology & Dialectics",
+            "Psycho-Spiritual Healing",
+            "Ethics & Scholarly Systems"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of the course content"
+        },
+        "focusArea": {
+          "type": "string",
+          "description": "Academic focus area or subtitle"
+        },
+        "tag1": {
+          "type": "string",
+          "description": "First categorical tag"
+        },
+        "tag2": {
+          "type": "string",
+          "description": "Second categorical tag"
+        },
+        "tag3": {
+          "type": "string",
+          "description": "Third categorical tag"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Image URL for the course visual"
+        },
+        "launchUrl": {
+          "type": "string",
+          "description": "Action URL when launch button is triggered"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        }
+      },
+      "required": ["title", "category", "description", "focusArea", "launchUrl"]
+    },
+    "AlbabUser": {
+      "title": "Albab User Profile",
+      "description": "Represents the student or admin profile",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Authentication UID"
+        },
+        "email": {
+          "type": "string",
+          "description": "Verified email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Verified telephone number with country code"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User's full name"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["student", "admin"]
+        },
+        "emailVerified": {
+          "type": "boolean"
+        },
+        "phoneVerified": {
+          "type": "boolean"
+        },
+        "profilePic": {
+          "type": "string"
+        },
+        "enrolledCourses": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastLogin": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dob": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "learningGoal": {
+          "type": "string"
+        }
+      },
+      "required": ["uid", "email", "role", "emailVerified", "phoneVerified"]
+    }
+  },
+  "firestore": {
+    "/albab_courses/{courseId}": {
+      "schema": "AlbabCourse",
+      "description": "Collection of academic courses in Albab Islamic University"
+    },
+    "/users/{userId}": {
+      "schema": "AlbabUser",
+      "description": "Profiles and roles for students and administrators"
+    }
+  }
+}

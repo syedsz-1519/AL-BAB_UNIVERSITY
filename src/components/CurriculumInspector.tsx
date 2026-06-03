@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { COURSES } from '../data';
 import { Course } from '../types';
 import * as LucideIcons from 'lucide-react';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from '../firebase';
 
 interface CurriculumInspectorProps {
   currentTheme: 'parchment' | 'space';
@@ -13,9 +15,52 @@ interface CurriculumInspectorProps {
 export default function CurriculumInspector({ currentTheme, selectedCourseId, onSelectCourse, searchText }: CurriculumInspectorProps) {
   const isSpace = currentTheme === 'space';
   const [internalSearch, setInternalSearch] = useState('');
+  const [allCourses, setAllCourses] = useState<Course[]>(COURSES);
   
   // Combine props search and component's internal index search
   const activeSearch = searchText || internalSearch;
+
+  // Real-time Firestore courses fetch and sync
+  useEffect(() => {
+    const coursesColPath = 'albab_courses';
+    const q = query(collection(db, coursesColPath), orderBy('createdAt', 'asc'));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const dynamicCourses: Course[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        
+        let iconName = 'BookOpen';
+        let accentCls = 'gold';
+        if (data.category === 'Theology & Dialectics') {
+          iconName = 'Sparkles';
+          accentCls = 'rose-600';
+        } else if (data.category === 'Psycho-Spiritual Healing') {
+          iconName = 'Brain';
+          accentCls = 'pink-500';
+        } else if (data.category === 'Ethics & Scholarly Systems') {
+          iconName = 'Scale';
+          accentCls = 'emerald-600';
+        }
+
+        dynamicCourses.push({
+          id: doc.id,
+          name: data.title || 'Untitled Branch',
+          count: data.focusArea || 'Academic Focus',
+          icon: iconName,
+          branches: [data.tag1, data.tag2, data.tag3].filter(Boolean) as string[],
+          description: data.description || '',
+          accentColor: accentCls
+        });
+      });
+      
+      setAllCourses([...COURSES, ...dynamicCourses]);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, coursesColPath);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Helper to map string to Lucid Icon
   const getIcon = (iconName: string) => {
@@ -27,7 +72,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
   };
 
   // Find course matching searched branch/topic
-  const filteredCourses = COURSES.filter((course) => {
+  const filteredCourses = allCourses.filter((course) => {
     if (!activeSearch) return true;
     const cleanSearch = activeSearch.toLowerCase();
     const matchesName = course.name.toLowerCase().includes(cleanSearch);
@@ -36,7 +81,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
     return matchesName || matchesBranches || matchesDesc;
   });
 
-  const selectedCourse = COURSES.find(c => c.id === selectedCourseId) || COURSES[0];
+  const selectedCourse = allCourses.find(c => c.id === selectedCourseId) || allCourses[0];
 
   // Auto-focus first matching course if search alters
   useEffect(() => {
@@ -48,6 +93,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
       }
     }
   }, [activeSearch, selectedCourseId, onSelectCourse]);
+
 
   return (
     <section 
@@ -116,7 +162,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
           
           {/* LEFT CHANNELS (Subjects grid selector) */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {COURSES.map((course, idx) => {
+            {allCourses.map((course, idx) => {
               const worksWithFilter = filteredCourses.some(c => c.id === course.id);
               const isSelected = selectedCourseId === course.id;
 

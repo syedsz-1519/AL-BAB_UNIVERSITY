@@ -1,0 +1,94 @@
+========================================================================
+               ALBAB ACADEMIC WORLD — ADMIN SANCTUM SETUP
+========================================================================
+
+Follow these rigorous, systematic phases to set up and initialize the 
+ALBAB Academic World Administration system securely.
+
+------------------------------------------------------------------------
+PHASE A: CREATE A FIREBASE PROJECT
+------------------------------------------------------------------------
+1. Navigate to the Firebase Console: https://console.firebase.google.com/
+2. Click "Add project" (or select an existing Google Cloud project).
+3. Assign a name to your project (e.g., "albab-academic-world").
+4. Choose whether to enable Google Analytics (optional/disabled is fine).
+5. Click "Create project" and wait for the backend provisioning.
+
+------------------------------------------------------------------------
+PHASE B: ENABLE FIRESTORE DATABASE
+------------------------------------------------------------------------
+1. In the left panel of the Firebase Console, go to "Build" -> "Firestore Database".
+2. Click "Create database".
+3. Choose "Start in production mode" or "Start in test mode" (either is fine,
+   as your security rules will overwrite this in Phase D).
+4. Select your preferred Firestore Cloud Region (e.g., "us-central" or "asia-southeast1").
+5. Click "Enable" to finalize creation.
+
+------------------------------------------------------------------------
+PHASE C: ENABLE EMAIL/PASSWORD AUTHENTICATION
+------------------------------------------------------------------------
+1. In the left panel, navigate to "Build" -> "Authentication".
+2. Click "Get started".
+3. Inside the "Sign-in method" tab, select "Email/Password" from the providers list.
+4. Toggle "Email/Password" to "Enabled" (leave Passwordless sign-in disabled).
+5. Click "Save".
+
+------------------------------------------------------------------------
+PHASE D: CREATE THE FIRST ADMIN USER
+------------------------------------------------------------------------
+1. While still under "Authentication", navigate to the "Users" tab.
+2. Click "Add user".
+3. Input the administrator's email and security password:
+   - Email: scribe@albab.edu (or any institutional admin email)
+   - Password: Choose a highly secure, high-entropy password.
+4. Click "Add user". Keep these credentials safe; they will unlock the
+   Admin Sanctum.
+
+------------------------------------------------------------------------
+PHASE E: DEPLOY FIRESTORE SECURITY RULES
+------------------------------------------------------------------------
+The security rules file included in this deployment is `firestore.rules`.
+To deploy these rules:
+
+Option 1: Firebase CLI (Recommended for production pipeline)
+  1. Install CLI tools if not yet done: `npm install -g firebase-tools`
+  2. Log into your Google Account: `firebase login`
+  3. Initialize your directory layout: `firebase init firestore`
+     - Select your active Firebase project ID.
+     - Specify `firestore.rules` as the rules filename.
+  4. Deploy the ruleset safely: `firebase deploy --only firestore:rules`
+
+Option 2: Direct Copy & Paste (Quick Setup via Console)
+  1. Open your Firebase project -> "Firestore Database" -> "Rules" tab.
+  2. Copy the entire contents of the `firestore.rules` file in this repository.
+  3. Delete the default rules in the editor, and paste the copied ruleset.
+  4. Click "Publish".
+
+------------------------------------------------------------------------
+PHASE F: EXPLAINING THE LIVE INTEGRATION WITH VERCEL
+------------------------------------------------------------------------
+1. The `admin.html` page has been placed in the `/public` directory of
+   the Vite/React workspace.
+2. When deploying to Vercel (or executing the local build `npm run build`),
+   the static files in `/public` are automatically transpiled and copied 
+   directly into the root of the output `dist/` workspace.
+3. Vercel automatically deploys all static HTML files under `dist/` directly.
+   Therefore, `/admin.html` becomes immediately accessible.
+4. To allow users to navigate cleanly to `/admin` without specifying the
+   `.html` extension, Vercel supports a simple configuration file.
+   Verify or add a `vercel.json` file in your root with clean redirects:
+
+   {
+     "cleanUrls": true,
+     "rewrites": [
+       { "source": "/admin", "destination": "/admin.html" }
+     ]
+   }
+
+5. The Express Node.js backend server (`server.ts`) in this template has 
+   also been fully upgraded with a customized endpoint matching `/admin` to
+   gracefully serve `admin.html` across all containerized runtimes automatically.
+
+========================================================================
+               AUTHENTIC DECREE: CANONICAL SYSTEM SECURED
+========================================================================

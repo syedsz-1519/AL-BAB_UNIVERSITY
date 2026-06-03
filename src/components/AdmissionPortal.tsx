@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EnrollmentState } from '../types';
 import { COURSES } from '../data';
 import { X, Check, Award, Printer, ClipboardCheck, Sparkles, AlertCircle, Mail } from 'lucide-react';
+import { auth, db } from '../firebase';
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 
 interface AdmissionPortalProps {
   currentTheme: 'parchment' | 'space';
@@ -17,6 +19,37 @@ export default function AdmissionPortal({ currentTheme, onClose }: AdmissionPort
     statementOfPurpose: '',
     priorKnowledge: 'beginner'
   });
+
+  // Automatically pre-fill student info if they are signed in via Firebase
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (user) {
+      const docRef = doc(db, 'users', user.uid);
+      getDoc(docRef).then((snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          setEnrollment(prev => ({
+            ...prev,
+            fullName: data.displayName || user.displayName || '',
+            email: data.email || user.email || ''
+          }));
+        } else {
+          setEnrollment(prev => ({
+            ...prev,
+            fullName: user.displayName || '',
+            email: user.email || ''
+          }));
+        }
+      }).catch((e) => {
+        console.warn("Silent profile sync in AdmissionPortal failed: ", e);
+        setEnrollment(prev => ({
+          ...prev,
+          fullName: user.displayName || '',
+          email: user.email || ''
+        }));
+      });
+    }
+  }, []);
 
   const [submitted, setSubmitted] = useState(false);
   const [showChoice, setShowChoice] = useState(false);
@@ -95,6 +128,18 @@ JazakAllah khair!`;
         app.selectedCourse === enrollmentData.selectedCourse
       );
       if (isDuplicate) return;
+
+      // Direct Firestore sync if authenticated
+      if (auth.currentUser) {
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        updateDoc(userRef, {
+          enrolledCourses: arrayUnion(enrollmentData.selectedCourse)
+        }).then(() => {
+          console.log('Successfully enrolled student in Firestore:', enrollmentData.selectedCourse);
+        }).catch(err => {
+          console.warn('Firestore auto-enroll update failed:', err);
+        });
+      }
 
       const newRecord = {
         fullName: enrollmentData.fullName,

@@ -37,6 +37,7 @@ export default function App() {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'fallacy-scanner' | 'dhikr-rx' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith'>(() => {
     if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
       return 'academic-world';
@@ -221,6 +222,8 @@ export default function App() {
         onTabChange={(tab) => setCurrentSection(tab as any)}
         language={language}
         onLanguageChange={setLanguage}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
       />
 
       {currentSection === 'academic-world' && (
@@ -483,6 +486,9 @@ export default function App() {
         currentSection={currentSection}
         onNavigate={(sec) => setCurrentSection(sec as any)}
         language={language}
+        isOpen={mobileMenuOpen}
+        setIsOpen={setMobileMenuOpen}
+        onOpenAdmission={() => setAdmissionOpen(true)}
       />
     </div>
   );

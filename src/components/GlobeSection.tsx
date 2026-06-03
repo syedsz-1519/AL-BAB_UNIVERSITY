@@ -102,6 +102,67 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
   const activeHadith = HADITHS[hadithIndex];
 
+  // Hover tracking for showing coordinate pin & tooltip
+  const [hoverPin, setHoverPin] = useState<{
+    x: number;
+    y: number;
+    lat: string;
+    lon: string;
+    regionName: string;
+  } | null>(null);
+
+  const handleGlobeMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Radius calculation inside the circular bounding box of the globe
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    
+    // Check if the pointer is within the actual spherical visual bounds of the globe
+    if (dist <= rect.width / 2) {
+      const pctX = (x / rect.width) * 100;
+      const pctY = (y / rect.height) * 100;
+
+      // Map percentages to mock coordinates (Lat: -90 to 90, Lon: -180 to 180)
+      const lonVal = Math.round((pctX - 50) * 3.6);
+      const latVal = Math.round((50 - pctY) * 1.8);
+      
+      const lonStr = `${Math.abs(lonVal)}° ${lonVal >= 0 ? 'E' : 'W'}`;
+      const latStr = `${Math.abs(latVal)}° ${latVal >= 0 ? 'N' : 'S'}`;
+
+      // Geocultural historical zones
+      let regionName = 'Horizon Sector';
+      if (pctX < 35 && pctY < 50) {
+        regionName = 'Andalusian Basin';
+      } else if (pctX < 35 && pctY >= 50) {
+        regionName = 'Maghreb Region';
+      } else if (pctX >= 35 && pctX < 48 && pctY < 45) {
+        regionName = 'Anatolia Sector';
+      } else if (pctX >= 35 && pctX < 48 && pctY >= 45) {
+        regionName = 'Nile Delta Corridor';
+      } else if (pctX >= 48 && pctX < 62 && pctY < 50) {
+        regionName = 'Mesopotamia Valley';
+      } else if (pctX >= 48 && pctX < 62 && pctY >= 50) {
+        regionName = 'Hijaz Sanctum';
+      } else if (pctX >= 62 && pctY < 50) {
+        regionName = 'Transoxiana Heights';
+      } else if (pctX >= 62 && pctY >= 50) {
+        regionName = 'Sindh Oasis';
+      }
+
+      setHoverPin({ x, y, lat: latStr, lon: lonStr, regionName });
+    } else {
+      setHoverPin(null);
+    }
+  };
+
+  const handleGlobeMouseLeave = () => {
+    setHoverPin(null);
+  };
+
   const handleNextHadith = () => {
     setHadithIndex((prev) => (prev + 1) % HADITHS.length);
   };
@@ -221,6 +282,8 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
         {/* Parallax Container for the Globe */}
         <div 
+          onMouseMove={handleGlobeMouseMove}
+          onMouseLeave={handleGlobeMouseLeave}
           className="relative w-36 h-36 xs:w-48 xs:h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 z-20"
           style={{
             transform: `translateY(${parallaxOffset}px)`,
@@ -231,7 +294,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
           <div 
             ref={globeContainerRef}
             onClick={triggerHadithPopup}
-            className={`relative w-full h-full rounded-full flex justify-center items-center overflow-hidden border border-gold/40 cursor-pointer shadow-2xl transition-all duration-500 hover:scale-[1.03] active:scale-95 group/globe ${!isSpace ? 'glow-halo' : ''}`}
+            className="relative w-full h-full rounded-full flex justify-center items-center overflow-hidden border border-gold/40 cursor-pointer shadow-2xl transition-all duration-500 hover:scale-[1.03] active:scale-95 group/globe"
             style={{
               background: `radial-gradient(circle at ${bgLightX}% ${bgLightY}%, ${
                 isSpace 
@@ -240,7 +303,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
               })`,
               boxShadow: isSpace 
                 ? 'inset -20px -20px 50px rgba(0,0,0,0.8), 0 0 60px 15px rgba(232,184,109,0.15)' 
-                : 'inset -20px -20px 50px rgba(0,0,0,0.85), 0 0 60px 15px rgba(72,144,241,0.22)',
+                : 'inset -25px -25px 50px rgba(0,0,0,0.85), 0 10px 40px -10px rgba(0,0,0,0.15)',
               willChange: 'background'
             }}
             title="Click to receive Prophetic Wisdom in center"
@@ -340,12 +403,16 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 </filter>
               </defs>
 
-              {/* LAYER 1 — Deep Space Glow behind globe */}
-              <circle cx="250" cy="250" r="240" fill="url(#spaceGlow)" />
+              {/* LAYER 1 — Deep Space Glow behind globe (only visible in Space mode) */}
+              {isSpace && <circle cx="250" cy="250" r="240" fill="url(#spaceGlow)" />}
 
-              {/* LAYER 2 — Soft Blue Atmospheric Rings */}
-              <circle cx="250" cy="250" r="200" fill="rgba(80,160,255,0.12)" filter="url(#atmosphereBlur)" />
-              <circle cx="250" cy="250" r="195" fill="url(#atmosphereGlow)" />
+              {/* LAYER 2 — Soft Blue Atmospheric Rings (Only visible in Space mode, completely removed in light mode to prevent clashing blue circles) */}
+              {isSpace && (
+                <>
+                  <circle cx="250" cy="250" r="200" fill="rgba(80,160,255,0.08)" filter="url(#atmosphereBlur)" />
+                  <circle cx="250" cy="250" r="195" fill="url(#atmosphereGlow)" />
+                </>
+              )}
 
               {/* Main Globe Area (Clipped Group) */}
               <g clipPath="url(#globeClip)">
@@ -360,51 +427,57 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   <ellipse cx="280" cy="270" rx="55" ry="22" fill="rgba(255,255,255,0.04)" />
                 </g>
 
-                {/* ROTATING GROUP (LAYER 4 — Geography and LAYER 6 — Grid Line Layer) */}
-                <g style={{ transformOrigin: '250px 250px', willChange: 'transform' }}>
+                {/* HORIZONTALLY SPINNING SEAMLESS WORLD MAP LAYER (REVOLVING EFFECT WITH ACTUAL CONTINENT SHAPES) */}
+                <g>
+                  <g id="continentsGroup">
+                    <g fill="url(#continentGrad)" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" filter="url(#globeShadow)">
+                      {/* Africa */}
+                      <path d="M 255,195 Q 270,185 285,190 Q 305,200 308,230 Q 312,265 295,295 Q 278,325 260,330 Q 242,330 232,310 Q 218,285 220,255 Q 222,225 235,208 Z" />
+                      
+                      {/* Europe */}
+                      <path d="M 248,155 Q 262,148 275,152 Q 288,158 290,170 Q 288,182 275,186 Q 262,188 252,182 Q 242,172 248,155 Z" />
+                      
+                      {/* Asia (partial) */}
+                      <path d="M 290,145 Q 320,135 355,140 Q 380,148 385,168 Q 382,190 360,198 Q 335,202 312,192 Q 292,180 288,162 Z" />
+                      
+                      {/* South America */}
+                      <path d="M 210,240 Q 222,232 232,238 Q 242,250 238,275 Q 232,300 220,312 Q 208,318 198,308 Q 188,292 190,268 Q 192,248 210,240 Z" />
+                      
+                      {/* North America */}
+                      <path d="M 168,168 Q 185,155 205,160 Q 218,168 215,188 Q 210,208 195,215 Q 178,218 165,205 Q 155,190 168,168 Z" />
+                      
+                      {/* Australia/Oceania */}
+                      <path d="M 370,290 Q 385,285 390,295 Q 385,310 375,308 Q 365,300 370,290 Z" />
+                    </g>
+                  </g>
+                  
+                  {/* Duplicates for 360px offset looping translation */}
+                  <use href="#continentsGroup" x="360" />
+                  <use href="#continentsGroup" x="-360" />
+                  
                   <animateTransform
                     attributeName="transform"
-                    type="rotate"
-                    from="0 250 250"
-                    to="360 250 250"
-                    dur="18s"
+                    type="translate"
+                    from="0 0"
+                    to="-360 0"
+                    dur="24s"
                     repeatCount="indefinite"
                   />
+                </g>
 
-                  {/* Continent Shapes with Coastlines & Soft shadow filter */}
-                  <g fill="url(#continentGrad)" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" filter="url(#globeShadow)">
-                    {/* Africa */}
-                    <path d="M 255,195 Q 270,185 285,190 Q 305,200 308,230 Q 312,265 295,295 Q 278,325 260,330 Q 242,330 232,310 Q 218,285 220,255 Q 222,225 235,208 Z" />
-                    
-                    {/* Europe */}
-                    <path d="M 248,155 Q 262,148 275,152 Q 288,158 290,170 Q 288,182 275,186 Q 262,188 252,182 Q 242,172 248,155 Z" />
-                    
-                    {/* Asia (partial) */}
-                    <path d="M 290,145 Q 320,135 355,140 Q 380,148 385,168 Q 382,190 360,198 Q 335,202 312,192 Q 292,180 288,162 Z" />
-                    
-                    {/* South America */}
-                    <path d="M 210,240 Q 222,232 232,238 Q 242,250 238,275 Q 232,300 220,312 Q 208,318 198,308 Q 188,292 190,268 Q 192,248 210,240 Z" />
-                    
-                    {/* North America */}
-                    <path d="M 168,168 Q 185,155 205,160 Q 218,168 215,188 Q 210,208 195,215 Q 178,218 165,205 Q 155,190 168,168 Z" />
-                  </g>
-
-                  {/* LAYER 6 — Latitude and Longitude Graticule grid overlay inside rotation */}
-                  <g stroke="rgba(255,255,255,0.06)" strokeWidth="0.6" fill="none">
-                    <ellipse cx="250" cy="250" rx="178" ry="30" />
-                    <ellipse cx="250" cy="250" rx="168" ry="60" />
-                    <ellipse cx="250" cy="250" rx="146" ry="90" />
-                    <ellipse cx="250" cy="250" rx="112" ry="120" />
-                    <ellipse cx="250" cy="250" rx="70" ry="150" />
-                    
-                    <ellipse cx="250" cy="250" rx="30" ry="178" />
-                    <ellipse cx="250" cy="250" rx="60" ry="178" />
-                    <ellipse cx="250" cy="250" rx="90" ry="178" />
-                    <ellipse cx="250" cy="250" rx="120" ry="178" />
-                    <ellipse cx="250" cy="250" rx="150" ry="178" />
-                  </g>
-
-                  {/* Historical markers overlay moved outside to prevent clipping of floating labels */}
+                {/* LAYER 6 — Latitude and Longitude Graticule grid overlay over rotating surface */}
+                <g stroke="rgba(255,255,255,0.07)" strokeWidth="0.6" fill="none">
+                  <ellipse cx="250" cy="250" rx="178" ry="30" />
+                  <ellipse cx="250" cy="250" rx="168" ry="60" />
+                  <ellipse cx="250" cy="250" rx="146" ry="90" />
+                  <ellipse cx="250" cy="250" rx="112" ry="120" />
+                  <ellipse cx="250" cy="250" rx="70" ry="150" />
+                  
+                  <ellipse cx="250" cy="250" rx="30" ry="178" />
+                  <ellipse cx="250" cy="250" rx="60" ry="178" />
+                  <ellipse cx="250" cy="250" rx="90" ry="178" />
+                  <ellipse cx="250" cy="120" rx="120" ry="178" />
+                  <ellipse cx="250" cy="150" rx="150" ry="178" />
                 </g>
 
                 {/* LAYER 7 — Cloud Layer (Rotating slightly faster at 14s) */}
@@ -458,20 +531,20 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 filter="url(#brightSpotBlur)" 
               />
 
-              {/* UNCLIPPED ROTATING MARKERS WITH GORGEOUS FLOATING HOVER CARD ON TOUR */}
-              <g style={{ transformOrigin: '250px 250px', willChange: 'transform' }}>
+              {/* UNCLIPPED HORIZONTALLY SLIDING MARKERS (ROTATING DYNAMICALLY WITH THE VECTOR MAP) */}
+              <g>
                 <animateTransform
                   attributeName="transform"
-                  type="rotate"
-                  from="0 250 250"
-                  to="360 250 250"
-                  dur="18s"
+                  type="translate"
+                  from="0 0"
+                  to="-360 0"
+                  dur="24s"
                   repeatCount="indefinite"
                 />
 
-                <g>
+                <g id="markersGroup">
                   {/* Baghdad */}
-                  <g className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-baghdad" className="pointer-events-auto group/marker cursor-pointer">
                     <circle cx="285" cy="182" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="285" cy="182" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.4s" repeatCount="indefinite" />
@@ -492,7 +565,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Cairo */}
-                  <g className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-cairo" className="pointer-events-auto group/marker cursor-pointer">
                     <circle cx="268" cy="198" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="268" cy="198" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.1s" repeatCount="indefinite" />
@@ -513,7 +586,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Cordoba */}
-                  <g className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-cordoba" className="pointer-events-auto group/marker cursor-pointer">
                     <circle cx="247" cy="172" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="247" cy="172" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.5s" repeatCount="indefinite" />
@@ -534,7 +607,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Medina */}
-                  <g className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-medina" className="pointer-events-auto group/marker cursor-pointer">
                     <circle cx="278" cy="215" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="278" cy="215" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.2s" repeatCount="indefinite" />
@@ -555,7 +628,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Fez */}
-                  <g className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-fez" className="pointer-events-auto group/marker cursor-pointer">
                     <circle cx="234" cy="206" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="234" cy="206" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.3s" repeatCount="indefinite" />
@@ -576,7 +649,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Bukhara */}
-                  <g className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-bukhara" className="pointer-events-auto group/marker cursor-pointer">
                     <circle cx="308" cy="162" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="308" cy="162" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.6s" repeatCount="indefinite" />
@@ -596,6 +669,10 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                     <title>Bukhara: Academy of advanced sciences</title>
                   </g>
                 </g>
+
+                {/* Seamless looped copies of the marker group with exactly 360px offset */}
+                <use href="#markersGroup" x="360" />
+                <use href="#markersGroup" x="-360" />
               </g>
             </svg>
 
@@ -671,6 +748,53 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
               </button>
             )}
           </div>
+
+          {/* Custom Interactive Floating Coordinate Pin and Tooltip */}
+          {hoverPin && (
+            <div 
+              className="absolute pointer-events-none z-50 transform -translate-x-1/2 -translate-y-full transition-all duration-75 ease-out"
+              style={{ 
+                left: `${hoverPin.x}px`, 
+                top: `${hoverPin.y}px` 
+              }}
+            >
+              {/* Glowing Coordinate Pin */}
+              <div className="relative flex flex-col items-center">
+                {/* Translucent Card/Tooltip Frame */}
+                <div className={`absolute bottom-8 flex flex-col p-2.5 rounded-md border w-44 backdrop-blur-md shadow-2xl transition-all duration-200 animate-scale-up
+                  ${isSpace 
+                    ? 'bg-[#050b18]/95 border-emerald-500/50 text-white shadow-[0_4px_24px_rgba(0,0,0,0.6)]' 
+                    : 'bg-[#FFFBF5]/95 border-emerald-500/45 text-charcoal shadow-[0_4px_16px_rgba(16,185,129,0.15)]'
+                  }
+                `}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="text-[9px] font-mono tracking-wider text-emerald-500 font-bold uppercase">
+                      Current Session: Research
+                    </span>
+                  </div>
+                  <div className={`font-serif font-black text-xs leading-none mb-1 ${isSpace ? 'text-[#E8B86D]' : 'text-crimson'}`}>
+                    {hoverPin.regionName}
+                  </div>
+                  <div className="text-[8.5px] font-mono text-stone-500 dark:text-stone-400 mt-1.5 flex justify-between border-t border-stone-200/20 pt-1 leading-none">
+                    <span>Lat: {hoverPin.lat}</span>
+                    <span>Lon: {hoverPin.lon}</span>
+                  </div>
+                </div>
+
+                {/* Pulsing focal head */}
+                <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-[0_0_12px_rgba(16,185,129,0.9)] flex items-center justify-center animate-pulse">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-700" />
+                </div>
+                
+                {/* Secondary expanding circular scanwave */}
+                <div className="absolute w-8 h-8 rounded-full border border-emerald-400 opacity-60 animate-ping duration-1000 -top-2" />
+
+                {/* Delicate drop-pin vertical wireline */}
+                <div className="w-0.5 h-6 bg-gradient-to-b from-emerald-500 to-transparent" />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* DESKTOP: Centered Floating Course Cards */}

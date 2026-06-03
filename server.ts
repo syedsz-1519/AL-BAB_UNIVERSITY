@@ -4,10 +4,56 @@ import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
 import { createClient } from "@supabase/supabase-js";
 import { GoogleGenAI, Type } from "@google/genai";
+import { requireAuth } from "./src/auth.js";
 
 // Load environment variables
 dotenv.config({ path: ".env.local" });
 dotenv.config();
+
+/**
+ * Rigorous Input Sanitizer to neutralize injection risks
+ * - Mitigates Prompt Injection (strips directive words like systemInstruction, ignore rules, act as, you must, etc.)
+ * - Neutralizes Cross-Site Scripting (XSS) / HTML tags (strips html markup completely)
+ * - Restricts hazardous characters or control codes
+ * - Normalizes whitespaces and clamps lengths to safe margins
+ */
+function sanitizeAcademicInput(input: string, maxLength: number = 2000): string {
+  if (typeof input !== 'string') return '';
+  
+  // 1. Clamp size
+  let sanitized = input.substring(0, maxLength);
+
+  // 2. Remove dangerous control characters and non-printable elements
+  sanitized = sanitized.replace(/[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]/g, '');
+
+  // 3. Remove severe XSS or HTML injection tags to protect clients rendering untrusted content
+  sanitized = sanitized.replace(/<\/?[^>]+(>|$)/g, ''); 
+
+  // 4. Safe escape quotes and quotes/backslashes to avoid JSON breaking or prompt boundaries disruption
+  sanitized = sanitized.replace(/[\\]/g, ' ').replace(/"/g, "'"); 
+
+  // 5. De-fang typical prompt injection command words and trigger sequences (to prevent bypassing system rules)
+  const forbiddenPhrases = [
+    /ignore prior/gi,
+    /ignore previous/gi,
+    /systemInstruction/gi,
+    /system instruction/gi,
+    /you are now/gi,
+    /act as/gi,
+    /stop following/gi,
+    /bypass the/gi,
+    /forget all/gi,
+    /re-write the/gi,
+    /instead of analyzing/gi,
+    /ignore the instructions/gi
+  ];
+
+  for (const pattern of forbiddenPhrases) {
+    sanitized = sanitized.replace(pattern, '[CLEANED]');
+  }
+
+  return sanitized.trim();
+}
 
 // Initialize Supabase Client (Lazy, safe, with fallback flags)
 const supabaseUrl = process.env.SUPABASE_URL || "";
@@ -661,11 +707,16 @@ Provide the response in structural markdown.`;
       return res.status(400).json({ error: "No question provided" });
     }
 
+    const sanitizedQuestion = sanitizeAcademicInput(question);
+    if (!sanitizedQuestion) {
+      return res.status(400).json({ error: "The provided academic inquiry contains prohibited injection key-phrases or unsafe characters." });
+    }
+
     const ai = getGenAI();
     if (!ai) {
       const docText = `### Authentic Decrees: Albab Juristic Fatwa Board
 
-* **现代Question:** "${question}"
+* **现代Question:** "${sanitizedQuestion}"
 * **Decision Status:** Seeded Fallback Legal Opinion
 
 ---
@@ -704,7 +755,7 @@ Provide the response in structural markdown.`;
       const response = await ai.models.generateContent({
         model: "gemini-3.5-flash",
         contents: `You are a learned classical Mufti (Islamic Jurist) presiding at the Mufti fatwa counsel of Albab Islamic University.
-Please provide a systematic, academic, and deeply traditional legal opinion (*Fatwa*) in response to the modern question or dilemma: "${question}".
+Please provide a systematic, academic, and deeply traditional legal opinion (*Fatwa*) in response to the modern question or dilemma: "${sanitizedQuestion}".
 
 You MUST structure your response exactly as follows:
 1. QURANIC EVIDENCE - Cite key verses, their context, and direct application.
@@ -1078,9 +1129,14 @@ Return ONLY JSON array, no markdown:
 
   // Fallacy Scan Endpoint
   app.post("/api/labs/fallacy/scan", async (req, res) => {
-    const { argument } = req.body;
-    if (!argument) {
+    const rawArgument = req.body.argument;
+    if (!rawArgument) {
       return res.status(400).json({ error: "No argument text provided." });
+    }
+
+    const argument = sanitizeAcademicInput(rawArgument);
+    if (!argument) {
+      return res.status(400).json({ error: "The provided academic argument contains prohibited injection key-phrases or unsafe characters." });
     }
 
     const argLower = argument.toLowerCase();
@@ -3057,8 +3113,8 @@ Provide deep critical evaluations. If no severe fallacies are present, return an
     res.json({ success: true, data: localDashboards[email] });
   });
 
-  // Scribes Admin analytics feed
-  app.get("/api/admin-analytics", (req, res) => {
+  // Scribes Admin analytics feed protected with role-based and email verification checks
+  app.get("/api/admin-analytics", requireAuth(['admin']) as any, (req, res) => {
     res.json({
       studentsCount: localAdmissions.length + 18,
       recentQuizzes: [
@@ -3068,6 +3124,42 @@ Provide deep critical evaluations. If no severe fallacies are present, return an
       ],
       branchSponsorships: localSponsorships
     });
+  });
+
+  // Serve the dynamic administrative sanctum ledger & authentication gates
+  app.get(["/admin", "/admin.html"], (req: any, res: any) => {
+    const file = "admin.html";
+    res.sendFile(path.join(process.cwd(), process.env.NODE_ENV !== "production" ? `public/${file}` : `dist/${file}`));
+  });
+
+  app.get(["/login", "/login.html"], (req: any, res: any) => {
+    const file = "login.html";
+    res.sendFile(path.join(process.cwd(), process.env.NODE_ENV !== "production" ? `public/${file}` : `dist/${file}`));
+  });
+
+  app.get(["/signup", "/signup.html"], (req: any, res: any) => {
+    const file = "signup.html";
+    res.sendFile(path.join(process.cwd(), process.env.NODE_ENV !== "production" ? `public/${file}` : `dist/${file}`));
+  });
+
+  app.get(["/forgot-password", "/forgot-password.html"], (req: any, res: any) => {
+    const file = "forgot-password.html";
+    res.sendFile(path.join(process.cwd(), process.env.NODE_ENV !== "production" ? `public/${file}` : `dist/${file}`));
+  });
+
+  app.get(["/unauthorized", "/unauthorized.html"], (req: any, res: any) => {
+    const file = "unauthorized.html";
+    res.sendFile(path.join(process.cwd(), process.env.NODE_ENV !== "production" ? `public/${file}` : `dist/${file}`));
+  });
+
+  app.get(["/admin-setup", "/admin-setup.html"], (req: any, res: any) => {
+    const file = "admin-setup.html";
+    res.sendFile(path.join(process.cwd(), process.env.NODE_ENV !== "production" ? `public/${file}` : `dist/${file}`));
+  });
+
+  // Serve student dashboard redirect
+  app.get("/dashboard", (req: any, res: any) => {
+    res.redirect("/#portal");
   });
 
   // Vite development integration

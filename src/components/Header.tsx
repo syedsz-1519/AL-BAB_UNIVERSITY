@@ -15,6 +15,10 @@ interface HeaderProps {
   onTabChange?: (tab: string) => void;
   language?: Language;
   onLanguageChange?: (lang: Language) => void;
+
+  // Lifted mobile menu props for merged quick nav
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (open: boolean) => void;
 }
 
 export default function Header({ 
@@ -27,11 +31,22 @@ export default function Header({
   activeTab = 'landing',
   onTabChange,
   language = 'en',
-  onLanguageChange
+  onLanguageChange,
+  mobileMenuOpen,
+  setMobileMenuOpen
 }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [localMobileMenuOpen, setLocalMobileMenuOpen] = useState(false);
+
+  const isMobileOpen = mobileMenuOpen !== undefined ? mobileMenuOpen : localMobileMenuOpen;
+  const toggleMobileOpen = () => {
+    if (setMobileMenuOpen) {
+      setMobileMenuOpen(!mobileMenuOpen);
+    } else {
+      setLocalMobileMenuOpen(!localMobileMenuOpen);
+    }
+  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,10 +145,10 @@ export default function Header({
 
           {/* MOBILE MENU TOGGLE */}
           <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={toggleMobileOpen}
             className="lg:hidden p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer text-black dark:text-white"
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
@@ -182,8 +197,8 @@ export default function Header({
         </div>
       </div>
 
-      {/* MOBILE DRAWER */}
-      {mobileMenuOpen && (
+      {/* LEGACY MOBILE DRAWER (Only when not using lifted state to prevent duplicates) */}
+      {!setMobileMenuOpen && isMobileOpen && (
         <div className={`absolute top-full left-0 right-0 py-6 px-8 shadow-xl flex flex-col gap-4 border-b font-serif text-lg z-40 transition-all duration-300
           ${isSpace 
             ? 'bg-space border-gold/15 text-white/90' 
@@ -194,7 +209,8 @@ export default function Header({
             <button
               key={item.id}
               onClick={() => {
-                setMobileMenuOpen(false);
+                if (setMobileMenuOpen) setMobileMenuOpen(false);
+                else setLocalMobileMenuOpen(false);
                 if (onTabChange) {
                   onTabChange(item.id);
                 } else {
@@ -209,7 +225,8 @@ export default function Header({
           ))}
           <button 
             onClick={() => {
-              setMobileMenuOpen(false);
+              if (setMobileMenuOpen) setMobileMenuOpen(false);
+              else setLocalMobileMenuOpen(false);
               onOpenAdmission();
             }}
             className="mt-4 flex justify-center items-center gap-2 py-3 bg-crimson dark:bg-gold text-white dark:text-space font-bold tracking-widest text-xs uppercase rounded-sm"

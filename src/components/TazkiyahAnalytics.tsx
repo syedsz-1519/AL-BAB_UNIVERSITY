@@ -179,6 +179,16 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
   const vagalColor = isSpace ? '#E5B14F' : '#C4A35A';    
   const focusColor = isSpace ? '#60A5FA' : '#10B981';
 
+  // Calculate aggregated metrics
+  const totalPoints = data.length;
+  const overallSpiritualBalance = totalPoints > 0
+    ? Math.round(data.reduce((acc, curr) => acc + (curr.serenity + curr.vagalTone) / 2, 0) / totalPoints)
+    : 0;
+
+  const averageCognitiveFocus = totalPoints > 0
+    ? Math.round(data.reduce((acc, curr) => acc + curr.focus, 0) / totalPoints)
+    : 0;
+
   return (
     <div className={`p-6 rounded border transition-colors shadow-sm
       ${isSpace ? 'bg-[#090f23] border-gold/15 text-white' : 'bg-white border-stone-200 text-charcoal'}
@@ -288,6 +298,133 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           </span>
           <strong className="font-serif text-sm tracking-wide">Defusion Sharpness</strong>
         </button>
+      </div>
+
+      {/* AGGREGATED SUMMARY CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className={`p-4 rounded border flex flex-col justify-between transition-colors relative overflow-hidden
+            ${isSpace 
+              ? 'bg-[#0c1432] border-gold/20 text-white shadow-[0_4px_20px_rgba(0,0,0,0.3)]' 
+              : 'bg-[#faf9f6] border-stone-250 text-charcoal shadow-[0_2px_10px_rgba(139,26,26,0.03)]'
+            }
+          `}
+          id="spiritual-balance-card"
+        >
+          {/* Subtle background decoration */}
+          <div className="absolute right-[-10px] bottom-[-15px] opacity-5 select-none pointer-events-none">
+            <Heart className="h-24 w-24" />
+          </div>
+
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <span className={`text-[10px] font-mono tracking-widest uppercase font-bold block mb-1
+                ${isSpace ? 'text-gold/80' : 'text-stone-500'}
+              `}>
+                Spiritual Equanimity Index
+              </span>
+              <h5 className="font-serif font-black text-lg">Overall Spiritual Balance Score</h5>
+              <p className="text-[11px] font-sans text-stone-500 dark:text-stone-400 mt-1.5 leading-relaxed">
+                Formulated from combined heart serenity levels &amp; autonomic vagal resilience metrics recorded across both sanctuaries.
+              </p>
+            </div>
+            <div className={`p-2.5 rounded-full shrink-0
+              ${isSpace ? 'bg-gold/10 text-gold' : 'bg-[#8B1A1A]/10 text-[#8B1A1A]'}
+            `}>
+              <Heart className="h-5 w-5" />
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-end justify-between">
+            <div>
+              <span className="font-mono text-xs text-stone-400">Current Standing</span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className={`font-serif text-3xl font-black
+                  ${isSpace ? 'text-gold-light' : 'text-[#8B1A1A]'}
+                `}>
+                  {overallSpiritualBalance}%
+                </span>
+                <span className="text-[10px] font-mono uppercase font-bold tracking-wider opacity-85">
+                  {overallSpiritualBalance >= 80 ? "Al-Mutma'innah" : overallSpiritualBalance >= 60 ? 'Al-Lawwamah' : 'Al-Ammarah'}
+                </span>
+              </div>
+            </div>
+            
+            <div className="w-20 bg-stone-200/20 dark:bg-stone-700/30 h-1.5 rounded-full overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-1000
+                  ${isSpace ? 'bg-gold' : 'bg-[#8B1A1A]'}
+                `}
+                style={{ width: `${overallSpiritualBalance}%` }}
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className={`p-4 rounded border flex flex-col justify-between transition-colors relative overflow-hidden
+            ${isSpace 
+              ? 'bg-[#0c1432] border-gold/20 text-white shadow-[0_4px_20px_rgba(0,0,0,0.3)]' 
+              : 'bg-[#faf9f6] border-stone-250 text-charcoal shadow-[0_2px_10px_rgba(139,26,26,0.03)]'
+            }
+          `}
+          id="cognitive-focus-card"
+        >
+          {/* Subtle background decoration */}
+          <div className="absolute right-[-10px] bottom-[-15px] opacity-5 select-none pointer-events-none">
+            <Sparkles className="h-24 w-24" />
+          </div>
+
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <span className={`text-[10px] font-mono tracking-widest uppercase font-bold block mb-1
+                ${isSpace ? 'text-gold/80' : 'text-stone-500'}
+              `}>
+                Intellectual Attentiveness Metric
+              </span>
+              <h5 className="font-serif font-black text-lg">Average Cognitive Focus Score</h5>
+              <p className="text-[11px] font-sans text-stone-500 dark:text-stone-400 mt-1.5 leading-relaxed">
+                Calculated from active scriptural defusion concentration rates &amp; cognitive labs session attentiveness datasets.
+              </p>
+            </div>
+            <div className={`p-2.5 rounded-full shrink-0
+              ${isSpace ? 'bg-gold/10 text-gold' : 'bg-[#10B981]/10 text-[#10B981]'}
+            `}>
+              <Sparkles className="h-5 w-5" />
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-end justify-between">
+            <div>
+              <span className="font-mono text-xs text-stone-400">Current Standing</span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className={`font-serif text-3xl font-black
+                  ${isSpace ? 'text-gold-light' : 'text-[#10B981]'}
+                `}>
+                  {averageCognitiveFocus}%
+                </span>
+                <span className="text-[10px] font-mono uppercase font-bold tracking-wider opacity-85">
+                  {averageCognitiveFocus >= 80 ? 'Mantiq Prime' : averageCognitiveFocus >= 60 ? 'Attentive Seeker' : 'Dispersed Focus'}
+                </span>
+              </div>
+            </div>
+            
+            <div className="w-20 bg-stone-200/20 dark:bg-stone-700/30 h-1.5 rounded-full overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-1000
+                  ${isSpace ? 'bg-gold' : 'bg-[#10B981]'}
+                `}
+                style={{ width: `${averageCognitiveFocus}%` }}
+              />
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* LINE CHART CONTAINER */}

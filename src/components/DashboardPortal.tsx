@@ -9,6 +9,20 @@ import {
 import { COURSES } from '../data';
 import D3ProgressChart from './D3ProgressChart';
 import TazkiyahAnalytics from './TazkiyahAnalytics';
+import { auth, db } from '../firebase';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  onAuthStateChanged, 
+  signOut 
+} from 'firebase/auth';
+import { 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  arrayUnion 
+} from 'firebase/firestore';
 
 interface DashboardPortalProps {
   currentTheme: 'parchment' | 'space';
@@ -72,8 +86,11 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
 
   // Auth States
   const [role, setRole] = useState<'student' | 'admin' | null>(null);
+  const [studentName, setStudentName] = useState('');
   const [studentEmail, setStudentEmail] = useState('');
   const [studentPassword, setStudentPassword] = useState('');
+  const [studentAuthMode, setStudentAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [studentSelectedCourse, setStudentSelectedCourse] = useState('quran');
   
   const [adminUsername, setAdminUsername] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
@@ -82,6 +99,94 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
   // Active Authenticated Users
   const [activeStudent, setActiveStudent] = useState<AdmissionRecord | null>(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  // Monitor Firebase Authentication state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.role === 'admin') {
+              setRole('admin');
+              setIsAdminLoggedIn(true);
+              setActiveStudent(null);
+            } else {
+              setRole('student');
+              setIsAdminLoggedIn(false);
+              
+              const name = data.displayName || user.displayName || 'Scholar Seeker';
+              const email = data.email || user.email || '';
+              const enrolled = data.enrolledCourses || [];
+              const course = enrolled.length > 0 ? enrolled[0] : 'quran';
+              const createdAtDateStr = data.createdAt 
+                ? new Date(data.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) 
+                : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+              
+              setActiveStudent({
+                id: user.uid,
+                fullName: name,
+                email: email,
+                selectedCourse: course,
+                statementOfPurpose: data.statementOfPurpose || 'Sincere pursuit of traditional Islamic sciences.',
+                priorKnowledge: data.priorKnowledge || 'beginner',
+                date: createdAtDateStr,
+                status: 'Approved'
+              });
+            }
+          } else {
+            // Document doesn't exist yet, create a default user profile in Firestore
+            const fallbackStudent: AdmissionRecord = {
+              id: user.uid,
+              fullName: user.displayName || 'Scholar Seeker',
+              email: user.email || '',
+              selectedCourse: 'quran',
+              statementOfPurpose: 'Sincere pursuit of traditional Islamic sciences.',
+              priorKnowledge: 'beginner',
+              date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+              status: 'Approved'
+            };
+            
+            await setDoc(docRef, {
+              uid: user.uid,
+              email: user.email || '',
+              displayName: user.displayName || 'Scholar Seeker',
+              role: 'student',
+              emailVerified: user.emailVerified || false,
+              phoneVerified: false,
+              enrolledCourses: ['quran'],
+              createdAt: new Date().toISOString()
+            });
+            
+            setRole('student');
+            setIsAdminLoggedIn(false);
+            setActiveStudent(fallbackStudent);
+          }
+        } catch (error) {
+          console.error("Error fetching user profile from Firestore:", error);
+          setRole('student');
+          setActiveStudent({
+            id: user.uid,
+            fullName: user.displayName || 'Scholar Seeker',
+            email: user.email || '',
+            selectedCourse: 'quran',
+            statementOfPurpose: 'Sincere pursuit of traditional Islamic sciences.',
+            priorKnowledge: 'beginner',
+            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+            status: 'Approved'
+          });
+        }
+      } else {
+        setRole(null);
+        setActiveStudent(null);
+        setIsAdminLoggedIn(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Core Sync Data States
   const [admissions, setAdmissions] = useState<AdmissionRecord[]>([]);
@@ -376,40 +481,90 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
     setTimeout(() => setCopiedNotification(null), 4500);
   };
 
-  // Login handler
-  const handleStudentLoginSubmit = (e: React.FormEvent) => {
+  // Student Sign Up / Register
+  const handleStudentSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
 
+    if (!studentName.trim()) {
+      setAuthError('Scholar title/name must be provided.');
+      return;
+    }
     if (!studentEmail.trim()) {
-      setAuthError('Email field must be provided.');
+      setAuthError('An active email endpoint is required.');
+      return;
+    }
+    if (!studentPassword.trim() || studentPassword.length < 6) {
+      setAuthError('Password must be at least 6 characters in length.');
       return;
     }
 
-    // Find applicant in local storage list with 'Approved' status
-    const student = admissions.find(
-      (a) => a.email.toLowerCase() === studentEmail.toLowerCase()
-    );
+    try {
+      // Create user in Firebase Authentication
+      const cred = await createUserWithEmailAndPassword(auth, studentEmail.trim(), studentPassword);
+      const uid = cred.user.uid;
 
-    if (!student) {
-      setAuthError('Email not registered under any admission applicant records. Ensure you apply first above!');
-      return;
+      // Initialize candidate's profile record in Firestore users collection
+      const userRef = doc(db, 'users', uid);
+      await setDoc(userRef, {
+        uid: uid,
+        email: studentEmail.trim(),
+        displayName: studentName.trim(),
+        role: 'student',
+        emailVerified: false,
+        phoneVerified: false,
+        enrolledCourses: [studentSelectedCourse],
+        createdAt: new Date().toISOString()
+      });
+
+      showNotification(`Academic credentials inscribed! Welcome, Al-Talib ${studentName}!`);
+    } catch (error: any) {
+      console.error("Firebase SignUp Error: ", error);
+      setAuthError(error.message || 'Covenant registry failed. Validate criteria or try again.');
     }
-
-    if (student.status !== 'Approved') {
-      setAuthError(`Your admission status is currently: "${student.status}". Access to student portal is granted only upon Official Covenant Approval by the Scribes (Admins).`);
-      return;
-    }
-
-    // Success Authentication! (Bypass password check for friendly evaluation)
-    setActiveStudent(student);
-    setRole('student');
-    localStorage.setItem('albab_logged_in_email', student.email);
-    localStorage.setItem('albab_logged_in_name', student.fullName);
-    showNotification(`Welcome back, Scholar ${student.fullName}!`);
   };
 
-  const handleAdminLoginSubmit = (e: React.FormEvent) => {
+  // Login handler
+  const handleStudentLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+
+    if (!studentEmail.trim() || !studentPassword.trim()) {
+      setAuthError('Both registered email and passcode must be provided.');
+      return;
+    }
+
+    // Retain legancy bypass for sandbox scholar student@albab.edu
+    if (studentEmail.toLowerCase() === 'student@albab.edu' && studentPassword === 'bypass') {
+      const student = admissions.find(
+        (a) => a.email.toLowerCase() === studentEmail.toLowerCase()
+      ) || {
+        id: 'mock_zubayr',
+        fullName: 'Zubayr Al-Husseini',
+        email: 'student@albab.edu',
+        selectedCourse: 'fiqh',
+        statementOfPurpose: 'A scholarly seeker of traditional fiqh',
+        priorKnowledge: 'intermediate',
+        date: 'May 20, 2026',
+        status: 'Approved' as const
+      };
+      setActiveStudent(student);
+      setRole('student');
+      showNotification(`Welcome back, Scholar ${student.fullName}!`);
+      return;
+    }
+
+    try {
+      // Authenticate directly with Firebase Auth
+      await signInWithEmailAndPassword(auth, studentEmail.trim(), studentPassword);
+      showNotification('Academic record authenticated successfully!');
+    } catch (error: any) {
+      console.error("Firebase Student Login Error: ", error);
+      setAuthError(error.message || 'Access Denied. Check matching email/password credentials.');
+    }
+  };
+
+  const handleAdminLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
 
@@ -418,12 +573,29 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
       setIsAdminLoggedIn(true);
       setRole('admin');
       showNotification('Administrator credential authenticated. Welcome, Scribe!');
+      return;
+    }
+
+    // Support admin firebase login if an email coordinates is supplied
+    if (adminUsername.includes('@')) {
+      try {
+        await signInWithEmailAndPassword(auth, adminUsername.trim(), adminPassword);
+        showNotification('Authenticating administrator administrative records...');
+      } catch (error: any) {
+        console.error("Firebase Admin Login Error: ", error);
+        setAuthError(error.message || 'Access Denied. Incorrect administrator credentials.');
+      }
     } else {
       setAuthError('Invalid administrator credentials. Hint: use Username: "admin" & Password: "admin"');
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Sign Out Error:", error);
+    }
     setRole(null);
     setActiveStudent(null);
     setIsAdminLoggedIn(false);
@@ -880,63 +1052,190 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                   Access your official Covenant letter certificate, record curriculum progress, mark daily lessons, and submit critique theses into the academic repository.
                 </p>
 
-                {authError && authError.includes('admission') && (
+                {authError && (
                   <div className="mb-4 p-3 rounded text-[11px] font-mono leading-relaxed bg-red-500/10 text-red-500 border border-red-500/15 flex gap-2">
                     <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>{authError}</span>
                   </div>
                 )}
 
-                <form onSubmit={handleStudentLoginSubmit} className="space-y-3.5">
-                  <div>
-                    <label className="block text-[10px] uppercase font-mono tracking-widest text-[#C9933A] mb-1.5 font-bold">
-                      Registered Student Email
-                    </label>
-                    <input 
-                      type="email"
-                      placeholder="e.g. student@albab.edu"
-                      value={studentEmail}
-                      onChange={(e) => setStudentEmail(e.target.value)}
-                      className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-sans focus:outline-none transition-colors
-                        ${isSpace 
-                          ? 'border-gold/25 text-white placeholder-white/35 focus:border-gold' 
-                          : 'border-stone-300 text-charcoal placeholder-stone-400 focus:border-crimson'
-                        }
-                      `}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] uppercase font-mono tracking-widest text-stone-400 mb-1.5 font-bold">
-                      Access Passcode / Key (Secure Bypass Enabled)
-                    </label>
-                    <input 
-                      type="password"
-                      placeholder="••••••••"
-                      value={studentPassword}
-                      onChange={(e) => setStudentPassword(e.target.value)}
-                      className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-sans focus:outline-none transition-colors
-                        ${isSpace 
-                          ? 'border-gold/25 text-white placeholder-white/35 focus:border-gold' 
-                          : 'border-stone-300 text-charcoal placeholder-stone-400 focus:border-crimson'
-                        }
-                      `}
-                    />
-                  </div>
-
+                {/* AUTHENTICATION TAB CONTROLS */}
+                <div className="flex border-b border-stone-250/15 text-xs font-mono mb-6">
                   <button 
-                    type="submit"
-                    className={`w-full flex justify-center items-center gap-2 py-2.5 text-xs font-bold tracking-widest uppercase rounded shadow hover:scale-[1.01] transition-all
-                      ${isSpace 
-                        ? 'bg-gold hover:bg-white text-space' 
-                        : 'bg-crimson hover:bg-black text-white'
+                    type="button" 
+                    onClick={() => {
+                      setStudentAuthMode('signin');
+                      setAuthError('');
+                    }}
+                    className={`flex-1 py-2 text-center font-bold border-b-2 transition-all cursor-pointer
+                      ${studentAuthMode === 'signin'
+                        ? isSpace ? 'border-gold text-gold-light' : 'border-crimson text-crimson font-black'
+                        : 'border-transparent text-stone-400 hover:text-stone-600'
                       }
                     `}
                   >
-                    <BookOpen className="h-4 w-4" />
-                    Enter Sanctuary
+                    Entrance (Sign In)
                   </button>
-                </form>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setStudentAuthMode('signup');
+                      setAuthError('');
+                    }}
+                    className={`flex-1 py-2 text-center font-bold border-b-2 transition-all cursor-pointer
+                      ${studentAuthMode === 'signup'
+                        ? isSpace ? 'border-gold text-gold-light' : 'border-crimson text-crimson font-black'
+                        : 'border-transparent text-stone-400 hover:text-stone-600'
+                      }
+                    `}
+                  >
+                    Inscribe (Sign Up)
+                  </button>
+                </div>
+
+                {studentAuthMode === 'signin' ? (
+                  <form onSubmit={handleStudentLoginSubmit} className="space-y-3.5">
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-widest text-[#C9933A] mb-1.5 font-bold">
+                        Registered Student Email
+                      </label>
+                      <input 
+                        type="email"
+                        placeholder="e.g. student@albab.edu"
+                        value={studentEmail}
+                        onChange={(e) => setStudentEmail(e.target.value)}
+                        className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-sans focus:outline-none transition-colors
+                          ${isSpace 
+                            ? 'border-gold/25 text-white placeholder-white/35 focus:border-gold' 
+                            : 'border-stone-300 text-charcoal placeholder-stone-400 focus:border-crimson'
+                          }
+                        `}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-widest text-stone-400 mb-1.5 font-bold">
+                        Access Passcode / Key (Secure Bypass Enabled)
+                      </label>
+                      <input 
+                        type="password"
+                        placeholder="••••••••"
+                        value={studentPassword}
+                        onChange={(e) => setStudentPassword(e.target.value)}
+                        className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-sans focus:outline-none transition-colors
+                          ${isSpace 
+                            ? 'border-gold/25 text-white placeholder-white/35 focus:border-gold' 
+                            : 'border-stone-300 text-charcoal placeholder-stone-400 focus:border-crimson'
+                          }
+                        `}
+                      />
+                    </div>
+
+                    <button 
+                      type="submit"
+                      className={`w-full flex justify-center items-center gap-2 py-2.5 text-xs font-bold tracking-widest uppercase rounded shadow hover:scale-[1.01] transition-all cursor-pointer
+                        ${isSpace 
+                          ? 'bg-gold hover:bg-white text-space' 
+                          : 'bg-crimson hover:bg-black text-white'
+                        }
+                      `}
+                    >
+                      <BookOpen className="h-4 w-4" />
+                      Enter Sanctuary
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleStudentSignUpSubmit} className="space-y-3.5">
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-widest text-stone-400 mb-1.5 font-bold">
+                        Scholar Title / Full Name
+                      </label>
+                      <input 
+                        type="text"
+                        placeholder="e.g. Zubayr Al-Husseini"
+                        value={studentName}
+                        onChange={(e) => setStudentName(e.target.value)}
+                        className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-sans focus:outline-none transition-colors
+                          ${isSpace 
+                            ? 'border-gold/25 text-white placeholder-white/35 focus:border-gold' 
+                            : 'border-stone-300 text-charcoal placeholder-stone-400 focus:border-crimson'
+                          }
+                        `}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-widest text-[#C9933A] mb-1.5 font-bold">
+                        Registered Student Email
+                      </label>
+                      <input 
+                        type="email"
+                        placeholder="e.g. candidate@albab.edu"
+                        value={studentEmail}
+                        onChange={(e) => setStudentEmail(e.target.value)}
+                        className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-sans focus:outline-none transition-colors
+                          ${isSpace 
+                            ? 'border-gold/25 text-white placeholder-white/35 focus:border-gold' 
+                            : 'border-stone-300 text-charcoal placeholder-stone-400 focus:border-crimson'
+                          }
+                        `}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-widest text-stone-400 mb-1.5 font-bold">
+                        Choose Password Code
+                      </label>
+                      <input 
+                        type="password"
+                        placeholder="At least 6 characters"
+                        value={studentPassword}
+                        onChange={(e) => setStudentPassword(e.target.value)}
+                        className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-sans focus:outline-none transition-colors
+                          ${isSpace 
+                            ? 'border-gold/25 text-white placeholder-white/35 focus:border-gold' 
+                            : 'border-stone-300 text-charcoal placeholder-stone-400 focus:border-crimson'
+                          }
+                        `}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-widest text-[#C9933A] mb-1.5 font-bold">
+                        Starting Area of Pursuit
+                      </label>
+                      <select 
+                        value={studentSelectedCourse}
+                        onChange={(e) => setStudentSelectedCourse(e.target.value)}
+                        className={`w-full px-3 py-2 text-xs rounded border bg-transparent font-serif focus:outline-none transition-colors cursor-pointer
+                          ${isSpace 
+                            ? 'border-gold/25 text-white bg-space focus:border-gold' 
+                            : 'border-stone-300 text-charcoal bg-white focus:border-crimson'
+                          }
+                        `}
+                      >
+                        {COURSES.map(c => (
+                          <option key={c.id} value={c.id} className="bg-space-dark text-white">
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      className={`w-full flex justify-center items-center gap-2 py-2.5 text-xs font-bold tracking-widest uppercase rounded shadow hover:scale-[1.01] transition-all cursor-pointer
+                        ${isSpace 
+                          ? 'bg-gold hover:bg-white text-space' 
+                          : 'bg-crimson hover:bg-black text-white'
+                        }
+                      `}
+                    >
+                      <UserCheck className="h-4 w-4" />
+                      Inscribe Covenant Account
+                    </button>
+                  </form>
+                )}
               </div>
 
               <div className="mt-6 pt-4 border-t border-stone-200/10 flex flex-col gap-2">

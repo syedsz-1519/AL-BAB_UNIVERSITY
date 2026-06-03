@@ -121,7 +121,8 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
       });
 
       if (!response.ok) {
-        throw new Error("API call unsuccessful");
+        const errPayload = await response.json().catch(() => ({}));
+        throw new Error(errPayload.error || "API call unsuccessful");
       }
 
       const data = await response.json();
@@ -130,8 +131,9 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
       } else {
         throw new Error("Invalid schema received");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Scanner exception:", err);
+      setErrorStatus(err?.message || "An unexpected dynamic error occurred inside the Fallacy Scanner laboratory.");
       setJsonError(true);
     } finally {
       setLoading(false);

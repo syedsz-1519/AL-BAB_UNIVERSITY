@@ -10,15 +10,20 @@ interface MobileQuickNavProps {
   currentSection: string;
   onNavigate: (section: string) => void;
   language?: string;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  onOpenAdmission?: () => void;
 }
 
 export default function MobileQuickNav({ 
   currentTheme, 
   currentSection, 
   onNavigate,
-  language = 'en'
+  language = 'en',
+  isOpen,
+  setIsOpen,
+  onOpenAdmission
 }: MobileQuickNavProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const isSpace = currentTheme === 'space';
 
   const menuGroups = [
@@ -56,53 +61,6 @@ export default function MobileQuickNav({
 
   return (
     <div className="lg:hidden" id="mobile-quick-nav-root">
-      {/* FLOATING ACTION TRIGGER TRIGGERED AT BOTTOM RIGHT (COMPACT & HIGHLY VISIBLE ON MOBILE SCREEN) */}
-      <div className="fixed bottom-24 right-4 z-[99999] pointer-events-auto">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`relative group flex h-10 w-10 items-center justify-center rounded-full shadow-2xl transition-all duration-300 transform active:scale-95 border cursor-pointer
-            ${isSpace 
-              ? 'bg-[#0A0F2E] border-gold text-gold-light hover:border-gold shadow-[0_4px_16px_rgba(201,147,58,0.4)]' 
-              : 'bg-[#8B1A1A] border-amber-200 text-white hover:border-[#8B1A1A] shadow-[0_4px_16px_rgba(139,26,26,0.35)]'
-            }
-          `}
-          id="mobile-quick-nav-trigger"
-          aria-label="Toggle navigation map"
-          title="Campus Navigation Hub"
-        >
-          {/* Pulsing visual indicator circle */}
-          <span className={`absolute -inset-1 rounded-full border opacity-40 animate-pulse duration-700
-            ${isSpace ? 'border-gold' : 'border-amber-400'}
-          `} />
-          
-          <AnimatePresence mode="wait">
-            {isOpen ? (
-              <motion.div
-                key="close-icon"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="flex items-center justify-center text-white"
-              >
-                <X className="h-4.5 w-4.5 stroke-[2.5]" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="menu-icon"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="flex items-center justify-center"
-              >
-                <Menu className="h-4.5 w-4.5 stroke-[2.5]" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </button>
-      </div>
-
       {/* FULL RESPONSIVE OVERLAY DRAWER PANEL */}
       <AnimatePresence>
         {isOpen && (
@@ -215,6 +173,22 @@ export default function MobileQuickNav({
                   </div>
                 ))}
               </div>
+
+              {/* Admission Call to Action Button inside Drawer */}
+              {onOpenAdmission && (
+                <div className="px-5 pb-3 pt-1">
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      onOpenAdmission();
+                    }}
+                    className="w-full flex justify-center items-center gap-2 py-3 bg-crimson dark:bg-gold text-white dark:text-space font-mono text-xs uppercase font-extrabold tracking-widest rounded-md shadow-md active:scale-[0.98] transition-transform cursor-pointer"
+                  >
+                    <GraduationCap className="h-4 w-4" />
+                    Apply for Admissions Now
+                  </button>
+                </div>
+              )}
 
               {/* Quick Academic Pledge Banner Footer */}
               <div className="p-4 bg-stone-100 dark:bg-space-dark/80 border-t border-stone-200/50 dark:border-stone-800/50 flex items-center justify-between text-[10px] font-mono select-none">

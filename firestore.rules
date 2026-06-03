@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net Default-Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helper Primitives for Zero-Trust Firestore Security
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Validation Blueprint for Course Documents
+    function isValidAlbabCourse(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.arabicTitle is string && data.arabicTitle.size() <= 200 &&
+             data.category is string && (
+               data.category == 'Divine Text & Tradition' ||
+               data.category == 'Theology & Dialectics' ||
+               data.category == 'Psycho-Spiritual Healing' ||
+               data.category == 'Ethics & Scholarly Systems'
+             ) &&
+             data.description is string && data.description.size() <= 1000 &&
+             data.focusArea is string && data.focusArea.size() <= 200 &&
+             data.tag1 is string && data.tag1.size() <= 100 &&
+             data.tag2 is string && data.tag2.size() <= 100 &&
+             data.tag3 is string && data.tag3.size() <= 100 &&
+             data.imageUrl is string && data.imageUrl.size() <= 1000 &&
+             data.launchUrl is string && data.launchUrl.size() <= 1000;
+    }
+
+    // Validation Blueprint for User Profiles
+    function isValidAlbabUser(data) {
+      return data.uid is string && data.uid.size() <= 128 &&
+             data.email is string && data.email.size() <= 200 &&
+             data.displayName is string && data.displayName.size() <= 200 &&
+             data.role is string && (data.role == 'student' || data.role == 'admin') &&
+             data.emailVerified is bool &&
+             data.phoneVerified is bool;
+    }
+
+    // Strict albab_courses matching block
+    match /albab_courses/{courseId} {
+      allow read: if true;
+      
+      allow create: if isSignedIn() && isValidId(courseId) && 
+                      isValidAlbabCourse(request.resource.data) &&
+                      request.resource.data.createdAt == request.time;
+               
+      allow update: if isSignedIn() && isValidId(courseId) && 
+                      isValidAlbabCourse(request.resource.data) &&
+                      request.resource.data.createdAt == resource.data.createdAt;
+                      
+      allow delete: if isSignedIn() && isValidId(courseId);
+    }
+
+    // Strict users matching block with PII isolation security
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+
+      allow create: if isSignedIn() && userId == request.auth.uid && isValidId(userId) && isValidAlbabUser(request.resource.data) && (
+                      request.resource.data.role == 'student' ||
+                      (request.resource.data.role == 'admin' && request.resource.data.get('adminMasterKey', '') == 'ALBAB_MASTER_786')
+                    );
+
+      allow update: if (isSignedIn() && userId == request.auth.uid && isValidId(userId) && isValidAlbabUser(request.resource.data) && 
+                      request.resource.data.role == resource.data.role) || isAdmin();
+
+      allow delete: if isAdmin();
+    }
+  }
+}
