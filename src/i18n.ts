@@ -26,7 +26,7 @@ export const LIST_TRANSLATIONS: Record<Language, Translations> = {
   en: {
     title: "ALBAB ISLAMIC",
     subtitle: "UNIVERSITY",
-    celestialGlobe: "Celestial Globe",
+    celestialGlobe: "Celestial Globe Hub",
     mission: "Mission & Ethics",
     curriculum: "Branches of Study",
     scholasticPortal: "Scholastic Portal",

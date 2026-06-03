@@ -28,33 +28,10 @@ export default function MobileQuickNav({
 
   const menuGroups = [
     {
-      title: language === 'ar' ? 'العلوم الأساسية' : language === 'ur' ? 'بنیادی علوم' : 'Core Divine Sciences',
+      title: language === 'ar' ? 'البوابات الرئيسية' : language === 'ur' ? 'اہم سیکشنز' : 'Core Navigation Gateways',
       items: [
         { id: 'landing', label: language === 'ar' ? 'الكرة السماوية' : language === 'ur' ? 'فلکیاتی گلوب' : 'Celestial Globe Hub', icon: Globe },
-        { id: 'academic-world', label: language === 'ar' ? 'الجامعة العلمية' : language === 'ur' ? 'علمی دنیا' : 'Scholastic Universe', icon: GraduationCap },
-        { id: 'quran-explorer', label: language === 'ar' ? 'مستكشف القرآن' : language === 'ur' ? 'قرآن ایکسپلورر' : 'Qur\'an Explorer', icon: BookOpen },
-        { id: 'hadith', label: language === 'ar' ? 'مكتبة الحديث' : language === 'ur' ? 'حدیث لائبریری' : 'Prophetic Hadiths', icon: BookOpen },
-      ]
-    },
-    {
-      title: language === 'ar' ? 'علم الكلام والمنطق' : language === 'ur' ? 'کلام و منطق' : 'Theology & Dialectics',
-      items: [
-        { id: 'debate', label: language === 'ar' ? 'ساحة المناظرة' : language === 'ur' ? 'مناظرہ ہال' : 'Scholarly Debate Arena', icon: Sparkles },
-        { id: 'fiqh-ruling', label: language === 'ar' ? 'الأحكام الفقهية' : language === 'ur' ? 'شرعی مسائل' : 'Fiqh Jurisprudence', icon: HelpCircle },
-        { id: 'aqeedah-firewall', label: language === 'ar' ? 'حصن العقيدة' : language === 'ur' ? 'عقیدہ فائر وال' : 'Aqeedah Firewall', icon: ShieldCheck },
-        { id: 'mantiq-tutor', label: language === 'ar' ? 'علم المنطق' : language === 'ur' ? 'منطق ٹیوٹر' : 'Mantiq Logic Tutor', icon: Compass },
-        { id: 'fallacy-scanner', label: language === 'ar' ? 'كاشف المغالطات' : language === 'ur' ? 'مغالطہ سکینر' : 'Fallacy Scanner', icon: ShieldAlert },
-      ]
-    },
-    {
-      title: language === 'ar' ? 'التزكية والإرشاد العقلاني' : language === 'ur' ? 'روحانی علاج و اخلاقیات' : 'Spiritual Therapy & Ethics',
-      items: [
-        { id: 'waswas-clinic', label: language === 'ar' ? 'علاج الوسواس' : language === 'ur' ? 'وسواس کلینک' : 'Waswas Cognitive Clinic', icon: Heart },
-        { id: 'dhikr-rx', label: language === 'ar' ? 'صيدلية الأذكار' : language === 'ur' ? 'ذکر فارمیسی' : 'Dhikr Neuro-Rx Pharmacy', icon: Sparkles },
-        { id: 'nafs-assessment', label: language === 'ar' ? 'تحليل النفس' : language === 'ur' ? 'نفسانی جائزہ' : 'Nafs Assessment Map', icon: Brain },
-        { id: 'ruya-interpreter', label: language === 'ar' ? 'تفسير الرؤى' : language === 'ur' ? 'تعبیر الرؤیا' : 'Ru\'ya Dream Interpreter', icon: Moon },
-        { id: 'maqasid-analyzer', label: language === 'ar' ? 'مقاصد الشريعة' : language === 'ur' ? 'مقاصد شریعت' : 'Maqasid Ethical Analyzer', icon: Scale },
-        { id: 'portal', label: language === 'ar' ? 'البوابة الأكاديمية' : language === 'ur' ? 'سٹوڈنٹ پورٹل' : 'Student & Scribe Portal', icon: GraduationCap }
+        { id: 'academic-world', label: language === 'ar' ? 'المنظومات الأكاديمية' : language === 'ur' ? 'علمی شعبہ جات' : 'Scholastic Universe', icon: GraduationCap },
       ]
     }
   ];

@@ -211,12 +211,15 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
 
           {/* RIGHT DETAILED VIEWPORT (Editorial Ledger Sheet) */}
           <div className="lg:col-span-5 relative z-10">
-            <div className={`relative p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px]
-              ${isSpace 
-                ? 'bg-[#0a0f1d] border-gold/25 text-white' 
-                : 'bg-white border-stone-200 text-charcoal'
-              }
-            `}>
+            <div 
+              key={selectedCourseId}
+              className={`relative p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
+                ${isSpace 
+                  ? 'bg-[#0a0f1d] border-gold/25 text-white' 
+                  : 'bg-white border-stone-200 text-charcoal'
+                }
+              `}
+            >
               {/* Islamic Arabesque Star Graphic Background Layer */}
               <div className={`absolute -right-24 -bottom-24 w-80 h-80 opacity-5 transition-opacity duration-700 select-none pointer-events-none arabesque-star
                 ${isSpace ? 'bg-gold' : 'bg-crimson'}

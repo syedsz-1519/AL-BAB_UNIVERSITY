@@ -165,6 +165,13 @@ export default function App() {
 
   const handleSelectCourse = (course: Course) => {
     setSelectedCourseId(course.id);
+    setCurrentSection('landing');
+    setTimeout(() => {
+      const el = document.getElementById('curriculum');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 60);
   };
 
   const handleSearch = (term: string) => {

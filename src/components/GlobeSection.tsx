@@ -805,12 +805,17 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
             const handleCardClick = (e: React.MouseEvent) => {
               e.stopPropagation();
-              // If Hadith card itself is clicked, trigger the popup
+              // For all cards, we select the course and smoothly scroll down to CurriculumInspector
+              onSelectCourse(course);
               if (course.id === 'hadith') {
                 triggerHadithPopup();
-              } else {
-                onSelectCourse(course);
               }
+              setTimeout(() => {
+                const el = document.getElementById('curriculum');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }, 60);
             };
 
             return (
@@ -871,11 +876,16 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
           {COURSES.map((course) => {
             const isSelected = selectedCourseId === course.id;
             const handleMobileCardClick = () => {
+              onSelectCourse(course);
               if (course.id === 'hadith') {
                 triggerHadithPopup();
-              } else {
-                onSelectCourse(course);
               }
+              setTimeout(() => {
+                const el = document.getElementById('curriculum');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }, 60);
             };
 
             return (
