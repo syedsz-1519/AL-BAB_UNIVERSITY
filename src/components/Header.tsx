@@ -143,6 +143,19 @@ export default function Header({
             {t.applyNow}
           </button>
 
+          {/* DYNAMIC SCRIBE AI ASSISTANT TRIGGER */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-albab-bot'))}
+            className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-black tracking-widest uppercase py-1.5 px-2.5 sm:py-2 sm:px-3.5 border rounded-sm transition-all duration-300 shadow-md cursor-pointer
+              bg-[#8b1a1a]/5 hover:bg-[#8b1a1a]/10 text-[#8b1a1a] border-[#8b1a1a]/25 hover:border-[#8b1a1a]
+              dark:bg-gold/5 dark:text-gold-light dark:border-gold/25 dark:hover:bg-gold/10 dark:hover:border-gold
+            "
+            title="Ask ALBAB AI"
+          >
+            <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-pulse text-crimson dark:text-gold-light" />
+            <span>ALBAB AI</span>
+          </button>
+
           {/* MOBILE MENU TOGGLE */}
           <button 
             onClick={toggleMobileOpen}

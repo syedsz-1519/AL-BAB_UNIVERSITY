@@ -1,4 +1,5 @@
 import React from 'react';
+import { Sparkles } from 'lucide-react';
 
 interface HeroSectionProps {
   currentTheme: 'parchment' | 'space';
@@ -47,7 +48,7 @@ export default function HeroSection({ currentTheme, onApplyNow }: HeroSectionPro
         <div className="flex flex-wrap gap-4 justify-center items-center">
           <button 
             onClick={onApplyNow}
-            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-10 rounded-sm transition-all duration-300 transform active:translate-y-px shadow-md hover:scale-105
+            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm transition-all duration-300 transform active:translate-y-px shadow-md hover:scale-105
               ${isSpace 
                 ? 'bg-gold hover:bg-white text-space hover:text-space shadow-gold/20' 
                 : 'bg-crimson hover:bg-black text-white shadow-crimson/20'
@@ -56,9 +57,24 @@ export default function HeroSection({ currentTheme, onApplyNow }: HeroSectionPro
           >
             Enroll Online
           </button>
+
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-albab-bot'))}
+            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm border flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer
+              ${isSpace 
+                ? 'bg-gold/10 border-gold text-gold-light hover:bg-[#8b1a1a] hover:text-white hover:border-transparent' 
+                : 'bg-[#8b1a1a]/5 border-[#8b1a1a] text-[#8b1a1a] hover:bg-[#8b1a1a] hover:text-white'
+              }
+            `}
+            style={{ transition: 'all 0.3s' }}
+          >
+            <Sparkles className="h-4 w-4 animate-pulse shrink-0" />
+            <span>Consult ALBAB AI</span>
+          </button>
+
           <a 
             href="#scholarly" 
-            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-10 rounded-sm border transition-all duration-300 hover:scale-105
+            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm border transition-all duration-300 hover:scale-105
               ${isSpace 
                 ? 'border-gold/40 text-gold-light hover:bg-gold/10' 
                 : 'border-crimson/30 text-crimson hover:bg-crimson/5'

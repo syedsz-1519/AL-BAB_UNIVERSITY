@@ -26,6 +26,7 @@ import AqeedahFirewall from './components/AqeedahFirewall';
 import RuyaInterpreter from './components/RuyaInterpreter';
 import AcademicWorld from './components/AcademicWorld';
 import MobileQuickNav from './components/MobileQuickNav';
+import AlbabAIBot from './components/AlbabAIBot';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -403,8 +404,16 @@ export default function App() {
         </div>
       )}
 
-      {currentSection === 'landing' && (
-        <div className="transition-all duration-500 animate-fade-in">
+      <AnimatePresence mode="wait">
+        {currentSection === 'landing' && (
+          <motion.div
+            key="landing-page"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="transition-all duration-500"
+          >
           {/* EDITORIAL BANNER SECTION */}
           <HeroSection 
             currentTheme={currentTheme}
@@ -481,8 +490,9 @@ export default function App() {
 
           {/* ALUMNI & ASSOCIATE SCHOLASTIC FOOTER FOOTPRINTS */}
           <Footer currentTheme={currentTheme} />
-        </div>
+        </motion.div>
       )}
+    </AnimatePresence>
 
       {/* SECURE SCHOLAR INSCRIPTION PORTAL MODAL */}
       {admissionOpen && (
@@ -494,6 +504,9 @@ export default function App() {
 
       {/* FLOATING SOCIAL & DIRECT ADMISSIONS CHANNELS */}
       <FloatingContacts currentTheme={currentTheme} />
+
+      {/* DRAGGABLE ALBAB SCHOLAR AI ASSISTANT CHATBOT */}
+      <AlbabAIBot currentTheme={currentTheme} />
 
       {/* SECURE MOBILE SCREEN MENU TOGGLE & PERSISTENT QUICK NAVIGATION */}
       <MobileQuickNav 
