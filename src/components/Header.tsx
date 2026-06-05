@@ -82,26 +82,26 @@ export default function Header({
       `}
     >
       {/* TOP ROW: LOGO & CONTROLS */}
-      <div className="max-w-7xl mx-auto flex justify-between items-center gap-4 py-3 px-6 md:px-12">
+      <div className="max-w-7xl mx-auto flex justify-between items-center gap-2 py-2 md:py-3 px-3 md:px-12">
         {/* LOGO */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div className="relative group cursor-pointer" onClick={() => { if (onTabChange) onTabChange('landing'); else if (onGoToLanding) onGoToLanding(); }}>
             <div className={`absolute -inset-1 blur-sm rounded-full opacity-35 group-hover:opacity-80 transition duration-300
               ${isSpace ? 'bg-gold' : 'bg-crimson'}
             `}></div>
             <img 
               alt="Albab Logo" 
-              className="relative h-11 w-11 object-contain rounded-full border border-gold/30 shadow-md transform group-hover:scale-105 transition-transform"
+              className="relative h-8 w-8 sm:h-11 sm:w-11 object-contain rounded-full border border-gold/30 shadow-md transform group-hover:scale-105 transition-transform"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6GPkUINYomPqZtlU7xopLCQf3q2nN-uUtfe1o0-i5-PYC9iizfy-0wzrokp8ZPsjwLw73OXyCEdL6yFr3uEb8pGYC1RHOHQADviljCbiMBXz7dn_ODjpxpQqyCH0IAfxdN4L-0H5a5HhTMbMpnVUet1SZ4jv33EnJ5hiAGRvpTQBIY9SfPkb6QEK-q5kZ06lCsprBWndsJOg3Q8bnWR_Bd-YSHR1sc4dBtaDowmYtYkMfqOkVQmsnr_F4sh4V_rnuzy8iOO-MdNYs"
             />
           </div>
           <div>
-            <h1 className={`font-serif font-black text-base md:text-lg leading-none tracking-wide
+            <h1 className={`font-serif font-black text-xs sm:text-base md:text-lg leading-none tracking-wide
               ${isSpace ? 'text-[#E8B86D]' : 'text-[#8B1A1A]'}
             `}>
               {t.title}
             </h1>
-            <p className={`text-[10px] tracking-[0.2em] font-mono font-black mt-1 opacity-100
+            <p className={`text-[8px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] font-mono font-black mt-0.5 sm:mt-1 opacity-100
               ${isSpace ? 'text-[#E8B86D]' : 'text-[#8B1A1A]'}
             `}>
               {t.subtitle}
@@ -110,10 +110,10 @@ export default function Header({
         </div>
 
         {/* CONTROLS */}
-        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 shrink-0">
           
           {/* LANGUAGE PICKER */}
-          <div className="flex items-center gap-1.5 border border-stone-400 p-1 rounded bg-white/60 dark:bg-space-dark/40 font-mono text-[11px] hover:border-black transition-colors">
+          <div className="flex items-center gap-0.5 sm:gap-1.5 border border-stone-400 p-0.5 sm:p-1 rounded bg-white/60 dark:bg-space-dark/40 font-mono text-[9px] sm:text-[11px] hover:border-black transition-colors">
             <LanguageButton lang="en" cur={language} onClick={onLanguageChange} />
             <LanguageButton lang="ar" cur={language} label="عربي" onClick={onLanguageChange} />
             <LanguageButton lang="ur" cur={language} label="اردو" onClick={onLanguageChange} />
@@ -122,13 +122,13 @@ export default function Header({
           {/* THEME TOGGLE */}
           <button 
             onClick={onToggleTheme} 
-            className={`p-2 rounded-full transition-all duration-300 relative group cursor-pointer
+            className={`p-1.5 sm:p-2 rounded-full transition-all duration-300 relative group cursor-pointer
               ${isSpace ? 'bg-[#2F2113]/40 text-[#EBC15A] border-2 border-gold/40' : 'bg-stone-200/90 text-black border-2 border-[#111]'}
             `}
             title={isSpace ? t.toggleThemeLight : t.toggleThemeDark}
           >
-            <div className="relative h-4.5 w-4.5 transition-transform duration-500 group-hover:rotate-12">
-              {isSpace ? <Sun className="absolute inset-0 h-4.5 w-4.5" /> : <Moon className="absolute inset-0 h-4.5 w-4.5" />}
+            <div className="relative h-4 w-4 sm:h-4.5 sm:w-4.5 transition-transform duration-500 group-hover:rotate-12">
+              {isSpace ? <Sun className="absolute inset-0 h-4 w-4 sm:h-4.5 sm:w-4.5" /> : <Moon className="absolute inset-0 h-4 w-4 sm:h-4.5 sm:w-4.5" />}
             </div>
           </button>
 
@@ -143,25 +143,12 @@ export default function Header({
             {t.applyNow}
           </button>
 
-          {/* DYNAMIC SCRIBE AI ASSISTANT TRIGGER */}
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('open-albab-bot'))}
-            className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-black tracking-widest uppercase py-1.5 px-2.5 sm:py-2 sm:px-3.5 border rounded-sm transition-all duration-300 shadow-md cursor-pointer
-              bg-[#8b1a1a]/5 hover:bg-[#8b1a1a]/10 text-[#8b1a1a] border-[#8b1a1a]/25 hover:border-[#8b1a1a]
-              dark:bg-gold/5 dark:text-gold-light dark:border-gold/25 dark:hover:bg-gold/10 dark:hover:border-gold
-            "
-            title="Ask ALBAB AI"
-          >
-            <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-pulse text-crimson dark:text-gold-light" />
-            <span>ALBAB AI</span>
-          </button>
-
           {/* MOBILE MENU TOGGLE */}
           <button 
             onClick={toggleMobileOpen}
-            className="lg:hidden p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer text-black dark:text-white"
+            className="lg:hidden p-1.5 sm:p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer text-black dark:text-white"
           >
-            {isMobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMobileOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
           </button>
         </div>
       </div>

@@ -31,6 +31,7 @@ export default function AlbabAIBot({ currentTheme }: AlbabAIBotProps) {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [queryMode, setQueryMode] = useState<'corpus' | 'curriculum'>('corpus');
+  const [completedTypingIds, setCompletedTypingIds] = useState<Set<string>>(new Set(['welcome']));
 
   // ACADEMIC CITATION HELPER STATES
   const [isCitationOpen, setIsCitationOpen] = useState(false);
@@ -103,11 +104,15 @@ export default function AlbabAIBot({ currentTheme }: AlbabAIBotProps) {
     { label: "✨ Nafs", query: "How does the Nafs Assessment Engine work?" }
   ];
 
+  const scrollToBottom = (behavior: ScrollBehavior = 'auto') => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior });
+    }
+  };
+
   // Auto scroll to chat bottom
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToBottom('smooth');
   }, [messages, isOpen, isLoading]);
 
   // Handle send message
@@ -186,6 +191,7 @@ export default function AlbabAIBot({ currentTheme }: AlbabAIBotProps) {
   };
 
   const clearChat = () => {
+    setCompletedTypingIds(new Set(['welcome']));
     setMessages([
       {
         id: 'welcome',
@@ -467,7 +473,19 @@ export default function AlbabAIBot({ currentTheme }: AlbabAIBotProps) {
                             {msg.text}
                           </div>
                         ) : (
-                          <FormattedText text={msg.text} isSpace={isSpace} />
+                          <AnimatedTypingMarkdown 
+                            text={msg.text} 
+                            isSpace={isSpace} 
+                            isEnabled={!completedTypingIds.has(msg.id)}
+                            onComplete={() => {
+                              setCompletedTypingIds(prev => {
+                                const next = new Set(prev);
+                                next.add(msg.id);
+                                return next;
+                              });
+                            }}
+                            onTick={() => scrollToBottom('auto')}
+                          />
                         )}
                       </div>
 
@@ -987,6 +1005,57 @@ export default function AlbabAIBot({ currentTheme }: AlbabAIBotProps) {
         </AnimatePresence>
       </motion.div>
     </>
+  );
+}
+
+// ADAPTIVE SCHOLARLY TYPING ANIMATION COMPONENT FOR AI RESPONSES
+interface AnimatedTypingMarkdownProps {
+  text: string;
+  isSpace: boolean;
+  onComplete: () => void;
+  isEnabled: boolean;
+  onTick?: () => void;
+}
+
+function AnimatedTypingMarkdown({ text, isSpace, onComplete, isEnabled, onTick }: AnimatedTypingMarkdownProps) {
+  const [displayedText, setDisplayedText] = useState(isEnabled ? "" : text);
+
+  useEffect(() => {
+    if (!isEnabled) {
+      setDisplayedText(text);
+      return;
+    }
+
+    setDisplayedText("");
+    let currentIndex = 0;
+    
+    // Adaptive step size so long text animations complete in ~1.5 - 2.5 seconds
+    const stepSize = Math.max(3, Math.ceil(text.length / 120));
+    
+    const interval = setInterval(() => {
+      currentIndex += stepSize;
+      if (currentIndex >= text.length) {
+        setDisplayedText(text);
+        clearInterval(interval);
+        onComplete();
+      } else {
+        setDisplayedText(text.substring(0, currentIndex));
+        if (onTick) onTick();
+      }
+    }, 16); // ~60fps smooth tick
+
+    return () => clearInterval(interval);
+  }, [text, isEnabled, onComplete, onTick]);
+
+  return (
+    <div className="relative">
+      <FormattedText text={displayedText} isSpace={isSpace} />
+      {isEnabled && displayedText.length < text.length && (
+        <span className={`inline-block w-1.5 h-3.5 ml-0.5 align-middle animate-pulse ${
+          isSpace ? 'bg-gold' : 'bg-crimson'
+        }`} />
+      )}
+    </div>
   );
 }
 
