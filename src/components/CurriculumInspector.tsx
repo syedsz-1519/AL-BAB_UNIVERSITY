@@ -4,6 +4,7 @@ import { Course } from '../types';
 import * as LucideIcons from 'lucide-react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../firebase';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface CurriculumInspectorProps {
   currentTheme: 'parchment' | 'space';
@@ -387,62 +388,76 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-                {filteredCourses.map((course, idx) => {
-                  const isSelected = selectedCourseId === course.id;
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 relative">
+                <AnimatePresence mode="popLayout">
+                  {filteredCourses.map((course, idx) => {
+                    const isSelected = selectedCourseId === course.id;
 
-                  return (
-                    <button
-                      key={course.id}
-                      onClick={() => {
-                        onSelectCourse(course);
-                        // Smoothly redirect the viewer to the Canonical Inspector detailed view panel on mobile
-                        setTimeout(() => {
-                          const el = document.getElementById('canonical-inspector-viewport');
-                          if (el && window.innerWidth < 1024) {
-                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return (
+                      <motion.button
+                        layout
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.96 }}
+                        transition={{ 
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                          opacity: { duration: 0.2 }
+                        }}
+                        whileHover={{ y: -2, transition: { duration: 0.15 } }}
+                        whileTap={{ scale: 0.98 }}
+                        key={course.id}
+                        onClick={() => {
+                          onSelectCourse(course);
+                          // Smoothly redirect the viewer to the Canonical Inspector detailed view panel on mobile
+                          setTimeout(() => {
+                            const el = document.getElementById('canonical-inspector-viewport');
+                            if (el && window.innerWidth < 1024) {
+                              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                          }, 50);
+                        }}
+                        className={`group relative p-5 rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[120px] skeuo-active-click
+                          ${isSelected
+                            ? isSpace
+                              ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 scale-[1.02] z-10'
+                              : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 scale-[1.02] z-10'
+                            : isSpace
+                              ? 'skeuo-card-space text-stone-300 hover:text-white'
+                              : 'skeuo-card-parchment text-stone-700 hover:text-charcoal'
                           }
-                        }, 50);
-                      }}
-                      className={`group relative p-5 rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[120px] skeuo-active-click
-                        ${isSelected
-                          ? isSpace
-                            ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 scale-[1.02] z-10'
-                            : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 scale-[1.02] z-10'
-                          : isSpace
-                            ? 'skeuo-card-space text-stone-300 hover:text-white hover:scale-[1.01]'
-                            : 'skeuo-card-parchment text-stone-700 hover:text-charcoal hover:scale-[1.01]'
-                        }
-                      `}
-                    >
-                      {/* Decorative Vertical Marker strip when active */}
-                      <div className={`absolute top-0 bottom-0 left-0 w-[3px] transition-transform duration-300
-                        ${isSpace ? 'bg-gold' : 'bg-crimson'}
-                        ${isSelected ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'}
-                      `} />
+                        `}
+                      >
+                        {/* Decorative Vertical Marker strip when active */}
+                        <div className={`absolute top-0 bottom-0 left-0 w-[3px] transition-transform duration-300
+                          ${isSpace ? 'bg-gold' : 'bg-crimson'}
+                          ${isSelected ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'}
+                        `} />
 
-                      <div className="flex justify-between items-start w-full">
-                        <span className={`transition-transform duration-300 group-hover:scale-105
-                          ${isSpace ? 'text-gold' : 'text-crimson'}
-                        `}>
-                          {getIcon(course.icon)}
-                        </span>
-                        <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
-                          {course.count}
-                        </span>
-                      </div>
+                        <div className="flex justify-between items-start w-full">
+                          <span className={`transition-transform duration-300 group-hover:scale-105
+                            ${isSpace ? 'text-gold' : 'text-crimson'}
+                          `}>
+                            {getIcon(course.icon)}
+                          </span>
+                          <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
+                            {course.count}
+                          </span>
+                        </div>
 
-                      <div className="mt-3">
-                        <h3 className="font-serif font-black text-lg tracking-wide leading-tight group-hover:text-gold transition-colors">
-                          {course.name}
-                        </h3>
-                        <p className="text-xs text-stone-400 dark:text-stone-500 font-sans line-clamp-1 mt-1 font-medium">
-                          {course.branches.join(', ')}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
+                        <div className="mt-3">
+                          <h3 className="font-serif font-black text-lg tracking-wide leading-tight group-hover:text-gold transition-colors">
+                            {course.name}
+                          </h3>
+                          <p className="text-xs text-stone-400 dark:text-stone-500 font-sans line-clamp-1 mt-1 font-medium">
+                            {course.branches.join(', ')}
+                          </p>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </AnimatePresence>
               </div>
             )}
           </div>
