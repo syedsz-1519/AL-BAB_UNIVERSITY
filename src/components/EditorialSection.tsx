@@ -1,5 +1,6 @@
 import React from 'react';
 import { PARTNERS } from '../data';
+import AlbabLogo from './AlbabLogo';
 
 interface EditorialSectionProps {
   currentTheme: 'parchment' | 'space';
@@ -64,12 +65,8 @@ export default function EditorialSection({ currentTheme, onFindMore }: Editorial
 
         {/* Central emblem / Shield logo */}
         <div className="my-14 relative flex justify-center">
-          <div className={`absolute w-36 h-36 rounded-full blur-2xl opacity-10 ${isSpace ? 'bg-gold' : 'bg-crimson'}`} />
-          <img 
-            alt="Central Shield Logo" 
-            className="h-32 w-32 relative object-contain filter drop-shadow-lg transition-transform duration-500 hover:scale-110 cursor-alias"
-            src="https://learn.logicwhile.com/home/test/ed6db4a4-1f4c-4eb2-9038-d56d1d82308a"
-          />
+          <div className={`absolute w-36 h-36 rounded-full blur-2xl opacity-15 ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}`} />
+          <AlbabLogo className="h-40 w-40 relative filter drop-shadow-xl transition-all duration-500 hover:scale-110 cursor-pointer" />
         </div>
 
         {/* Subsection with vertical transition indicator */}

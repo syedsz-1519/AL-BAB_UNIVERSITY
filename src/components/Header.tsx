@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck } from 'lucide-react';
 import { Language, LIST_TRANSLATIONS } from '../i18n';
+import AlbabLogo from './AlbabLogo';
 
 interface HeaderProps {
   currentTheme: 'parchment' | 'space';
@@ -86,14 +87,10 @@ export default function Header({
         {/* LOGO */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div className="relative group cursor-pointer" onClick={() => { if (onTabChange) onTabChange('landing'); else if (onGoToLanding) onGoToLanding(); }}>
-            <div className={`absolute -inset-1 blur-sm rounded-full opacity-35 group-hover:opacity-80 transition duration-300
-              ${isSpace ? 'bg-gold' : 'bg-crimson'}
+            <div className={`absolute -inset-1.5 blur-md rounded-full opacity-35 group-hover:opacity-80 transition duration-300
+              ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}
             `}></div>
-            <img 
-              alt="Albab Logo" 
-              className="relative h-8 w-8 sm:h-11 sm:w-11 object-contain rounded-full border border-gold/30 shadow-md transform group-hover:scale-105 transition-transform"
-              src="https://learn.logicwhile.com/home/test/ed6db4a4-1f4c-4eb2-9038-d56d1d82308a"
-            />
+            <AlbabLogo className="relative h-9 w-9 sm:h-12 sm:w-12 transform group-hover:scale-110 transition-transform duration-300" />
           </div>
           <div>
             <h1 className={`font-serif font-black text-xs sm:text-base md:text-lg leading-none tracking-wide

@@ -49,6 +49,9 @@ const DHIKR_ITEMS: DhikrItem[] = [
 export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
   const isSpace = currentTheme === 'space';
   
+  // Mobile Widget Selected State
+  const [activeDhikrIndex, setActiveDhikrIndex] = useState(0);
+  
   // Timer States
   const [timer, setTimer] = useState(60);
   const [timerActive, setTimerActive] = useState(false);
@@ -194,8 +197,109 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
           </div>
         </div>
 
-        {/* 5-Dhikr Checklist Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-stretch">
+        {/* Mobile View: Highly Minimalist 'Dhikr Mini-Widget' */}
+        <div className="block sm:hidden max-w-sm mx-auto mb-6">
+          <div className={`p-6 rounded-2xl flex flex-col items-center justify-between text-center transition-all duration-300 relative overflow-hidden
+            ${isSpace 
+              ? 'skeuo-card-space border-gold/30' 
+              : 'skeuo-card-parchment border-[#0B4628]/20'
+            }
+          `}>
+            {/* Background design accents */}
+            <div className="absolute top-0 left-0 w-16 h-16 opacity-[0.015] select-none pointer-events-none arabesque-star bg-current" />
+            
+            {/* Header selection with left/right arrows */}
+            <div className="flex items-center justify-between w-full mb-4">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveDhikrIndex(prev => (prev - 1 + DHIKR_ITEMS.length) % DHIKR_ITEMS.length);
+                }}
+                className={`p-2.5 rounded-full cursor-pointer transition-all active:scale-90 ${isSpace ? 'hover:bg-white/10 text-stone-300' : 'hover:bg-black/5 text-stone-700'}`}
+                title="Previous Dhikr"
+              >
+                <LucideIcons.ChevronLeft className="h-4 w-4" />
+              </button>
+              
+              <div className="text-center px-2 flex-1">
+                <span className={`block font-arabic text-lg font-bold transition-colors ${isSpace ? 'text-white' : 'text-[#0B4628]'}`}>
+                  {DHIKR_ITEMS[activeDhikrIndex].arabic}
+                </span>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-stone-400 font-bold block mt-0.5">
+                  {DHIKR_ITEMS[activeDhikrIndex].translit}
+                </span>
+              </div>
+
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveDhikrIndex(prev => (prev + 1) % DHIKR_ITEMS.length);
+                }}
+                className={`p-2.5 rounded-full cursor-pointer transition-all active:scale-90 ${isSpace ? 'hover:bg-white/10 text-stone-300' : 'hover:bg-black/5 text-stone-700'}`}
+                title="Next Dhikr"
+              >
+                <LucideIcons.ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Tap Target: Heart Button */}
+            <div className="my-6 relative flex justify-center">
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={() => incrementCount(DHIKR_ITEMS[activeDhikrIndex].id)}
+                className="relative p-6 rounded-full bg-[#EF4444] text-white shadow-lg shadow-red-500/20 hover:shadow-red-500/40 flex items-center justify-center cursor-pointer transition-transform duration-200"
+              >
+                <LucideIcons.Heart className="h-8 w-8 fill-white text-white" />
+                {/* Count bubble */}
+                <span className="absolute -top-1.5 -right-1.5 bg-black text-white dark:bg-gold dark:text-space text-xs font-mono font-black h-6.5 w-6.5 rounded-full flex items-center justify-center border-2 border-white dark:border-[#091035]">
+                  {counts[DHIKR_ITEMS[activeDhikrIndex].id] || 0}
+                </span>
+              </motion.button>
+            </div>
+
+            {/* Translation description */}
+            <p className="text-[10.5px] text-stone-500 dark:text-stone-400 italic mb-4 min-h-[30px] flex items-center justify-center px-4">
+              "{DHIKR_ITEMS[activeDhikrIndex].translation}"
+            </p>
+
+            {/* Single-tap Progress Bar */}
+            <div className="w-full space-y-1.5 mt-2 bg-black/5 dark:bg-white/5 p-3 rounded-lg border border-stone-200/40 dark:border-white/5">
+              <div className="flex justify-between text-[9px] font-mono text-stone-400 font-bold tracking-wider">
+                <span>TASBIH PROGRESS</span>
+                <span>{(counts[DHIKR_ITEMS[activeDhikrIndex].id] || 0)} / 33</span>
+              </div>
+              <div className={`w-full h-2.5 rounded-full overflow-hidden ${isSpace ? 'bg-zinc-800' : 'bg-stone-200'}`}>
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ 
+                    width: `${Math.min(((counts[DHIKR_ITEMS[activeDhikrIndex].id] || 0) / 33) * 100, 100)}%` 
+                  }}
+                  transition={{ type: 'spring', stiffness: 80, damping: 15 }}
+                  className={`h-full rounded-full ${isSpace ? 'bg-gradient-to-r from-amber-500 to-gold' : 'bg-gradient-to-r from-[#0B4628] to-[#127242]'}`}
+                />
+              </div>
+            </div>
+            
+            {/* Quick helper controls */}
+            <div className="mt-4 flex items-center justify-between w-full px-2 text-[9px] font-mono text-stone-400 uppercase tracking-widest">
+              <span>Tap Heart to Count</span>
+              <button 
+                onClick={() => {
+                  setCounts(prev => ({
+                    ...prev,
+                    [DHIKR_ITEMS[activeDhikrIndex].id]: 0
+                  }));
+                }}
+                className="underline hover:text-rose-500 transition-colors cursor-pointer font-bold"
+              >
+                Reset current
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop View: Full 5-Dhikr Checklist Grid */}
+        <div className="hidden sm:grid grid-cols-2 lg:grid-cols-5 gap-6 items-stretch">
           {DHIKR_ITEMS.map((item, index) => {
             const count = counts[item.id] || 0;
             return (

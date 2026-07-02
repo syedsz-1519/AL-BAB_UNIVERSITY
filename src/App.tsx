@@ -437,39 +437,32 @@ export default function App() {
           <DhikrSection currentTheme={currentTheme} />
 
           {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}
-          <section className={`py-16 px-6 md:px-12 border-t relative overflow-hidden text-center
-            ${currentTheme === 'space' 
-              ? 'bg-space-dark/20 border-gold/10 text-gold-light' 
-              : 'bg-white border-stone-200 text-charcoal'
-            }
-          `}>
+          <section className="py-20 px-6 md:px-12 border-t border-b border-gold/30 relative overflow-hidden text-center bg-[#051F11] futuristic-islamic-grid-space text-white">
             <div className="max-w-4xl mx-auto space-y-6 relative z-10 py-4">
-              <div className="inline-flex items-center gap-2 mb-1 px-3 py-1 rounded-full border text-[10px] font-mono tracking-[0.2em] uppercase
-                dark:border-gold/20 dark:bg-gold/5 dark:text-gold-light border-crimson/15 bg-crimson/5 text-crimson
-              ">
-                <GraduationCap className="h-3.5 w-3.5 animate-pulse" />
+              <div className="inline-flex items-center gap-2 mb-1 px-3 py-1 rounded-full border border-gold/30 bg-gold/10 text-gold-light text-[10px] font-mono tracking-[0.2em] uppercase">
+                <GraduationCap className="h-3.5 w-3.5 animate-pulse text-gold" />
                 Scholastic Campus Hub
               </div>
               
-              <h2 className="font-serif font-black text-2xl sm:text-3xl md:text-4xl tracking-wide max-w-2xl mx-auto">
+              <h2 className="font-serif font-black text-3xl sm:text-4xl tracking-wide max-w-2xl mx-auto text-white">
                 University Portals Gate
               </h2>
               
-              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-xl mx-auto leading-relaxed font-serif">
+              <p className="text-xs sm:text-sm text-stone-300 max-w-xl mx-auto leading-relaxed font-serif">
                 Access your official student covenant progress maps, download certificates, submit critique theses, or log into the administrative scribes audit panel.
               </p>
 
               <div className="flex flex-wrap justify-center gap-4 pt-4">
                 <button
                   onClick={() => setCurrentSection('portal')}
-                  className="font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#0B4628] border border-transparent font-bold tracking-widest px-6 py-3 rounded-sm shadow-md transition-all duration-300 cursor-pointer hover:scale-[1.01]"
+                  className="font-mono text-xs uppercase bg-gold text-space hover:bg-white hover:text-[#0B4628] border border-transparent font-bold tracking-widest px-6 py-3.5 rounded-sm shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.03]"
                 >
                   Enter Scholar Student Portal
                 </button>
                 
                 <button
                   onClick={() => setCurrentSection('portal')}
-                  className="font-mono text-xs uppercase bg-transparent hover:bg-black/5 dark:hover:bg-white/5 text-stone-700 dark:text-gold-light border border-stone-300 dark:border-gold/30 font-bold tracking-widest px-6 py-3 rounded-sm transition-all duration-300 cursor-pointer hover:border-crimson dark:hover:border-gold"
+                  className="font-mono text-xs uppercase bg-transparent hover:bg-white/10 text-gold-light border border-gold/40 font-bold tracking-widest px-6 py-3.5 rounded-sm transition-all duration-300 cursor-pointer hover:border-white"
                 >
                   Access Scribes Audits
                 </button>

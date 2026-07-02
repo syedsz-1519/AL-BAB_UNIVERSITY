@@ -32,16 +32,22 @@ export default function HeroSection({ currentTheme, onApplyNow }: HeroSectionPro
           <span className={`h-[1px] w-8 ${isSpace ? 'bg-gold' : 'bg-crimson'}`} />
         </div>
 
-        <h1 className="font-serif font-black text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none mb-6 text-[#0B4628]">
+        <h1 className={`font-serif font-black text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none mb-6
+          ${isSpace ? 'text-white' : 'text-[#0B4628]'}
+        `}>
           Albab Islamic <br />
-          <span>University</span>
+          <span className={isSpace ? 'text-gold-light' : 'text-[#0B4628]'}>University</span>
         </h1>
 
-        <p className="font-serif italic text-xl sm:text-2xl lg:text-3xl text-stone-500 mb-6 font-medium">
+        <p className={`font-serif italic text-xl sm:text-2xl lg:text-3xl mb-6 font-medium
+          ${isSpace ? 'text-gold/90' : 'text-stone-500'}
+        `}>
           "Where tradition meets deep thought."
         </p>
 
-        <p className="text-base md:text-lg leading-relaxed text-stone-600 dark:text-stone-300 max-w-2xl mx-auto mb-10 font-sans">
+        <p className={`text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10 font-sans
+          ${isSpace ? 'text-stone-200' : 'text-stone-600'}
+        `}>
           A state-of-the-art virtual seminary mapping canonical texts alongside contemporary logic, clinical psychology, and critical philosophy of artificial intelligence.
         </p>
 
