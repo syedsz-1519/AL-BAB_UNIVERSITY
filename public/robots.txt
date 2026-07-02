@@ -1,0 +1,13 @@
+# Robots.txt file for Albab Islamic University Portal
+User-agent: *
+Allow: /
+
+# Exclude sensitive admin and signup directories from indexing
+Disallow: /admin.html
+Disallow: /admin-setup.html
+Disallow: /signup.html
+Disallow: /forgot-password.html
+Disallow: /unauthorized.html
+
+# Reference Sitemap location
+Sitemap: https://albab.university/sitemap.xml

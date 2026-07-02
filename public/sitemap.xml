@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Seminary Portal -->
+  <url>
+    <loc>https://albab.university/</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Academic World Section -->
+  <url>
+    <loc>https://albab.university/#academic-world</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Scholastic Curriculum / Subjects Inspector -->
+  <url>
+    <loc>https://albab.university/#curriculum</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Mantiq Arabic Logic Tutor -->
+  <url>
+    <loc>https://albab.university/#mantiq</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Waswas Spiritual Clinic -->
+  <url>
+    <loc>https://albab.university/#waswas-clinic</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Quranic Exegesis and Translation Explorer -->
+  <url>
+    <loc>https://albab.university/#quran-explorer</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Hadith Science Verification Panel -->
+  <url>
+    <loc>https://albab.university/#hadith</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Admissions / Student Portal Gate -->
+  <url>
+    <loc>https://albab.university/login.html</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
