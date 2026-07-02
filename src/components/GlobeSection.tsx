@@ -26,6 +26,141 @@ const generateStars = () => {
   return list;
 };
 
+export interface RegionalHistory {
+  regionName: string;
+  title: string;
+  coordinates: string;
+  era: string;
+  summary: string;
+  institutions: string[];
+  keyFigures: string[];
+  achievements: string[];
+  narrative: string;
+}
+
+export const REGIONAL_HISTORIES: Record<string, RegionalHistory> = {
+  'Andalusian Basin': {
+    regionName: 'Andalusian Basin',
+    title: 'Al-Andalus (Islamic Spain)',
+    coordinates: '37.88° N, 4.77° W',
+    era: '711 CE – 1492 CE',
+    summary: 'A golden bridge of knowledge connecting Islamic intellectual treasures with Western Europe, renowned for its massive caliphate libraries and pluralistic research environment.',
+    institutions: ['Great Mosque and Madrasa of Córdoba', 'Royal Library of Al-Hakam II', 'Madrasah of Granada'],
+    keyFigures: ['Ibn Rushd (Averroes)', 'Ibn Arabi', 'Al-Zahrawi (Abulcasis, pioneer of modern surgery)'],
+    achievements: [
+      'Pioneered surgical instrumentation and medical encyclopedias.',
+      'Advanced philosophical translation projects that triggered the European Renaissance.',
+      'Developed sophisticated agricultural water management and botanical taxonomy.'
+    ],
+    narrative: 'In Córdoba, the caliphate library housed over 400,000 cataloged manuscripts. Muslim, Jewish, and Christian scholars translated classical Greek works into Arabic and Latin, working side-by-side. Al-Zahrawi wrote the definitive 30-volume surgical manual Al-Tasrif, introducing over 200 surgical tools still recognizable today.'
+  },
+  'Maghreb Region': {
+    regionName: 'Maghreb Region',
+    title: 'The Maghreb (North Africa)',
+    coordinates: '34.03° N, 5.00° W',
+    era: '800 CE – Present',
+    summary: 'Home to the world\'s oldest continuously operating university, serving as a bastion of Maliki jurisprudence, grammar, and early social sciences.',
+    institutions: ['University of al-Qarawiyyin (Fez)', 'Mosque-Madrasa of al-Andalusiyyin (Fez)', 'Zaytuna University (Tunis)'],
+    keyFigures: ['Fatima al-Fihri (founder of Al-Qarawiyyin)', 'Ibn Khaldun (father of sociology)', 'Ibn al-Yasamin (mathematician)'],
+    achievements: [
+      'Established the world\'s first degree-granting higher education system.',
+      'Formulated the foundational principles of sociology and historiography (Muqaddimah).',
+      'Advanced algebraic poetry and fractional arithmetic notation.'
+    ],
+    narrative: 'Fatima al-Fihri, an educated and wealthy Muslim woman, dedicated her entire inheritance to establish the Al-Qarawiyyin Mosque and University in Fez in 859 CE. It became a powerhouse of scholarship, drawing figures like Pope Sylvester II to study Arabic numerals. Centuries later, Ibn Khaldun wrote his revolutionary Muqaddimah here, charting the rise and fall of civilizations.'
+  },
+  'Anatolia Sector': {
+    regionName: 'Anatolia Sector',
+    title: 'Anatolia & Asia Minor',
+    coordinates: '39.93° N, 32.85° E',
+    era: '1071 CE – 1922 CE',
+    summary: 'The administrative and spiritual heart of the later Islamic world, where sophisticated Ottoman madrasa complexes unified theological sciences, medicine, astronomy, and architectural engineering.',
+    institutions: ['Süleymaniye Madrasa Complex (Istanbul)', 'Gök Medrese (Sivas)', 'Cacabey Medrese & Astronomy School (Kırşehir)'],
+    keyFigures: ['Ali Qushji (astronomer & mathematician)', 'Mimar Sinan (master architect)', 'Jalal al-Din Rumi (mystic & jurist)'],
+    achievements: [
+      'Built massive multi-disciplinary complex universities (Külliyes).',
+      'Calculated earth\'s axial tilt with remarkable precision and advanced lunar orbit formulas.',
+      'Pioneered seismic-resistant, acoustically perfect sacred architecture.'
+    ],
+    narrative: 'After the conquest of Constantinople, Ali Qushji, a student of Ulugh Beg, was invited by Sultan Mehmed II to head the Sahn-i Seman Madrasa. His work on mathematical astronomy liberated astronomy from Aristotelian physics, treating celestial paths purely through mathematical coordinates. Cacabey Madrasa featured a unique central well with a viewing dome above to study constellations reflected on the water.'
+  },
+  'Nile Delta Corridor': {
+    regionName: 'Nile Delta Corridor',
+    title: 'Nile Delta & Egypt',
+    coordinates: '30.04° N, 31.23° E',
+    era: '641 CE – Present',
+    summary: 'An unparalleled scholastic hub where experimental science, optics, astronomy, and systemic Sunni legal systems were institutionalized for over a millennium.',
+    institutions: ['Al-Azhar University (Cairo)', 'Dar al-Hikma (Fatimid Cairo)', 'Qalawun Complex (Hospital & Madrasa)'],
+    keyFigures: ['Ibn al-Haytham (Alhazen, father of optics)', 'Ibn Nafis (discovered pulmonary circulation)', 'Maimonides (philosopher & royal physician)'],
+    achievements: [
+      'Established the experimental scientific method (optics/physics).',
+      'Pioneered advanced quarantine protocols and specialized medical wards (Qalawun Hospital).',
+      'Discovered the pulmonary transit of blood, correcting centuries-old Galenic errors.'
+    ],
+    narrative: 'Arriving in Cairo during the Fatimid era, Ibn al-Haytham revolutionized science by declaring that hypotheses must be rigorously tested using empirical, repeatable evidence. Confined to his home, he utilized the camera obscura (Al-Bayt al-Muthlim) to prove that light travels in straight lines and enters the eye, birthing modern optics. Al-Azhar, founded in 970 CE, became the premier global seat of Islamic jurisprudence.'
+  },
+  'Mesopotamia Valley': {
+    regionName: 'Mesopotamia Valley',
+    title: 'Mesopotamia & Iraq',
+    coordinates: '33.31° N, 44.36° E',
+    era: '750 CE – 1258 CE',
+    summary: 'The epicenter of the Abbasid Golden Age, where translation bureaus, public observatories, and libraries birthed algebra, modern chemistry, and systematic paper manufacturing.',
+    institutions: ['Bayt al-Hikma (House of Wisdom, Baghdad)', 'Mustansiriya Madrasa (Baghdad)', 'Nizamiyah Madrasa'],
+    keyFigures: ['Al-Khwarizmi (father of algebra)', 'Jabir ibn Hayyan (father of chemistry)', 'Al-Kindi (philosopher of the Arabs)'],
+    achievements: [
+      'Synthesized Indian and Greek mathematics into Algebra (Al-Jabr).',
+      'Developed crystallization, distillation, filtration, and calcination chemical techniques.',
+      'Created standard coordinate maps of the known world.'
+    ],
+    narrative: 'Under Caliph Al-Ma\'mun, the House of Wisdom was filled with scholars who received the weight of translated books in gold. Here, Al-Khwarizmi wrote "Al-Kitab al-mukhtasar fi hisab al-jabr wal-muqabala", from which we derive the word "algebra" and "algorithm". Mustansiriya Madrasa, built in 1227 CE, offered free tuition, medical care, and a grand water-powered astronomical clock.'
+  },
+  'Hijaz Sanctum': {
+    regionName: 'Hijaz Sanctum',
+    title: 'The Holy Hijaz (Mecca & Medina)',
+    coordinates: '24.46° N, 39.61° E',
+    era: '622 CE – Present',
+    summary: 'The sacred genesis of Islamic intellectual tradition. It established the science of Hadith verification (isnad transmission), legal methodologies (Usul al-Fiqh), and sacred geography.',
+    institutions: ['Al-Masjid an-Nabawi (Medina)', 'Al-Masjid al-Haram (Mecca)', 'Early Halaqat (Scholar Circles)'],
+    keyFigures: ['Imam Malik ibn Anas (author of Al-Muwatta)', 'Imam Al-Shafi\'i', 'Aisha bint Abi Bakr (pioneering female jurist & narrator)'],
+    achievements: [
+      'Established the earliest codified book of Islamic law (Al-Muwatta).',
+      'Formulated systematic legal theory and structural linguistics (Risala).',
+      'Pioneered biographical evaluation sciences (ilm al-rijal) for reliable historical transmission.'
+    ],
+    narrative: 'In the Prophet\'s Mosque in Medina, early study circles (halaqat) laid the groundwork for all Islamic fields. Imam Malik lectured at Medina for fifty years, compiling Al-Muwatta. Scholars from Al-Andalus to Central Asia traveled for months on end as "seekers of knowledge" (Rihla fi Talab al-Ilm) to sit under these circles and obtain official teaching licenses (ijazah).'
+  },
+  'Transoxiana Heights': {
+    regionName: 'Transoxiana Heights',
+    title: 'Transoxiana & Central Asia',
+    coordinates: '39.77° N, 64.42° E',
+    era: '800 CE – 1600 CE',
+    summary: 'The celestial crown of Islamic astronomy, medicine, and critical text-validation, where massive stone observatories mapped the stars and pristine encyclopedias systematized medical practices.',
+    institutions: ['Ulugh Beg Observatory & Madrasa (Samarkand)', 'Kalyan Madrasa (Bukhara)', 'Registan Academy'],
+    keyFigures: ['Imam al-Bukhari (master of Hadith criticism)', 'Ibn Sina (Avicenna, prince of physicians)', 'Al-Biruni (pioneer of geodesy)'],
+    achievements: [
+      'Published "The Canon of Medicine", the standard medical text in East and West for 600 years.',
+      'Measured the Earth\'s radius using trigonometry from a single mountain peak.',
+      'Compiled the most authentic compendium of prophetic narrations with ultra-stringent textual criticism.'
+    ],
+    narrative: 'In Samarkand, the royal astronomer-ruler Ulugh Beg constructed an enormous three-story sextant built directly into a limestone trench. His astronomical tables cataloged 1,018 stars with unprecedented coordinate accuracy. Meanwhile, Bukhara birthed Ibn Sina, who systematized clinical medicine, identifying the contagious nature of tuberculosis and introducing clinical drug trials.'
+  },
+  'Sindh Oasis': {
+    regionName: 'Sindh Oasis',
+    title: 'Sindh & The Indus Valley',
+    coordinates: '25.39° N, 68.35° E',
+    era: '711 CE – 1700 CE',
+    summary: 'A vital synthesis point between Islamic and Indian mathematics, astronomy, and linguistic scholarship. It facilitated the translation of astronomical tables (Siddhanta) into Arabic.',
+    institutions: ['Madrasas of Mansura & Debal', 'Scholarly Circles of Thatta', 'Grand Madrasa of Multan'],
+    keyFigures: ['Al-Fazari (astronomer who translated Sanskrit tables)', 'Abu Mashar al-Sindhi (historian & scholar)', 'Qazi Abu Hanifa al-Sindhi'],
+    achievements: [
+      'Translated the Indian astronomical treaties Brahmasphutasiddhanta into Arabic ("Sindhind").',
+      'Introduced zero and decimal notation into the Arabic mathematical corpus.',
+      'Established early inter-religious theological forums and multi-language dictionary desks.'
+    ],
+    narrative: 'The Indus Valley served as a flourishing intellectual exchange gateway. Under translation initiatives, Sanskrit astronomical texts were brought to Baghdad via Sindh. Al-Fazari translated these texts into the "Zij al-Sindhind," which introduced the concept of zero and Indian numerals to the Muslim world. Thatta later became an eminent global university city hosting over 400 institutions of higher learning.'
+  }
+};
+
 export default function GlobeSection({ currentTheme, selectedCourseId, onSelectCourse }: GlobeSectionProps) {
   const starsList = useMemo(() => generateStars(), []);
   const isSpace = currentTheme === 'space';
@@ -51,9 +186,47 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
       });
     };
 
+    let touchStartDist = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        touchStartDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && touchStartDist > 0) {
+        e.preventDefault();
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        const factor = dist / touchStartDist;
+        setZoomScale((prev) => {
+          const next = prev * (1 + (factor - 1) * 0.15);
+          const clamped = Math.min(Math.max(next, 1), 2.5);
+          return clamped;
+        });
+        touchStartDist = dist;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      touchStartDist = 0;
+    };
+
     container.addEventListener('wheel', handleWheelNative, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
     return () => {
       container.removeEventListener('wheel', handleWheelNative);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
     };
   }, []);
 
@@ -102,6 +275,18 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
   const [hadithIndex, setHadithIndex] = useState(0);
 
   const activeHadith = HADITHS[hadithIndex];
+
+  // Interactive Regional Academic History modal state
+  const [showRegionModal, setShowRegionModal] = useState(false);
+  const [selectedRegionHistory, setSelectedRegionHistory] = useState<RegionalHistory | null>(null);
+
+  const openRegionDetail = (regionName: string) => {
+    const data = REGIONAL_HISTORIES[regionName];
+    if (data) {
+      setSelectedRegionHistory(data);
+      setShowRegionModal(true);
+    }
+  };
 
   // Hover tracking for showing coordinate pin & tooltip
   const [hoverPin, setHoverPin] = useState<{
@@ -302,10 +487,17 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
             willChange: 'transform'
           }}
         >
-          {/* Central HTML 3D Globe with Click Handler for Hadith */}
+          {/* Central HTML 3D Globe with Click Handler for Hadith and Regional History */}
           <div 
             ref={globeContainerRef}
-            onClick={triggerHadithPopup}
+            onClick={(e) => {
+              if (hoverPin && REGIONAL_HISTORIES[hoverPin.regionName]) {
+                e.stopPropagation();
+                openRegionDetail(hoverPin.regionName);
+              } else {
+                triggerHadithPopup();
+              }
+            }}
             className="relative w-full h-full rounded-full flex justify-center items-center overflow-hidden border border-gold/40 cursor-pointer shadow-2xl transition-all duration-500 hover:scale-[1.03] active:scale-95 group/globe"
             style={{
               background: `radial-gradient(circle at ${bgLightX}% ${bgLightY}%, ${
@@ -318,7 +510,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 : 'inset -25px -25px 50px rgba(0,0,0,0.85), 0 10px 40px -10px rgba(0,0,0,0.15)',
               willChange: 'background'
             }}
-            title="Click to receive Prophetic Wisdom in center"
+            title="Click coordinates for academic history or center for Prophetic Wisdom"
           >
             {/* HYPER-REALISTIC SVG EARTH ILLUSTRATION */}
             <svg 
@@ -556,7 +748,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
                 <g id="markersGroup">
                   {/* Baghdad */}
-                  <g id="marker-baghdad" className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-baghdad" className="pointer-events-auto group/marker cursor-pointer" onClick={(e) => { e.stopPropagation(); openRegionDetail('Mesopotamia Valley'); }}>
                     <circle cx="285" cy="182" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="285" cy="182" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.4s" repeatCount="indefinite" />
@@ -577,7 +769,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Cairo */}
-                  <g id="marker-cairo" className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-cairo" className="pointer-events-auto group/marker cursor-pointer" onClick={(e) => { e.stopPropagation(); openRegionDetail('Nile Delta Corridor'); }}>
                     <circle cx="268" cy="198" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="268" cy="198" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.1s" repeatCount="indefinite" />
@@ -598,7 +790,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Cordoba */}
-                  <g id="marker-cordoba" className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-cordoba" className="pointer-events-auto group/marker cursor-pointer" onClick={(e) => { e.stopPropagation(); openRegionDetail('Andalusian Basin'); }}>
                     <circle cx="247" cy="172" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="247" cy="172" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.5s" repeatCount="indefinite" />
@@ -619,7 +811,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Medina */}
-                  <g id="marker-medina" className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-medina" className="pointer-events-auto group/marker cursor-pointer" onClick={(e) => { e.stopPropagation(); openRegionDetail('Hijaz Sanctum'); }}>
                     <circle cx="278" cy="215" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="278" cy="215" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.2s" repeatCount="indefinite" />
@@ -640,7 +832,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Fez */}
-                  <g id="marker-fez" className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-fez" className="pointer-events-auto group/marker cursor-pointer" onClick={(e) => { e.stopPropagation(); openRegionDetail('Maghreb Region'); }}>
                     <circle cx="234" cy="206" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="234" cy="206" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.3s" repeatCount="indefinite" />
@@ -661,7 +853,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   </g>
 
                   {/* Bukhara */}
-                  <g id="marker-bukhara" className="pointer-events-auto group/marker cursor-pointer">
+                  <g id="marker-bukhara" className="pointer-events-auto group/marker cursor-pointer" onClick={(e) => { e.stopPropagation(); openRegionDetail('Transoxiana Heights'); }}>
                     <circle cx="308" cy="162" r="10" fill="rgba(232,184,109,0.0)" className="group-hover/marker:fill-gold/20 transition-all duration-300" />
                     <circle cx="308" cy="162" r="6" fill="none" stroke="#E8B86D" strokeWidth="1" filter="url(#markerGlow)">
                       <animate attributeName="r" values="3;9;3" dur="2.6s" repeatCount="indefinite" />
@@ -1017,6 +1209,136 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 `}
               >
                 Understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* REGIONAL ACADEMIC HISTORY MODAL OVERLAY */}
+      {showRegionModal && selectedRegionHistory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md transition-opacity duration-300">
+          <div 
+            className={`relative max-w-3xl w-full p-6 md:p-10 border rounded-sm md:rounded-md shadow-2xl transition-all duration-500 max-h-[90vh] overflow-y-auto animate-scale-up border-l-4
+              ${isSpace 
+                ? 'bg-[#0a0f1d] border-l-gold border-t-gold/10 border-r-gold/10 border-b-gold/10 text-white' 
+                : 'bg-[#FFF9F0] border-l-crimson border-stone-200 text-charcoal'
+              }
+            `}
+          >
+            {/* Close button */}
+            <button 
+              onClick={() => setShowRegionModal(false)}
+              className={`absolute top-4 right-4 p-2 rounded-full transition-all duration-300
+                ${isSpace 
+                  ? 'text-stone-400 hover:text-white hover:bg-white/5' 
+                  : 'text-stone-500 hover:text-charcoal hover:bg-black/5'
+                }
+              `}
+              title="Close details"
+            >
+              <LucideIcons.X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div className="mb-6 pb-4 border-b border-stone-200/10">
+              <div className="flex items-center gap-2 mb-1">
+                <LucideIcons.MapPin className={`h-4 w-4 ${isSpace ? 'text-gold' : 'text-crimson'}`} />
+                <span className="text-xs font-mono tracking-widest uppercase text-stone-400 font-bold">
+                  {selectedRegionHistory.coordinates} — {selectedRegionHistory.regionName}
+                </span>
+              </div>
+              <h2 className="font-serif font-black text-2xl md:text-3xl tracking-tight mb-2">
+                {selectedRegionHistory.title}
+              </h2>
+              <div className="flex items-center gap-2">
+                <LucideIcons.Calendar className="h-3.5 w-3.5 opacity-60" />
+                <span className="text-xs font-mono font-semibold opacity-75">{selectedRegionHistory.era}</span>
+              </div>
+            </div>
+
+            {/* Content Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {/* Left col: Summary & Narrative */}
+              <div className="md:col-span-2 space-y-6">
+                <div>
+                  <h3 className="text-xs font-mono tracking-wider uppercase font-black mb-2 opacity-50">HISTORIC SUMMARY</h3>
+                  <p className="font-serif text-stone-600 dark:text-stone-300 leading-relaxed text-sm md:text-base">
+                    {selectedRegionHistory.summary}
+                  </p>
+                </div>
+                
+                <div className={`p-4 rounded border font-serif italic text-stone-500 dark:text-stone-400 text-sm leading-relaxed border-dashed
+                  ${isSpace ? 'bg-white/5 border-stone-700' : 'bg-orange-50/50 border-orange-200'}
+                `}>
+                  "{selectedRegionHistory.narrative}"
+                </div>
+              </div>
+
+              {/* Right col: Stats & Figure items */}
+              <div className="space-y-6">
+                {/* Key Figures */}
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2.5">
+                    <LucideIcons.Users className="h-3.5 w-3.5 text-gold-light" />
+                    <h3 className="text-xs font-mono tracking-wider uppercase font-black opacity-50">KEY FIGURES</h3>
+                  </div>
+                  <ul className="space-y-1.5 text-xs font-mono">
+                    {selectedRegionHistory.keyFigures.map((f, i) => (
+                      <li key={i} className="flex items-start gap-1">
+                        <span className="text-gold font-bold">▪</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Institutions */}
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2.5">
+                    <LucideIcons.BookOpen className="h-3.5 w-3.5 text-gold-light" />
+                    <h3 className="text-xs font-mono tracking-wider uppercase font-black opacity-50">INSTITUTIONS</h3>
+                  </div>
+                  <ul className="space-y-1.5 text-xs font-mono">
+                    {selectedRegionHistory.institutions.map((inst, i) => (
+                      <li key={i} className="flex items-start gap-1">
+                        <span className="text-gold font-bold">▪</span>
+                        <span>{inst}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Core Achievements */}
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2.5">
+                    <LucideIcons.Award className="h-3.5 w-3.5 text-gold-light" />
+                    <h3 className="text-xs font-mono tracking-wider uppercase font-black opacity-50">ACHIEVEMENTS</h3>
+                  </div>
+                  <ul className="space-y-1.5 text-xs font-mono text-stone-700 dark:text-stone-300">
+                    {selectedRegionHistory.achievements.map((ach, i) => (
+                      <li key={i} className="flex items-start gap-1">
+                        <span className="text-gold font-bold">▪</span>
+                        <span>{ach}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Close Action Buttons */}
+            <div className="pt-4 border-t border-stone-200/10 flex justify-end">
+              <button 
+                onClick={() => setShowRegionModal(false)}
+                className={`text-[10px] font-bold tracking-[0.25em] uppercase py-2.5 px-6 rounded-sm transition-all duration-300 active:scale-95 shadow-md
+                  ${isSpace 
+                    ? 'bg-gold hover:bg-gold-light text-black' 
+                    : 'bg-crimson hover:bg-crimson-light text-white'
+                  }
+                `}
+              >
+                Return to Cosmos
               </button>
             </div>
           </div>
