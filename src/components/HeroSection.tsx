@@ -84,28 +84,73 @@ export default function HeroSection({ currentTheme, onApplyNow, mouseCoords = { 
         </div>
       </div>
 
+      {/* LAYER 4: DETAILED SVG-BASED ISLAMIC GEOMETRIC PATTERN MANDALA WITH OPACITY PULSE & SLOW ROTATION */}
+      <motion.div
+        className="absolute pointer-events-none select-none z-0"
+        style={{
+          width: '580px',
+          height: '580px',
+          top: '50%',
+          left: '50%',
+          x: '-50%',
+          y: '-50%',
+          transform: `translate(calc(-50% + ${x * -12}px), calc(-50% + ${y * -12}px))`,
+        }}
+        animate={{
+          rotate: [0, 360],
+          opacity: isSpace ? [0.03, 0.09, 0.03] : [0.02, 0.07, 0.02]
+        }}
+        transition={{
+          rotate: {
+            repeat: Infinity,
+            duration: 150,
+            ease: "linear"
+          },
+          opacity: {
+            repeat: Infinity,
+            duration: 10,
+            ease: "easeInOut"
+          }
+        }}
+      >
+        <svg 
+          viewBox="0 0 100 100" 
+          className={`w-full h-full ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`}
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="0.25"
+        >
+          {/* Detailed concentric configurations */}
+          <circle cx="50" cy="50" r="48" strokeDasharray="1 1" />
+          <circle cx="50" cy="50" r="44" />
+          <circle cx="50" cy="50" r="36" strokeDasharray="1.5 1.5" />
+          <circle cx="50" cy="50" r="28" />
+          <circle cx="50" cy="50" r="12" />
+          <polygon points="50,2 62,20 80,12 70,30 88,38 74,50 88,62 70,70 80,88 62,80 50,98 38,80 20,88 30,70 12,62 26,50 12,38 30,30 20,12 38,20" />
+          <polygon points="50,10 59,25 75,20 66,34 80,41 68,50 80,59 66,66 75,80 59,75 50,90 41,75 25,80 34,66 20,59 32,50 20,41 34,34 25,20 41,25" />
+          <path d="M50,2 L50,98 M2,50 L98,50 M16,16 L84,84 M16,84 L84,16" strokeDasharray="0.5 1" />
+          <rect x="25" y="25" width="50" height="50" transform="rotate(15 50 50)" />
+          <rect x="25" y="25" width="50" height="50" transform="rotate(30 50 50)" />
+          <rect x="25" y="25" width="50" height="50" transform="rotate(45 50 50)" />
+          <rect x="25" y="25" width="50" height="50" transform="rotate(60 50 50)" />
+          <rect x="25" y="25" width="50" height="50" transform="rotate(75 50 50)" />
+        </svg>
+      </motion.div>
+
+      {/* Decorative Traditional Archway Silhouette (Mihrab gateway) */}
+      <div className={`absolute inset-x-6 sm:inset-x-12 top-20 bottom-8 border-t-2 border-x-2 rounded-t-[140px] pointer-events-none opacity-[0.06] transition-colors duration-700
+        ${isSpace ? 'border-gold-light' : 'border-[#0B4628]'}
+      `} />
+      <div className={`absolute inset-x-9 sm:inset-x-16 top-24 bottom-8 border-t border-x rounded-t-[125px] pointer-events-none opacity-[0.04] transition-colors duration-700
+        ${isSpace ? 'border-gold' : 'border-[#0B4628]'}
+      `} />
+
       {/* Decorative Top-Bottom Frame Arches for Academic Majesty */}
       <div className="absolute top-0 inset-x-0 h-4 bg-gradient-to-r from-gold via-[#0B4628] to-gold opacity-40" />
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
       {/* Editorial Content Banner */}
       <div className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center flex flex-col items-center justify-center">
-        
-        {/* Floating Scholastic Badge */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className={`inline-flex items-center gap-2 mb-8 px-4.5 py-2.5 rounded-full border text-[11px] font-mono tracking-[0.25em] uppercase font-black shadow-sm transition-all duration-500
-            ${isSpace 
-              ? 'border-gold/30 bg-[#021c0e] text-gold-light hover:border-gold' 
-              : 'border-[#0B4628]/30 bg-[#0B4628]/5 text-[#0B4628] hover:bg-[#0B4628]/10'
-            }
-          `}
-        >
-          <GraduationCap className={`h-4.5 w-4.5 animate-pulse ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} />
-          Albab Islamic University
-        </motion.div>
 
         {/* Elegant established line */}
         <div className="inline-flex items-center gap-3 justify-center mb-6">
