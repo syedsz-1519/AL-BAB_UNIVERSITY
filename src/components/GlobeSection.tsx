@@ -276,6 +276,12 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
   const activeHadith = HADITHS[hadithIndex];
 
+  // Filter courses for Celestial Globe Section: QUR'AN, HADITH, FIQH, ISLAMIC STUDIES, LOGIC, DUNIYA VI ILM
+  const globeCourses = useMemo(() => {
+    const ids = ['quran', 'hadith', 'fiqh', 'islamic-studies', 'logic', 'duniyavi-ilm'];
+    return ids.map(id => COURSES.find(c => c.id === id)).filter(Boolean) as Course[];
+  }, []);
+
   // Interactive Regional Academic History modal state
   const [showRegionModal, setShowRegionModal] = useState(false);
   const [selectedRegionHistory, setSelectedRegionHistory] = useState<RegionalHistory | null>(null);
@@ -1003,8 +1009,8 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
         {/* DESKTOP: Centered Floating Course Cards */}
         <div className="absolute inset-0 pointer-events-none hidden md:block">
-          {COURSES.map((course, idx) => {
-            const pos = computeCardPosition(idx, COURSES.length);
+          {globeCourses.map((course, idx) => {
+            const pos = computeCardPosition(idx, globeCourses.length);
             const isSelected = selectedCourseId === course.id;
 
             const handleCardClick = (e: React.MouseEvent) => {
@@ -1071,13 +1077,13 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
         </div>
       </div>
 
-      {/* MOBILE COLLAPSED: 2x4 Grid Below Globe */}
+      {/* MOBILE COLLAPSED: 3x2 Grid Below Globe */}
       <div className="w-full max-w-lg mx-auto px-6 mt-1 md:hidden flex flex-col select-none relative z-10">
         <h3 className="text-center font-serif italic text-stone-400 dark:text-stone-500 text-xs mb-4">
           — Select field to explore scholarly branches —
         </h3>
         <div className="grid grid-cols-2 gap-3">
-          {COURSES.map((course) => {
+          {globeCourses.map((course) => {
             const isSelected = selectedCourseId === course.id;
             const handleMobileCardClick = () => {
               onSelectCourse(course);

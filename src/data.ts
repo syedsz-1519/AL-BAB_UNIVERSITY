@@ -120,6 +120,15 @@ export const NEW_COURSES: Course[] = [
     branches: ['Islamic Economics', 'Microeconomics', 'Macroeconomics', 'Behavioral Economics', 'Finance & Trade'],
     description: 'Ethics in commerce and capital. Review micro and macro systems, behavioral incentives, global trading structures, and interest-free solutions.',
     accentColor: 'yellow-600'
+  },
+  {
+    id: 'duniyavi-ilm',
+    name: 'Duniya vi Ilm',
+    count: '5 Branches',
+    icon: 'Globe',
+    branches: ['Natural Sciences', 'Social Sciences', 'Modernity & Tech', 'History & Philosophy', 'Economics & Trade'],
+    description: 'Worldly knowledge and empirical sciences. Integrating physics, geography, medicine, humanities, and social sciences within an ethical intellectual paradigm.',
+    accentColor: 'cyan-500'
   }
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { COURSES } from '../data';
 import { Course } from '../types';
 import * as LucideIcons from 'lucide-react';
@@ -12,10 +12,21 @@ interface CurriculumInspectorProps {
   searchText: string;
 }
 
+const CATEGORIES = [
+  { id: 'all', name: 'All Disciplines', icon: 'Layers', desc: 'Complete spectrum of learning', courseIds: [] as string[] },
+  { id: 'quran', name: 'Quran Studies', icon: 'BookOpen', desc: 'Exegesis & structural miracles', courseIds: ['quran'] },
+  { id: 'hadith', name: 'Hadith Sciences', icon: 'MessageSquareText', desc: 'Prophetic traditions & chain validation', courseIds: ['hadith'] },
+  { id: 'fiqh', name: 'Fiqh & Law', icon: 'Scale', desc: 'Jurisprudence, contracts & fatwas', courseIds: ['fiqh'] },
+  { id: 'logic', name: 'Logic & Philosophy', icon: 'Binary', desc: 'Reasoning, epistemology & critique', courseIds: ['logic', 'philosophy'] },
+  { id: 'islamic-studies', name: 'Islamic Studies', icon: 'BookType', desc: 'Theology, seerah & purification', courseIds: ['islamic-studies', 'challenges'] },
+  { id: 'duniyavi-ilm', name: 'Duniya vi Ilm', icon: 'Globe', desc: 'Worldly sciences, history & modern politics', courseIds: ['duniyavi-ilm', 'history', 'politics', 'poetry', 'economic-studies', 'modernity', 'psychology'] }
+];
+
 export default function CurriculumInspector({ currentTheme, selectedCourseId, onSelectCourse, searchText }: CurriculumInspectorProps) {
   const isSpace = currentTheme === 'space';
   const [internalSearch, setInternalSearch] = useState('');
   const [allCourses, setAllCourses] = useState<Course[]>(COURSES);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   
   // Combine props search and component's internal index search
   const activeSearch = searchText || internalSearch;
@@ -71,28 +82,73 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
     return <LucideIcons.BookOpen className="h-7 w-7" />;
   };
 
-  // Find course matching searched branch/topic
-  const filteredCourses = allCourses.filter((course) => {
-    if (!activeSearch) return true;
-    const cleanSearch = activeSearch.toLowerCase();
-    const matchesName = course.name.toLowerCase().includes(cleanSearch);
-    const matchesBranches = course.branches.some(branch => branch.toLowerCase().includes(cleanSearch));
-    const matchesDesc = course.description.toLowerCase().includes(cleanSearch);
-    return matchesName || matchesBranches || matchesDesc;
-  });
+  // Helper to map category icons
+  const getCategoryIcon = (iconName: string, active: boolean) => {
+    const IconComponent = (LucideIcons as any)[iconName];
+    const sizeCls = "h-4 w-4";
+    const colorCls = active 
+      ? (isSpace ? 'text-black' : 'text-white') 
+      : (isSpace ? 'text-gold' : 'text-crimson');
+    
+    if (IconComponent) {
+      return <IconComponent className={`${sizeCls} ${colorCls}`} />;
+    }
+    return <LucideIcons.BookOpen className={`${sizeCls} ${colorCls}`} />;
+  };
+
+  // Find course matching searched branch/topic AND selected category
+  const filteredCourses = useMemo(() => {
+    return allCourses.filter((course) => {
+      // 1. Category Filter
+      if (selectedCategory !== 'all') {
+        const catObj = CATEGORIES.find(c => c.id === selectedCategory);
+        if (catObj) {
+          const matchesStaticId = catObj.courseIds.includes(course.id);
+          let matchesDynamic = false;
+          
+          // Check if it is a dynamic course (not present in the static COURSES array)
+          const isStatic = COURSES.some(c => c.id === course.id);
+          if (!isStatic) {
+            if (selectedCategory === 'islamic-studies') {
+              matchesDynamic = course.icon === 'Sparkles' || course.icon === 'Brain';
+            } else if (selectedCategory === 'fiqh') {
+              matchesDynamic = course.icon === 'Scale';
+            } else if (selectedCategory === 'duniyavi-ilm') {
+              matchesDynamic = course.icon !== 'Sparkles' && course.icon !== 'Brain' && course.icon !== 'Scale';
+            }
+          }
+          
+          if (!matchesStaticId && !matchesDynamic) {
+            return false;
+          }
+        }
+      }
+
+      // 2. Search Text Filter
+      if (!activeSearch) return true;
+      const cleanSearch = activeSearch.toLowerCase();
+      const matchesName = course.name.toLowerCase().includes(cleanSearch);
+      const matchesBranches = course.branches.some(branch => branch.toLowerCase().includes(cleanSearch));
+      const matchesDesc = course.description.toLowerCase().includes(cleanSearch);
+      return matchesName || matchesBranches || matchesDesc;
+    });
+  }, [allCourses, selectedCategory, activeSearch]);
 
   const selectedCourse = allCourses.find(c => c.id === selectedCourseId) || allCourses[0];
 
-  // Auto-focus first matching course if search alters
+  // Auto-focus first matching course if filter or search alters
   useEffect(() => {
-    if (activeSearch && filteredCourses.length > 0) {
-      // Find matches
+    if (filteredCourses.length > 0) {
       const currentMatch = filteredCourses.find(c => c.id === selectedCourseId);
       if (!currentMatch) {
         onSelectCourse(filteredCourses[0]);
       }
     }
-  }, [activeSearch, selectedCourseId, onSelectCourse]);
+  }, [selectedCategory, activeSearch, allCourses.length, onSelectCourse, filteredCourses, selectedCourseId]);
+
+  const handleCategoryChange = (catId: string) => {
+    setSelectedCategory(catId);
+  };
 
 
   return (
@@ -160,71 +216,239 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
         {/* COMPONENT BODYGRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mt-12">
           
-          {/* LEFT CHANNELS (Subjects grid selector) */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {allCourses.map((course, idx) => {
-              const worksWithFilter = filteredCourses.some(c => c.id === course.id);
-              const isSelected = selectedCourseId === course.id;
+          {/* LEFT: CATEGORY FILTER SIDEBAR (lg:col-span-3) */}
+          <div className="lg:col-span-3 flex flex-col gap-4">
+            {/* Desktop View Sidebar */}
+            <div className={`hidden lg:flex flex-col p-5 border rounded-sm transition-all duration-300
+              ${isSpace 
+                ? 'bg-[#0a0f1d] border-gold/15 text-white shadow-[0_4px_20px_rgba(0,0,0,0.4)]' 
+                : 'bg-[#FFFDF9] border-stone-200 text-charcoal shadow-sm'
+              }
+            `}>
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-stone-200/10">
+                <LucideIcons.ListFilter className={`h-4 w-4 ${isSpace ? 'text-gold' : 'text-crimson'}`} />
+                <span className="text-xs font-mono tracking-widest uppercase font-black opacity-80">
+                  Disciplines
+                </span>
+              </div>
+              <p className="text-[11px] text-stone-400 dark:text-stone-500 font-sans mb-4 leading-relaxed font-medium">
+                Select an academic discipline to filter our scholarly curriculum.
+              </p>
+              
+              <div className="flex flex-col gap-2">
+                {CATEGORIES.map((cat) => {
+                  const isCatSelected = selectedCategory === cat.id;
+                  
+                  // Count matches for this category in allCourses
+                  const countInCat = allCourses.filter((course) => {
+                    const matchesStaticId = cat.courseIds.includes(course.id);
+                    let matchesDynamic = false;
+                    const isStatic = COURSES.some(c => c.id === course.id);
+                    if (!isStatic) {
+                      if (cat.id === 'islamic-studies') {
+                        matchesDynamic = course.icon === 'Sparkles' || course.icon === 'Brain';
+                      } else if (cat.id === 'fiqh') {
+                        matchesDynamic = course.icon === 'Scale';
+                      } else if (cat.id === 'duniyavi-ilm') {
+                        matchesDynamic = course.icon !== 'Sparkles' && course.icon !== 'Brain' && course.icon !== 'Scale';
+                      }
+                    }
+                    return cat.id === 'all' || matchesStaticId || matchesDynamic;
+                  }).length;
 
-              return (
-                <button
-                  key={course.id}
-                  onClick={() => {
-                    if (worksWithFilter) {
-                      onSelectCourse(course);
-                      // Smoothly redirect the viewer to the Canonical Inspector detailed view panel
-                      setTimeout(() => {
-                        const el = document.getElementById('canonical-inspector-viewport');
-                        if (el) {
-                          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => handleCategoryChange(cat.id)}
+                      className={`group relative w-full p-3.5 rounded-sm text-left transition-all duration-300 flex items-center justify-between cursor-pointer border
+                        ${isCatSelected
+                          ? isSpace
+                            ? 'bg-gold text-black border-gold shadow-[0_0_15px_rgba(201,147,58,0.45)] font-bold scale-[1.02]'
+                            : 'bg-crimson text-white border-crimson shadow-[0_4px_12px_rgba(139,22,23,0.15)] font-bold scale-[1.02]'
+                          : isSpace
+                            ? 'bg-white/5 border-gold/10 text-stone-300 hover:text-white hover:bg-white/10 hover:border-gold/30'
+                            : 'bg-[#FCFAF6] border-stone-200 text-stone-700 hover:text-charcoal hover:bg-[#F2ECE0]'
                         }
-                      }, 50);
+                      `}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="flex-shrink-0">
+                          {getCategoryIcon(cat.icon, isCatSelected)}
+                        </span>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-xs font-serif font-black tracking-wide truncate">
+                            {cat.name}
+                          </span>
+                          <span className={`text-[9px] font-sans truncate font-medium opacity-70
+                            ${isCatSelected 
+                              ? (isSpace ? 'text-black/80' : 'text-white/80') 
+                              : 'text-stone-400 dark:text-stone-500'
+                            }
+                          `}>
+                            {cat.desc}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ml-2 font-bold flex-shrink-0
+                        ${isCatSelected
+                          ? isSpace ? 'bg-black/15 text-black' : 'bg-white/20 text-white'
+                          : isSpace ? 'bg-white/5 text-gold-light' : 'bg-black/5 text-stone-500'
+                        }
+                      `}>
+                        {countInCat}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Mobile/Tablet View Selector (Horizontal scrollable pill list) */}
+            <div className="lg:hidden flex flex-col gap-2">
+              <div className="flex items-center gap-1.5 px-1 mb-1">
+                <LucideIcons.ListFilter className={`h-3.5 w-3.5 ${isSpace ? 'text-gold' : 'text-crimson'}`} />
+                <span className="text-[10px] font-mono tracking-widest uppercase font-black opacity-60">
+                  Select Discipline
+                </span>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
+                {CATEGORIES.map((cat) => {
+                  const isCatSelected = selectedCategory === cat.id;
+                  const countInCat = allCourses.filter((course) => {
+                    const matchesStaticId = cat.courseIds.includes(course.id);
+                    let matchesDynamic = false;
+                    const isStatic = COURSES.some(c => c.id === course.id);
+                    if (!isStatic) {
+                      if (cat.id === 'islamic-studies') {
+                        matchesDynamic = course.icon === 'Sparkles' || course.icon === 'Brain';
+                      } else if (cat.id === 'fiqh') {
+                        matchesDynamic = course.icon === 'Scale';
+                      } else if (cat.id === 'duniyavi-ilm') {
+                        matchesDynamic = course.icon !== 'Sparkles' && course.icon !== 'Brain' && course.icon !== 'Scale';
+                      }
                     }
+                    return cat.id === 'all' || matchesStaticId || matchesDynamic;
+                  }).length;
+
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => handleCategoryChange(cat.id)}
+                      className={`snap-start flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-full transition-all duration-300 text-xs font-serif font-black cursor-pointer
+                        ${isCatSelected
+                          ? isSpace
+                            ? 'bg-gold text-black border-gold shadow-[0_2px_8px_rgba(201,147,58,0.3)]'
+                            : 'bg-crimson text-white border-crimson shadow-[0_2px_8px_rgba(139,22,23,0.15)]'
+                          : isSpace
+                            ? 'bg-space border-gold/15 text-stone-300'
+                            : 'bg-white border-stone-200 text-stone-700'
+                        }
+                      `}
+                    >
+                      <span>{getCategoryIcon(cat.icon, isCatSelected)}</span>
+                      <span>{cat.name}</span>
+                      <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold
+                        ${isCatSelected
+                          ? isSpace ? 'bg-black/15 text-black' : 'bg-white/20 text-white'
+                          : isSpace ? 'bg-white/5 text-gold-light' : 'bg-black/5 text-stone-500'
+                        }
+                      `}>
+                        {countInCat}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          
+          {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-5) */}
+          <div className="lg:col-span-5">
+            {filteredCourses.length === 0 ? (
+              <div className={`p-8 text-center border border-dashed rounded-sm flex flex-col items-center justify-center min-h-[300px]
+                ${isSpace ? 'border-gold/10 text-stone-400 bg-space/20' : 'border-stone-200 text-stone-500 bg-stone-50/50'}
+              `}>
+                <LucideIcons.SearchX className="h-10 w-10 opacity-30 mb-4" />
+                <h4 className="font-serif font-black text-lg mb-1">No Branches Found</h4>
+                <p className="text-xs font-sans max-w-xs leading-relaxed opacity-85">
+                  No academic branches match your selected category and search query. Try clearing filters or searching for keywords.
+                </p>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('all');
+                    setInternalSearch('');
                   }}
-                  className={`group relative p-6 rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[140px] skeuo-active-click
-                    ${isSelected
-                      ? isSpace
-                        ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 scale-[1.04] z-10'
-                        : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 scale-[1.04] z-10'
-                      : isSpace
-                        ? 'skeuo-card-space text-stone-300 hover:text-white hover:scale-[1.02]'
-                        : 'skeuo-card-parchment text-stone-700 hover:text-charcoal hover:scale-[1.02]'
-                    }
-                    ${!worksWithFilter ? 'opacity-30 p-2 cursor-not-allowed filter grayscale' : ''}
+                  className={`mt-4 text-[10px] font-mono tracking-wider uppercase border-b pb-0.5 transition-all duration-300
+                    ${isSpace ? 'text-gold hover:text-white border-gold/20 hover:border-white' : 'text-crimson hover:text-stone-700 border-crimson/20 hover:border-stone-700'}
                   `}
                 >
-                  {/* Decorative Crimson Vertical Marker strip when active */}
-                  <div className={`absolute top-0 bottom-0 left-0 w-[3px] transition-transform duration-300
-                    ${isSpace ? 'bg-gold' : 'bg-crimson'}
-                    ${isSelected ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'}
-                  `} />
-
-                  <div className="flex justify-between items-start w-full">
-                    <span className={`transition-transform duration-300 group-hover:scale-105
-                      ${isSpace ? 'text-gold' : 'text-crimson'}
-                    `}>
-                      {getIcon(course.icon)}
-                    </span>
-                    <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
-                      {course.count}
-                    </span>
-                  </div>
-
-                  <div className="mt-4">
-                    <h3 className="font-serif font-black text-xl tracking-wide leading-tight group-hover:text-gold transition-colors">
-                      {course.name}
-                    </h3>
-                    <p className="text-xs text-stone-400 dark:text-stone-500 font-sans line-clamp-1 mt-1 font-medium">
-                      {course.branches.join(', ')}
-                    </p>
-                  </div>
+                  Clear All Filters
                 </button>
-              );
-            })}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                {filteredCourses.map((course, idx) => {
+                  const isSelected = selectedCourseId === course.id;
+
+                  return (
+                    <button
+                      key={course.id}
+                      onClick={() => {
+                        onSelectCourse(course);
+                        // Smoothly redirect the viewer to the Canonical Inspector detailed view panel on mobile
+                        setTimeout(() => {
+                          const el = document.getElementById('canonical-inspector-viewport');
+                          if (el && window.innerWidth < 1024) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }
+                        }, 50);
+                      }}
+                      className={`group relative p-5 rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[120px] skeuo-active-click
+                        ${isSelected
+                          ? isSpace
+                            ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 scale-[1.02] z-10'
+                            : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 scale-[1.02] z-10'
+                          : isSpace
+                            ? 'skeuo-card-space text-stone-300 hover:text-white hover:scale-[1.01]'
+                            : 'skeuo-card-parchment text-stone-700 hover:text-charcoal hover:scale-[1.01]'
+                        }
+                      `}
+                    >
+                      {/* Decorative Vertical Marker strip when active */}
+                      <div className={`absolute top-0 bottom-0 left-0 w-[3px] transition-transform duration-300
+                        ${isSpace ? 'bg-gold' : 'bg-crimson'}
+                        ${isSelected ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'}
+                      `} />
+
+                      <div className="flex justify-between items-start w-full">
+                        <span className={`transition-transform duration-300 group-hover:scale-105
+                          ${isSpace ? 'text-gold' : 'text-crimson'}
+                        `}>
+                          {getIcon(course.icon)}
+                        </span>
+                        <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
+                          {course.count}
+                        </span>
+                      </div>
+
+                      <div className="mt-3">
+                        <h3 className="font-serif font-black text-lg tracking-wide leading-tight group-hover:text-gold transition-colors">
+                          {course.name}
+                        </h3>
+                        <p className="text-xs text-stone-400 dark:text-stone-500 font-sans line-clamp-1 mt-1 font-medium">
+                          {course.branches.join(', ')}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          {/* RIGHT DETAILED VIEWPORT (Editorial Ledger Sheet) */}
-          <div className="lg:col-span-5 relative z-10" id="canonical-inspector-viewport">
+          {/* RIGHT: DETAILED VIEWPORT (Canonical Inspector) (lg:col-span-4) */}
+          <div className="lg:col-span-4 relative z-10" id="canonical-inspector-viewport">
             <div 
               key={selectedCourseId}
               className={`relative p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
@@ -266,7 +490,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                   {getIcon(selectedCourse?.icon)}
                 </div>
                 <div>
-                  <h3 className="font-serif font-black text-2xl tracking-wide">{selectedCourse?.name}</h3>
+                  <h3 className="font-serif font-black text-2xl tracking-wide leading-tight">{selectedCourse?.name}</h3>
                   <span className="text-xs font-mono text-stone-400 dark:text-stone-500 font-medium">{selectedCourse?.count}</span>
                 </div>
               </div>
@@ -283,7 +507,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                 `}>
                   Core Branches Study
                 </h4>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <ul className="grid grid-cols-1 gap-3">
                   {selectedCourse?.branches.map((branch, idx) => (
                     <li key={idx} className="flex items-center gap-2.5">
                       <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0 animate-ping duration-1000
