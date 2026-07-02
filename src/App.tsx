@@ -405,16 +405,16 @@ export default function App() {
             {/* Ambient vignette shadow overlay to darken the edges and draw eyes to the center */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(244,239,230,0.7)_95%)] pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col items-center max-w-2xl w-full text-center px-4">
+            <div className="relative z-10 flex flex-col items-center max-w-3xl w-full text-center px-4">
               {/* Islamic Architectural Mihrab Arch Design with Star Rosette */}
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 1.4, ease: "easeOut" }}
-                className="mb-6 relative flex items-center justify-center"
+                className="mb-[-15px] relative z-20 flex items-center justify-center"
               >
                 {/* Mihrab Arch silhouette overlaying the star rosette */}
-                <svg className="w-32 h-32 md:w-36 md:h-36 stroke-[#0B4628] fill-[#0B4628]/5 text-[#0B4628] drop-shadow-[0_4px_25px_rgba(11,70,40,0.12)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.2">
+                <svg className="w-24 h-24 stroke-[#0B4628] fill-white text-[#0B4628] drop-shadow-[0_4px_15px_rgba(11,70,40,0.1)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.2">
                   <path d="M20,85 L20,48 C20,24 38,14 50,5 C62,14 80,24 80,48 L80,85 Z" className="stroke-[#0B4628]" />
                   <path d="M26,85 L26,50 C26,28 39,18 50,10 C61,18 74,28 74,50 L74,85" strokeWidth="0.8" className="stroke-[#C4A35A]" strokeDasharray="3 3" />
                   
@@ -429,7 +429,7 @@ export default function App() {
                 </svg>
                 {/* Floating Cap Icon in center of Mihrab */}
                 <div className="absolute top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <GraduationCap className="w-8 h-8 text-[#C4A35A] animate-pulse" />
+                  <GraduationCap className="w-6 h-6 text-[#C4A35A] animate-pulse" />
                 </div>
               </motion.div>
 
@@ -438,56 +438,56 @@ export default function App() {
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 1.0 }}
-                className="w-full relative overflow-hidden p-6 md:p-8 rounded-2xl border-2 border-[#0B4628]/25 bg-white/95 backdrop-blur-xl shadow-[0_25px_60px_rgba(11,70,40,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)] flex flex-col items-center gap-4"
+                className="w-full relative overflow-hidden p-8 md:p-10 rounded-lg border border-stone-200 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] flex flex-col items-center gap-5"
               >
                 {/* Subtle ornamental gold corner brackets on plaque */}
-                <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[#C4A35A]" />
-                <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-[#C4A35A]" />
-                <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-[#C4A35A]" />
-                <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[#C4A35A]" />
+                <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-[#C4A35A]/50" />
+                <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-[#C4A35A]/50" />
+                <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-[#C4A35A]/50" />
+                <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[#C4A35A]/50" />
 
                 {/* Main Full Sacred Salam in Arabic calligraphy text in GREEN FONT */}
-                <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.65rem] font-extrabold text-[#0B4628] tracking-wide font-amiri leading-normal drop-shadow-[0_1px_2px_rgba(11,70,40,0.1)] select-text">
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.65rem] font-bold text-stone-900 tracking-wide font-amiri leading-normal drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] select-text">
                   السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ
                 </h1>
 
                 {/* Transliteration of Full Salam in GOLDEN FONT */}
-                <p className="text-xs sm:text-sm font-mono tracking-wider font-extrabold text-[#C4A35A] uppercase text-center max-w-lg">
+                <p className="text-xs sm:text-sm font-sans tracking-[0.2em] font-extrabold text-[#1a1a1a] uppercase text-center max-w-lg">
                   As-salamu alaykum wa rahmatullahi wa barakatuh
                 </p>
 
                 {/* Translation of Full Salam in deep grey/black font */}
-                <p className="text-xs sm:text-sm text-stone-600 font-serif font-medium italic text-center leading-relaxed">
+                <p className="text-xs sm:text-sm text-stone-500 font-serif italic text-center leading-relaxed">
                   "Peace, Mercy, and Blessings of Allah be upon you"
                 </p>
 
                 {/* Elegant separator line with Green & Gold */}
-                <div className="flex items-center gap-3 w-40 justify-center my-1">
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[#0B4628]/30" />
+                <div className="flex items-center gap-3 w-40 justify-center my-0.5">
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[#C4A35A]/35" />
                   <span className="text-[#C4A35A] text-[10px] font-bold">✦</span>
-                  <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[#0B4628]/30" />
+                  <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[#C4A35A]/35" />
                 </div>
 
                 {/* Contextual Greeting Section (Subh/Asr/Layl) */}
-                <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[#0B4628]/5 border border-[#0B4628]/10 w-full max-w-md">
+                <div className="flex flex-col items-center gap-2.5 p-4 rounded-md bg-[#F4F4F2] border border-stone-200/80 w-full max-w-lg">
                   {/* Greeting Label Pill */}
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C4A35A]/15 border border-[#C4A35A]/30">
-                    <span className="text-xs animate-bounce" style={{ animationDuration: '3s' }}>{greetingData.icon}</span>
-                    <span className="text-[9px] font-mono tracking-[0.2em] uppercase font-black text-[#0B4628]">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAE8E3] border border-stone-300/40">
+                    <span className="text-xs">{greetingData.icon}</span>
+                    <span className="text-[9px] font-mono tracking-[0.2em] uppercase font-black text-stone-700">
                       {greetingData.label}
                     </span>
                   </div>
 
                   {/* Contextual Arabic Greeting */}
-                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#C4A35A] font-amiri leading-none">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-stone-900 font-amiri leading-none">
                     {greetingData.arabic}
                   </h2>
 
                   {/* Transliteration and Blessing Message */}
-                  <p className="text-[10px] font-mono tracking-widest font-black text-stone-500">
+                  <p className="text-[10px] font-mono tracking-widest font-black text-stone-800">
                     {greetingData.salutation}
                   </p>
-                  <p className="text-xs text-stone-600 font-serif italic text-center max-w-[340px]">
+                  <p className="text-xs text-stone-500 font-serif italic text-center max-w-[400px] leading-relaxed">
                     "{greetingData.subtext}"
                   </p>
                 </div>
@@ -499,28 +499,28 @@ export default function App() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0B4628] opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0B4628]"></span>
                     </span>
-                    <span className="text-[10px] font-mono text-[#0B4628] font-bold tracking-wider">
+                    <span className="text-[10.5px] font-mono text-[#0B4628] font-bold tracking-wider">
                       Initiating Islamic Scholastic Portal...
                     </span>
                   </div>
                   
                   {/* Countdown Loading Progress Bar in White & Green background with GOLD indicator */}
-                  <div className="w-64 max-w-xs h-[5px] bg-stone-100 rounded-full overflow-hidden relative border border-[#0B4628]/20 shadow-sm">
+                  <div className="w-72 max-w-xs h-[4px] bg-stone-100 rounded-full overflow-hidden relative border border-stone-200/80 shadow-inner">
                     <motion.div 
                       initial={{ width: "0%" }}
                       animate={{ width: "100%" }}
                       transition={{ duration: 8, ease: "linear" }}
-                      className="h-full bg-gradient-to-r from-[#C4A35A]/60 via-[#E8B86D] to-[#C4A35A]"
+                      className="h-full bg-[#C4A35A]"
                     />
                   </div>
 
-                  {/* Elegant Tactile Skip button with GOLDEN FONT on White & Green border */}
+                  {/* Elegant Skip button */}
                   <motion.button
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
                     onClick={() => setShowSplash(false)}
-                    className="mt-1 px-6 py-2 border-2 border-[#0B4628]/30 hover:border-[#C4A35A] bg-[#0B4628]/5 hover:bg-[#0B4628]/10 rounded-full text-[10px] font-mono uppercase tracking-[0.2em] text-[#0B4628] font-black transition-all duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer shadow-md"
+                    className="mt-2 px-8 py-2 border border-stone-300 hover:border-stone-400 bg-white hover:bg-stone-50 rounded-full text-xs font-mono uppercase tracking-[0.2em] text-stone-700 font-bold transition-all duration-300 hover:shadow-sm active:scale-95 cursor-pointer"
                   >
                     Enter Portal ({splashSeconds}s)
                   </motion.button>
