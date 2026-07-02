@@ -124,19 +124,22 @@ JazakAllah khair!`;
       )}
 
       {/* FLOATING ACTION ICON BUBBLES BLOCK */}
-      <div className="pointer-events-auto flex flex-row sm:flex-col gap-2 sm:gap-3 items-center">
+      <div className="pointer-events-auto flex flex-col gap-2.5 sm:gap-3 items-center">
         
-        {/* 1 MINUTE DHIKR TRIGGER BUTTON - ALWAYS VISIBLE, BIG AND BEAUTIFUL, ON TOP */}
-        <button
+        {/* 1 MINUTE DHIKR TRIGGER BUTTON - ALWAYS VISIBLE, BIG AND BEAUTIFUL, DRAGGABLE */}
+        <motion.button
+          drag
+          dragMomentum={false}
+          whileDrag={{ scale: 1.15, cursor: 'grabbing', zIndex: 100 }}
           onClick={scrollToDhikr}
-          className={`group flex sm:h-14 sm:w-14 h-12 w-12 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-300 relative
+          className={`group flex sm:h-14 sm:w-14 h-12 w-12 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-300 relative cursor-grab active:cursor-grabbing select-none touch-none
             ${isSpace 
               ? 'bg-gradient-to-tr from-[#9a3412]/30 to-[#C9933A]/20 border-gold/50 text-gold-light hover:border-gold hover:shadow-[0_0_18px_rgba(201,147,58,0.6)]' 
               : 'bg-[#0B4628] text-white border-transparent hover:bg-black hover:shadow-[0_4px_16px_rgba(11,70,40,0.35)]'
             }
             hover:scale-110
           `}
-          title="Go to 1 Minute Dhikr"
+          title="Go to 1 Minute Dhikr (Drag to reposition!)"
         >
           {/* Pulsing devotional aura */}
           <span className={`absolute -inset-1.5 rounded-full border opacity-30 group-hover:opacity-60 animate-ping duration-[2000ms] select-none pointer-events-none
@@ -167,9 +170,9 @@ JazakAllah khair!`;
               : 'bg-[#FCFAF7] border-stone-200 text-[#0B4628] font-bold shadow-sm'
             }
           `}>
-            1 Minute Dhikr
+            1 Minute Dhikr (Drag me!)
           </span>
-        </button>
+        </motion.button>
 
         {/* CELESTIAL GLOBE REVISIT FLOATING TRIGGER - HIDDEN ON MOBILE */}
         {showScrollToGlobe && (
