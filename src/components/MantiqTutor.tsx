@@ -5,6 +5,7 @@ import {
   RefreshCw, Award, Send, Compass, HelpCircle, 
   AlertTriangle, ArrowRight, Sparkles 
 } from 'lucide-react';
+import SectionMetaTags from './SectionMetaTags';
 
 interface MantiqTutorProps {
   currentTheme: 'parchment' | 'space';
@@ -743,6 +744,11 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
       id="mantiq-tutor-container"
       className="min-h-screen pt-36 lg:pt-40 pb-16 px-4 sm:px-6 md:px-12 bg-[#F5F0E8] text-[#1A1A1A] font-sans selection:bg-[#0B4628]/10 text-left"
     >
+      <SectionMetaTags 
+        title="Mantiq Logic Tutor" 
+        description="Master classical Arabic Aristotelian logic, formal syllogisms (qiyas), definitional essence (hadd), and fallacy detection through real-time AI tutor dialogues."
+        sectionId="mantiq"
+      />
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
         
         {/* TOP FLOATING NOTIFICATION BOX */}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BookOpen, Search, Type, Bookmark, BookmarkCheck, FileText, AlertCircle, Sparkles } from 'lucide-react';
+import SectionMetaTags from './SectionMetaTags';
 
 interface QuranExplorerProps {
   currentTheme: 'parchment' | 'space';
@@ -81,6 +82,11 @@ export default function QuranExplorer({ currentTheme, onBookmarkAdd, bookmarkedK
         : 'bg-[#FAF8F5] border-crimson/10 text-charcoal'
       }
     `}>
+      <SectionMetaTags 
+        title="Quranic Exegesis and Translation Explorer" 
+        description="Search classical Surahs and Ayahs, and explore traditional Tafseer exegesis, related prophetic Hadiths, and university curriculum alignments."
+        sectionId="quran-explorer"
+      />
       <div className="absolute top-4 right-6 opacity-5 pointer-events-none select-none text-9xl font-serif">
         قرآن
       </div>

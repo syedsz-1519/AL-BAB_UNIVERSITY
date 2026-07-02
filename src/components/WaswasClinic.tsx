@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, CheckCircle2, Save, RotateCcw } from 'lucide-react';
+import SectionMetaTags from './SectionMetaTags';
 
 interface WaswasClinicProps {
   currentTheme: 'parchment' | 'space';
@@ -312,6 +313,11 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
       id="waswas-clinic-viewport"
       className="min-h-screen bg-[#F5F0E8] text-[#1A1A1A] font-sans pt-36 md:pt-40 pb-20 px-4 md:px-12 arabesque-grid selection:bg-[#0B4628]/10"
     >
+      <SectionMetaTags 
+        title="Spiritual Waswas Clinic" 
+        description="Explore traditional Islamic psychology cognitive tools to manage and alleviate obsessive spiritual doubts (waswas), Religious OCD, and anxiety using classical and contemporary insights."
+        sectionId="waswas-clinic"
+      />
       <div className="max-w-2xl mx-auto space-y-6">
         
         {/* BACK BUTTON */}

@@ -437,32 +437,84 @@ export default function App() {
           <DhikrSection currentTheme={currentTheme} />
 
           {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}
-          <section className="py-20 px-6 md:px-12 border-t border-b border-gold/30 relative overflow-hidden text-center bg-[#051F11] futuristic-islamic-grid-space text-white">
+          <section className={`py-24 px-6 md:px-12 border-t border-b relative overflow-hidden text-center transition-all duration-700
+            ${currentTheme === 'space' 
+              ? 'bg-[#030e06] border-gold/30 text-white futuristic-islamic-grid-space' 
+              : 'bg-[#F2ECE0] border-[#0B4628]/20 text-stone-900'
+            }
+          `}>
+            {/* Ambient Background Elements */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.06] flex items-center justify-between px-12 z-0">
+              <svg className="w-64 h-64 md:w-96 md:h-96" viewBox="0 0 100 100" fill="none" stroke="currentColor">
+                <circle cx="50" cy="50" r="45" strokeWidth="0.5" strokeDasharray="2 2" />
+                <circle cx="50" cy="50" r="35" strokeWidth="0.5" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(15 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(30 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(45 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(60 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(75 50 50)" />
+                <polygon points="50,5 95,50 50,95 5,50" strokeWidth="0.5" />
+              </svg>
+              <svg className="w-64 h-64 md:w-96 md:h-96 hidden md:block" viewBox="0 0 100 100" fill="none" stroke="currentColor">
+                <circle cx="50" cy="50" r="45" strokeWidth="0.5" strokeDasharray="2 2" />
+                <circle cx="50" cy="50" r="35" strokeWidth="0.5" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(15 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(30 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(45 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(60 50 50)" />
+                <rect x="25" y="25" width="50" height="50" strokeWidth="0.5" transform="rotate(75 50 50)" />
+                <polygon points="50,5 95,50 50,95 5,50" strokeWidth="0.5" />
+              </svg>
+            </div>
+            
+            <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-gold/10 blur-3xl pointer-events-none opacity-50 z-0" />
+            <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-[#0B4628]/10 blur-3xl pointer-events-none opacity-50 z-0" />
+
             <div className="max-w-4xl mx-auto space-y-6 relative z-10 py-4">
-              <div className="inline-flex items-center gap-2 mb-1 px-3 py-1 rounded-full border border-gold/30 bg-gold/10 text-gold-light text-[10px] font-mono tracking-[0.2em] uppercase">
-                <GraduationCap className="h-3.5 w-3.5 animate-pulse text-gold" />
+              <div className={`inline-flex items-center gap-2 mb-1 px-3.5 py-1.5 rounded-full border text-[11px] font-mono tracking-[0.2em] uppercase font-bold
+                ${currentTheme === 'space'
+                  ? 'border-gold/30 bg-gold/10 text-gold-light'
+                  : 'border-[#0B4628]/30 bg-[#0B4628]/5 text-[#0B4628]'
+                }
+              `}>
+                <GraduationCap className={`h-4 w-4 animate-pulse ${currentTheme === 'space' ? 'text-gold' : 'text-[#0B4628]'}`} />
                 Scholastic Campus Hub
               </div>
               
-              <h2 className="font-serif font-black text-3xl sm:text-4xl tracking-wide max-w-2xl mx-auto text-white">
+              <h2 className={`font-serif font-black text-3xl sm:text-4xl md:text-5xl tracking-wide max-w-2xl mx-auto
+                ${currentTheme === 'space' ? 'text-white' : 'text-[#0B4628]'
+                }
+              `}>
                 University Portals Gate
               </h2>
               
-              <p className="text-xs sm:text-sm text-stone-300 max-w-xl mx-auto leading-relaxed font-serif">
+              <p className={`text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-serif
+                ${currentTheme === 'space' ? 'text-stone-300' : 'text-stone-700'}
+              `}>
                 Access your official student covenant progress maps, download certificates, submit critique theses, or log into the administrative scribes audit panel.
               </p>
 
-              <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <div className="flex flex-wrap justify-center gap-4 pt-6">
                 <button
                   onClick={() => setCurrentSection('portal')}
-                  className="font-mono text-xs uppercase bg-gold text-space hover:bg-white hover:text-[#0B4628] border border-transparent font-bold tracking-widest px-6 py-3.5 rounded-sm shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.03]"
+                  className={`font-mono text-xs uppercase border font-bold tracking-widest px-8 py-4 rounded-sm shadow-lg transition-all duration-300 cursor-pointer hover:scale-105
+                    ${currentTheme === 'space'
+                      ? 'bg-gold text-[#020509] hover:bg-white hover:text-[#0B4628] border-transparent'
+                      : 'bg-[#0B4628] text-white hover:bg-stone-900 border-transparent'
+                    }
+                  `}
                 >
                   Enter Scholar Student Portal
                 </button>
                 
                 <button
                   onClick={() => setCurrentSection('portal')}
-                  className="font-mono text-xs uppercase bg-transparent hover:bg-white/10 text-gold-light border border-gold/40 font-bold tracking-widest px-6 py-3.5 rounded-sm transition-all duration-300 cursor-pointer hover:border-white"
+                  className={`font-mono text-xs uppercase border font-bold tracking-widest px-8 py-4 rounded-sm transition-all duration-300 cursor-pointer hover:scale-105
+                    ${currentTheme === 'space'
+                      ? 'bg-transparent hover:bg-white/10 text-gold-light border-gold/40 hover:border-white'
+                      : 'bg-transparent hover:bg-[#0B4628]/5 text-[#0B4628] border-[#0B4628]/40 hover:border-[#0B4628]'
+                    }
+                  `}
                 >
                   Access Scribes Audits
                 </button>

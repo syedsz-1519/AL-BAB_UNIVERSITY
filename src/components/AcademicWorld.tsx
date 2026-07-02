@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Sparkles, BookOpen, Brain, Heart, Compass, ShieldAlert, Scale, 
   ShieldCheck, Moon, GraduationCap, HelpCircle, ArrowRight, Search, Zap 
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import CourseDiscussionFeed from './CourseDiscussionFeed';
 
 const quranImage = '/src/assets/images/regenerated_image_1780496980571.jpg';
@@ -46,6 +46,18 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
   const isSpace = currentTheme === 'space';
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'divine' | 'theology' | 'psycho' | 'ethics'>('all');
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const showToast = (message: string) => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+    setToastMsg(message);
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMsg(null);
+    }, 4000);
+  };
 
   const tools = [
     {
@@ -188,12 +200,49 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
   });
 
   return (
-    <div className={`py-12 px-4 sm:px-8 max-w-7xl mx-auto transition-all duration-500 rounded-lg shadow-sm
+    <div className={`py-12 px-4 sm:px-8 max-w-7xl mx-auto transition-all duration-500 rounded-lg shadow-sm relative overflow-hidden
       ${isSpace 
         ? 'bg-[#020509] text-white border border-gold/10' 
         : 'bg-[#FAF6EE] text-[#1E120A] border border-stone-200/60'
       }
     `}>
+      {/* Floating Ambient Sacred Geometries / Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-40">
+        <motion.div 
+          animate={{
+            y: [0, -30, 0],
+            rotate: [0, 180, 360],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className={`absolute top-20 left-10 w-80 h-80 rounded-full blur-3xl opacity-20
+            ${isSpace ? 'bg-gold/15' : 'bg-[#0B4628]/10'}
+          `}
+        />
+        <motion.div 
+          animate={{
+            y: [0, 40, 0],
+            rotate: [360, 180, 0],
+            scale: [1, 1.15, 1],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className={`absolute bottom-40 right-10 w-96 h-96 rounded-full blur-3xl opacity-25
+            ${isSpace ? 'bg-[#0B4628]/15' : 'bg-gold/10'}
+          `}
+        />
+      </div>
+
+      {/* Decorative Traditional Islamic Grid Background Vector Overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+      
       
       {/* EXQUISITE SCHOLASTIC HEADER */}
       <div className="text-center max-w-3xl mx-auto mb-12 mt-4">
@@ -282,7 +331,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                 key={tool.id}
                 variants={itemVariants}
                 layout
-                onClick={() => onNavigateToSection(tool.id)}
+                onClick={() => showToast(`The "${tool.title}" virtual laboratory is currently under active development and will be launching in the upcoming term.`)}
                 className={`flex flex-col md:flex-row w-full md:h-[350px] overflow-hidden rounded-md text-stone-950 dark:text-neutral-100 group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-500 relative cursor-pointer skeuo-active-click
                   ${isSpace
                     ? 'skeuo-card-space'
@@ -340,16 +389,21 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                       ))}
                     </div>
 
-                    {/* Launch trigger action bar */}
+                    {/* Coming Soon Badge Bar */}
                     <div className="pt-2 border-t border-[#0B4628]/10 dark:border-gold/10">
-                      <div className={`w-full py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-xs text-[9.5px] sm:text-[10.5px] font-mono font-bold uppercase tracking-wider border transition-all duration-300 flex items-center justify-between group-hover:bg-[#0B4628] dark:group-hover:bg-gold-light group-hover:text-white dark:group-hover:text-space
+                      <div className={`w-full py-1.5 px-3 rounded-xs text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-widest border transition-all duration-300 flex items-center justify-between
                         ${isSpace 
-                          ? 'border-gold/30 text-gold' 
-                          : 'border-[#0B4628]/30 text-[#0B4628]'
+                          ? 'border-gold/30 bg-gold/5 text-gold group-hover:bg-gold group-hover:text-space' 
+                          : 'border-[#0B4628]/20 bg-[#0B4628]/5 text-[#0B4628] group-hover:bg-[#0B4628] group-hover:text-white'
                         }
                       `}>
-                        <span>Launch Section</span>
-                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                        <span className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                          Scholastic Preview
+                        </span>
+                        <span className="px-2 py-0.5 rounded-xs text-[9px] font-sans font-black tracking-normal uppercase bg-amber-600 text-white">
+                          Coming Soon
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -382,7 +436,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       <CourseDiscussionFeed currentTheme={currentTheme} />
 
       {/* SYSTEM DIRECTORY FOOTER BRIEFING */}
-      <div className={`mt-16 p-8 border text-center rounded-sm max-w-3xl mx-auto space-y-3
+      <div className={`mt-16 p-8 border text-center rounded-sm max-w-3xl mx-auto space-y-3 relative z-10
         ${isSpace ? 'bg-[#030611] border-gold/15' : 'bg-[#FAF6EE] border-[#0B4628]/10'}
       `}>
         <div className="flex justify-center mb-1">
@@ -395,6 +449,36 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
           Each laboratory environment executes server-side semantic reasoning. All analyses, tests, logic syllogisms, and diagnostic journals are permanently securely synchronized to your scholar enrollment ledger in the Student Portal.
         </p>
       </div>
+
+      {/* FLOATING PREVIEW TOAST */}
+      <AnimatePresence>
+        {toastMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] w-[90%] max-w-md"
+          >
+            <div className={`p-4 rounded-md shadow-2xl border flex items-start gap-3 text-left backdrop-blur-md
+              ${isSpace 
+                ? 'bg-[#05140B]/95 border-gold/30 text-white' 
+                : 'bg-white/95 border-[#0B4628]/25 text-stone-900'
+              }
+            `}>
+              <Sparkles className="h-5 w-5 text-amber-500 shrink-0 mt-0.5 animate-pulse" />
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-500 font-extrabold block mb-1">
+                  Virtual Seminary Preview
+                </span>
+                <p className="text-xs font-serif leading-relaxed">
+                  {toastMsg}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
