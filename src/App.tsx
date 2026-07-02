@@ -202,8 +202,8 @@ export default function App() {
     <div 
       className={`min-h-screen font-sans transition-all duration-700 overflow-x-hidden
         ${currentTheme === 'space' 
-          ? 'theme-dark bg-space text-white/90' 
-          : 'theme-light bg-[#FAF6EF] text-charcoal'
+          ? 'theme-dark bg-space futuristic-islamic-grid-space text-white/90' 
+          : 'theme-light bg-[#FAF6EF] futuristic-islamic-grid-parchment text-charcoal'
         }
       `}
     >

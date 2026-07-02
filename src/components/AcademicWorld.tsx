@@ -283,10 +283,10 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                 variants={itemVariants}
                 layout
                 onClick={() => onNavigateToSection(tool.id)}
-                className={`flex flex-col md:flex-row w-full md:h-[350px] overflow-hidden rounded-md border text-stone-950 dark:text-neutral-100 bg-[#FAF6EE] dark:bg-zinc-950/20 group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-500 relative cursor-pointer
+                className={`flex flex-col md:flex-row w-full md:h-[350px] overflow-hidden rounded-md text-stone-950 dark:text-neutral-100 group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-500 relative cursor-pointer skeuo-active-click
                   ${isSpace
-                    ? 'border-gold/20 hover:border-gold/50'
-                    : 'border-stone-200 hover:border-[#0B4628]'
+                    ? 'skeuo-card-space'
+                    : 'skeuo-card-parchment'
                   }
                 `}
               >
@@ -296,7 +296,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                 `} />
 
                 {/* Left side: Square Card Context */}
-                <div className="p-6 md:w-1/2 flex flex-col justify-between shrink-0 aspect-square bg-[#FAF6EE] dark:bg-zinc-950/40 relative">
+                <div className="p-6 md:w-1/2 flex flex-col justify-between shrink-0 aspect-square bg-transparent relative">
                   <div className="space-y-3.5">
                     {/* Category Caps Badge */}
                     <div className="flex items-center justify-between">

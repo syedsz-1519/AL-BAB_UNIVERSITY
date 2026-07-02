@@ -204,10 +204,10 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
                 onClick={() => incrementCount(item.id)}
                 whileHover={{ y: -4, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className={`relative p-6 rounded-lg border flex flex-col items-center justify-between text-center cursor-pointer transition-all duration-300 group overflow-hidden shadow-sm
+                className={`relative p-6 rounded-lg flex flex-col items-center justify-between text-center cursor-pointer transition-all duration-300 group overflow-hidden skeuo-active-click
                   ${isSpace 
-                    ? 'bg-[#091035]/60 border-gold/15 hover:border-gold/40 hover:bg-[#091035]' 
-                    : 'bg-white border-stone-200 hover:border-[#0B4628]/30 hover:bg-[#FAF8F5]'
+                    ? 'skeuo-card-space hover:border-gold/40' 
+                    : 'skeuo-card-parchment hover:border-[#0B4628]/30'
                   }
                 `}
               >

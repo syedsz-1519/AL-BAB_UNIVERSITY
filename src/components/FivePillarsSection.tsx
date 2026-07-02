@@ -198,14 +198,14 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
                     },
                     hover: { x: 6 }
                   }}
-                  className={`w-full text-left p-4.5 rounded-sm border flex items-center justify-between transition-all duration-300 group cursor-pointer
+                  className={`w-full text-left p-4.5 rounded-sm flex items-center justify-between transition-all duration-300 group cursor-pointer skeuo-active-click
                     ${isSelected
                       ? isSpace
-                        ? 'bg-gold/15 border-gold text-white shadow-[0_0_20px_rgba(201,147,58,0.4)] ring-2 ring-gold/30 scale-[1.03]'
-                        : 'bg-[#0B4628]/10 border-[#C9933A] text-[#0B4628] shadow-[0_0_15px_rgba(201,147,58,0.25)] ring-2 ring-[#C9933A]/30 scale-[1.03]'
+                        ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 scale-[1.04]'
+                        : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 scale-[1.04]'
                       : isSpace
-                        ? 'bg-[#060b22]/30 border-gold/10 text-stone-400 hover:border-gold/30 hover:text-white hover:scale-[1.01]'
-                        : 'bg-white border-stone-200/80 text-stone-600 hover:border-stone-400 hover:text-stone-950 hover:scale-[1.01]'
+                        ? 'skeuo-card-space text-stone-400 hover:text-white hover:scale-[1.01]'
+                        : 'skeuo-card-parchment text-stone-600 hover:text-stone-950 hover:scale-[1.01]'
                     }
                   `}
                 >

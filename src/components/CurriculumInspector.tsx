@@ -176,19 +176,19 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                       setTimeout(() => {
                         const el = document.getElementById('canonical-inspector-viewport');
                         if (el) {
-                          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                       }, 50);
                     }
                   }}
-                  className={`group relative p-6 border rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[140px]
+                  className={`group relative p-6 rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[140px] skeuo-active-click
                     ${isSelected
                       ? isSpace
-                        ? 'bg-gold/15 border-gold text-white shadow-[0_0_20px_rgba(201,147,58,0.4)] ring-2 ring-gold/30 scale-[1.03]'
-                        : 'bg-[#0B4628]/10 border-[#C9933A] text-[#0B4628] shadow-[0_0_15px_rgba(201,147,58,0.25)] ring-2 ring-[#C9933A]/30 scale-[1.03]'
+                        ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 scale-[1.04] z-10'
+                        : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 scale-[1.04] z-10'
                       : isSpace
-                        ? 'bg-space/40 hover:bg-space border-gold/15 text-white hover:scale-[1.01]'
-                        : 'bg-white hover:bg-[#FAF8F5] border-stone-200/60 text-charcoal hover:scale-[1.01]'
+                        ? 'skeuo-card-space text-stone-300 hover:text-white hover:scale-[1.02]'
+                        : 'skeuo-card-parchment text-stone-700 hover:text-charcoal hover:scale-[1.02]'
                     }
                     ${!worksWithFilter ? 'opacity-30 p-2 cursor-not-allowed filter grayscale' : ''}
                   `}

@@ -157,6 +157,41 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // 1. Defend with Security Headers (specifically avoiding blocking AI Studio iframe preview)
+  app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader("X-Download-Options", "noopen");
+    res.setHeader("X-Permitted-Cross-Domain-Policies", "none");
+    next();
+  });
+
+  // 2. Sliding-Window Rate Limiter to prevent API abuse/spamming
+  const ipRequests = new Map<string, { timestamps: number[] }>();
+  app.use("/api/", (req, res, next) => {
+    const ip = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress || "anonymous";
+    const now = Date.now();
+    const timeframe = 60000; // 1 minute
+    const maxRequests = 100; // Limit to 100 API requests per minute
+
+    const record = ipRequests.get(ip) || { timestamps: [] };
+    // Filter timestamps within timeframe
+    record.timestamps = record.timestamps.filter(t => now - t < timeframe);
+    
+    if (record.timestamps.length >= maxRequests) {
+      console.warn(`[SECURITY] Rate limit exceeded for IP: ${ip}`);
+      return res.status(429).json({
+        error: "Too many scholarly requests. Please pause and contemplate before continuing.",
+        retryAfter: "1 minute"
+      });
+    }
+
+    record.timestamps.push(now);
+    ipRequests.set(ip, record);
+    next();
+  });
+
   app.use(express.json());
 
   // 1. DATABASE CONNECTIVITY DIAGNOSTICS ENDPOINT
@@ -249,11 +284,11 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
   app.post("/api/admissions", async (req, res) => {
     const record = {
       id: req.body.id || `app_${Math.random().toString(36).substring(2, 9)}`,
-      fullName: req.body.fullName,
-      email: req.body.email,
-      selectedCourse: req.body.selectedCourse,
-      statementOfPurpose: req.body.statementOfPurpose || "",
-      priorKnowledge: req.body.priorKnowledge || "Seeker",
+      fullName: sanitizeAcademicInput(req.body.fullName, 150),
+      email: sanitizeAcademicInput(req.body.email, 150),
+      selectedCourse: sanitizeAcademicInput(req.body.selectedCourse, 100),
+      statementOfPurpose: sanitizeAcademicInput(req.body.statementOfPurpose || "", 3000),
+      priorKnowledge: sanitizeAcademicInput(req.body.priorKnowledge || "Seeker", 100),
       date: req.body.date || new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
       status: req.body.status || "Pending"
     };
