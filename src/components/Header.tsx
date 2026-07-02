@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck, Calendar } from 'lucide-react';
+import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck, Calendar, Globe } from 'lucide-react';
 import { Language, LIST_TRANSLATIONS } from '../i18n';
 import AlbabLogo from './AlbabLogo';
 
@@ -108,15 +108,35 @@ export default function Header({
   const isRTL = language === 'ar' || language === 'ur';
 
   const navItems = [
-    { id: 'landing', label: t.celestialGlobe },
+    { 
+      id: 'landing', 
+      label: language === 'ar' ? 'الكرة السماوية' : language === 'ur' ? 'فلکیاتی گلوب' : 'Celestial Globe',
+      icon: Globe
+    },
     { 
       id: 'academic-world', 
-      label: language === 'ar' 
-        ? 'المنظومات الأكاديمية' 
-        : language === 'ur' 
-          ? 'علمی شعبہ جات' 
-          : 'Scholastic Universe', 
-      icon: Menu 
+      label: language === 'ar' ? 'المنظومات الأكاديمية' : language === 'ur' ? 'علمی شعبہ جات' : 'Scholastic Universe', 
+      icon: GraduationCap 
+    },
+    {
+      id: 'curriculum',
+      label: language === 'ar' ? 'مناهج التعليم' : language === 'ur' ? 'نصاب تعلیم' : 'Course Section',
+      icon: BookOpen
+    },
+    {
+      id: 'islamic-pillars',
+      label: language === 'ar' ? 'أركان الإسلام' : language === 'ur' ? 'ارکان اسلام' : 'Five Pillars',
+      icon: ShieldCheck
+    },
+    {
+      id: 'dhikr-section',
+      label: language === 'ar' ? 'الأذكار اليومية' : language === 'ur' ? 'اذکار الہی' : 'Dhikr Checklist',
+      icon: Heart
+    },
+    {
+      id: 'portal',
+      label: language === 'ar' ? 'بوابة الطلاب' : language === 'ur' ? 'طلبا پورٹل' : 'Student Portal',
+      icon: Compass
     }
   ];
 

@@ -47,15 +47,6 @@ const COURSES_BASE: Course[] = [
     accentColor: 'purple-500'
   },
   {
-    id: 'psychology',
-    name: 'Psychology',
-    count: '5 Branches',
-    icon: 'Brain',
-    branches: ['Cognitive Psychology', 'Behavioral Psychology', 'Clinical Psychology', 'Social Psychology', 'Neuropsychology'],
-    description: 'Mind, soul, and motivation. Juxtapose historical theories of Nafs (the soul/psyche) with state-of-the-art cognitive neuroscience and behavioral therapy.',
-    accentColor: 'pink-500'
-  },
-  {
     id: 'challenges',
     name: 'Challenges',
     count: '5 Branches',
@@ -63,46 +54,10 @@ const COURSES_BASE: Course[] = [
     branches: ['Atheism', 'Liberalism', 'Feminism', 'Materialism', 'Secularism'],
     description: 'Scholarly critique of contemporary ideologies. Undertake a rigorous, respectful academic breakdown of current sociopolitical and theological challenges.',
     accentColor: 'emerald-600'
-  },
-  {
-    id: 'modernity',
-    name: 'Modernity',
-    count: '5 Branches',
-    icon: 'Globe',
-    branches: ['Artificial Intelligence', 'Capitalism', 'Globalization', 'Postmodernism', 'Digital Culture'],
-    description: 'Mapping the now. Navigate technology ethics, absolute automation, hyper-connected commerce, critical theory of postmodern age, and societal consequences.',
-    accentColor: 'cyan-500'
   }
 ];
 
 export const NEW_COURSES: Course[] = [
-  {
-    id: 'history',
-    name: 'History',
-    count: '5 Branches',
-    icon: 'History',
-    branches: ['Islamic History', 'World History', 'Ancient Civilizations', 'Historiography', 'Political History'],
-    description: 'Relive the great eras and intellectual trajectories. Trace divine patterns through Islamic annals, ancient rises and falls, and historiographical frameworks.',
-    accentColor: 'amber-600'
-  },
-  {
-    id: 'politics',
-    name: 'Politics',
-    count: '5 Branches',
-    icon: 'Landmark',
-    branches: ['Political Theory', 'Islamic Governance', 'International Relations', 'Geopolitics', 'Public Administration'],
-    description: 'Analyze governance models and global systems. Investigate classical theory, Islamic treaties, diplomatic frameworks, and modern geopolitics.',
-    accentColor: 'teal-600'
-  },
-  {
-    id: 'poetry',
-    name: 'Poetry',
-    count: '5 Branches',
-    icon: 'Feather',
-    branches: ['Arabic Poetry', 'Urdu Poetry', 'Persian Poetry', 'Literary Criticism', 'Spiritual Poetry'],
-    description: 'The soul of eloquence. Explore classical odes, mystical couplets, structural rhetorical criticism, and the linguistic genius of legendary poets.',
-    accentColor: 'rose-600'
-  },
   {
     id: 'islamic-studies',
     name: 'Islamic Studies',
@@ -111,24 +66,6 @@ export const NEW_COURSES: Course[] = [
     branches: ['Aqeedah', 'Seerah', 'Tasawwuf', 'Comparative Religion', 'Dawah Studies'],
     description: 'Roots of conviction and practice. Unveil theological foundations, prophetic biography, spiritual purification, and global comparative dialogues.',
     accentColor: 'emerald-700'
-  },
-  {
-    id: 'economic-studies',
-    name: 'Economic Studies',
-    count: '5 Branches',
-    icon: 'Coins',
-    branches: ['Islamic Economics', 'Microeconomics', 'Macroeconomics', 'Behavioral Economics', 'Finance & Trade'],
-    description: 'Ethics in commerce and capital. Review micro and macro systems, behavioral incentives, global trading structures, and interest-free solutions.',
-    accentColor: 'yellow-600'
-  },
-  {
-    id: 'duniyavi-ilm',
-    name: 'Duniya vi Ilm',
-    count: '5 Branches',
-    icon: 'Globe',
-    branches: ['Natural Sciences', 'Social Sciences', 'Modernity & Tech', 'History & Philosophy', 'Economics & Trade'],
-    description: 'Worldly knowledge and empirical sciences. Integrating physics, geography, medicine, humanities, and social sciences within an ethical intellectual paradigm.',
-    accentColor: 'cyan-500'
   }
 ];
 

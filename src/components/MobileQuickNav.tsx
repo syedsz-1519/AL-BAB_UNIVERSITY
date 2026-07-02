@@ -32,6 +32,15 @@ export default function MobileQuickNav({
       items: [
         { id: 'landing', label: language === 'ar' ? 'الكرة السماوية' : language === 'ur' ? 'فلکیاتی گلوب' : 'Celestial Globe Hub', icon: Globe },
         { id: 'academic-world', label: language === 'ar' ? 'المنظومات الأكاديمية' : language === 'ur' ? 'علمی شعبہ جات' : 'Scholastic Universe', icon: GraduationCap },
+        { id: 'portal', label: language === 'ar' ? 'بوابة الطلاب' : language === 'ur' ? 'طلبا پورٹل' : 'Student Portal', icon: Compass },
+      ]
+    },
+    {
+      title: language === 'ar' ? 'أقسام الصفحة الرئيسية' : language === 'ur' ? 'ہوم پیج سیکشنز' : 'Home Page Sections',
+      items: [
+        { id: 'curriculum', label: language === 'ar' ? 'مناهج التعليم' : language === 'ur' ? 'نصاب تعلیم' : 'Course Section', icon: BookOpen },
+        { id: 'islamic-pillars', label: language === 'ar' ? 'أركان الإسلام' : language === 'ur' ? 'ارکان اسلام' : 'Five Pillars', icon: ShieldCheck },
+        { id: 'dhikr-section', label: language === 'ar' ? 'الأذكار اليومية' : language === 'ur' ? 'اذکار الہی' : 'Dhikr Checklist', icon: Heart },
       ]
     }
   ];

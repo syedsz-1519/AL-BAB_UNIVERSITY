@@ -19,8 +19,7 @@ const CATEGORIES = [
   { id: 'hadith', name: 'Hadith Sciences', icon: 'MessageSquareText', desc: 'Prophetic traditions & chain validation', courseIds: ['hadith'] },
   { id: 'fiqh', name: 'Fiqh & Law', icon: 'Scale', desc: 'Jurisprudence, contracts & fatwas', courseIds: ['fiqh'] },
   { id: 'logic', name: 'Logic & Philosophy', icon: 'Binary', desc: 'Reasoning, epistemology & critique', courseIds: ['logic', 'philosophy'] },
-  { id: 'islamic-studies', name: 'Islamic Studies', icon: 'BookType', desc: 'Theology, seerah & purification', courseIds: ['islamic-studies', 'challenges'] },
-  { id: 'duniyavi-ilm', name: 'Duniya vi Ilm', icon: 'Globe', desc: 'Worldly sciences, history & modern politics', courseIds: ['duniyavi-ilm', 'history', 'politics', 'poetry', 'economic-studies', 'modernity', 'psychology'] }
+  { id: 'islamic-studies', name: 'Islamic Studies', icon: 'BookType', desc: 'Theology, seerah & purification', courseIds: ['islamic-studies', 'challenges'] }
 ];
 
 export default function CurriculumInspector({ currentTheme, selectedCourseId, onSelectCourse, searchText }: CurriculumInspectorProps) {
@@ -114,8 +113,6 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
               matchesDynamic = course.icon === 'Sparkles' || course.icon === 'Brain';
             } else if (selectedCategory === 'fiqh') {
               matchesDynamic = course.icon === 'Scale';
-            } else if (selectedCategory === 'duniyavi-ilm') {
-              matchesDynamic = course.icon !== 'Sparkles' && course.icon !== 'Brain' && course.icon !== 'Scale';
             }
           }
           
@@ -250,8 +247,6 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                         matchesDynamic = course.icon === 'Sparkles' || course.icon === 'Brain';
                       } else if (cat.id === 'fiqh') {
                         matchesDynamic = course.icon === 'Scale';
-                      } else if (cat.id === 'duniyavi-ilm') {
-                        matchesDynamic = course.icon !== 'Sparkles' && course.icon !== 'Brain' && course.icon !== 'Scale';
                       }
                     }
                     return cat.id === 'all' || matchesStaticId || matchesDynamic;
@@ -325,8 +320,6 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                         matchesDynamic = course.icon === 'Sparkles' || course.icon === 'Brain';
                       } else if (cat.id === 'fiqh') {
                         matchesDynamic = course.icon === 'Scale';
-                      } else if (cat.id === 'duniyavi-ilm') {
-                        matchesDynamic = course.icon !== 'Sparkles' && course.icon !== 'Brain' && course.icon !== 'Scale';
                       }
                     }
                     return cat.id === 'all' || matchesStaticId || matchesDynamic;

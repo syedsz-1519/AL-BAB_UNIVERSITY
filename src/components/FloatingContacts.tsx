@@ -199,10 +199,10 @@ JazakAllah khair!`;
           </button>
         )}
 
-        {/* INSTAGRAM HUB TRIGGER BUTTON - HIDDEN ON MOBILE */}
+        {/* INSTAGRAM HUB TRIGGER BUTTON - VISIBLE ON MOBILE & DESKTOP */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`group hidden sm:flex sm:h-12 sm:w-12 h-9.5 w-9.5 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-300 relative
+          className={`group flex sm:h-12 sm:w-12 h-9.5 w-9.5 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-300 relative
             ${isSpace 
               ? 'bg-space/90 border-[#C9933A]/40 text-stone-200 hover:border-[#E8B86D] hover:shadow-[0_0_15px_rgba(201,147,58,0.4)]' 
               : 'bg-white/95 border-[#0B4628]/35 text-stone-800 hover:border-[#0B4628] hover:shadow-[0_4px_12px_rgba(11, 70, 40,0.15)]'
@@ -215,10 +215,10 @@ JazakAllah khair!`;
           <LucideIcons.Instagram className="sm:h-5.5 sm:w-5.5 h-4.5 w-4.5 text-rose-500 group-hover:scale-110 transition-transform" />
         </button>
 
-        {/* DIRECT EMAIL ACTION BUBBLE - HIDDEN ON MOBILE */}
+        {/* DIRECT EMAIL ACTION BUBBLE - VISIBLE ON MOBILE & DESKTOP */}
         <a
           href={emailUrl}
-          className={`group hidden sm:flex sm:h-12 sm:w-12 h-9.5 w-9.5 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-300 relative
+          className={`group flex sm:h-12 sm:w-12 h-9.5 w-9.5 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-300 relative
             ${isSpace 
               ? 'bg-space/90 border-[#C9933A]/40 text-stone-200 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]' 
               : 'bg-white/95 border-blue-500/35 text-stone-800 hover:border-blue-500 hover:shadow-[0_4px_12px_rgba(59,130,246,0.15)]'
@@ -230,13 +230,13 @@ JazakAllah khair!`;
           <LucideIcons.Mail className="sm:h-5.5 sm:w-5.5 h-4.5 w-4.5 text-blue-500 group-hover:scale-110 transition-transform" />
         </a>
 
-        {/* CUSTOM ENHANCED PULSING WHATSAPP BUBBLE - HIDDEN ON MOBILE */}
+        {/* CUSTOM ENHANCED PULSING WHATSAPP BUBBLE - VISIBLE ON MOBILE & DESKTOP */}
         <a
           href={whatsappUrl}
           target="_blank"
           referrerPolicy="no-referrer"
           rel="noopener noreferrer"
-          className="group hidden sm:flex sm:h-12 sm:w-12 h-9.5 w-9.5 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-[0_0_18px_rgba(37,211,102,0.6)] hover:scale-110 transition-all duration-300 relative"
+          className="group flex sm:h-12 sm:w-12 h-9.5 w-9.5 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-[0_0_18px_rgba(37,211,102,0.6)] hover:scale-110 transition-all duration-300 relative"
           title="Direct WhatsApp Admission Inquiry"
         >
           <span className="absolute -inset-1 rounded-full border border-[#25D366] opacity-60 animate-ping duration-1000 select-none pointer-events-none" />

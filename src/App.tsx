@@ -30,6 +30,7 @@ import MobileQuickNav from './components/MobileQuickNav';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
+import ScholasticQuiz from './components/ScholasticQuiz';
 
 export default function App() {
   const [currentTheme, setCurrentTheme] = useState<'parchment' | 'space'>('parchment');
@@ -37,9 +38,10 @@ export default function App() {
   const [previousTheme, setPreviousTheme] = useState<'parchment' | 'space' | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<string>('landing');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith' | 'scholastic-quiz'>(() => {
     if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
       return 'academic-world';
     }
@@ -63,6 +65,9 @@ export default function App() {
     }
     if (window.location.hash === '#nafs-assessment' || window.location.pathname === '/nafs-assessment') {
       return 'nafs-assessment';
+    }
+    if (window.location.hash === '#scholastic-quiz' || window.location.pathname === '/scholastic-quiz') {
+      return 'scholastic-quiz';
     }
     return 'landing';
   });
@@ -245,6 +250,7 @@ export default function App() {
     const courseId = sectionToCourseMap[rawId] || rawId;
     setSelectedCourseId(courseId);
     setCurrentSection('landing');
+    setActiveTab('curriculum');
     setTimeout(() => {
       const el = document.getElementById('canonical-inspector-viewport');
       if (el) {
@@ -252,6 +258,43 @@ export default function App() {
       }
     }, 80);
   };
+
+  const handleNavigateToSection = (section: string) => {
+    const landingSections = ['landing', 'curriculum', 'islamic-pillars', 'dhikr-section'];
+    setActiveTab(section);
+    
+    if (landingSections.includes(section)) {
+      if (currentSection !== 'landing') {
+        setCurrentSection('landing');
+        // Wait for page transition / state render to complete, then scroll smoothly
+        setTimeout(() => {
+          const targetId = section === 'landing' ? 'hero' : section;
+          const element = document.getElementById(targetId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
+      } else {
+        const targetId = section === 'landing' ? 'hero' : section;
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    } else {
+      setCurrentSection(section as any);
+    }
+  };
+
+  // Sync activeTab state with currentSection for external navigation flows
+  useEffect(() => {
+    const landingSubSections = ['curriculum', 'islamic-pillars', 'dhikr-section'];
+    if (!landingSubSections.includes(activeTab)) {
+      setActiveTab(currentSection);
+    } else if (currentSection !== 'landing') {
+      setActiveTab(currentSection);
+    }
+  }, [currentSection]);
 
   const handleSearch = (term: string) => {
     setSearchText(term);
@@ -468,10 +511,10 @@ export default function App() {
         onToggleTheme={handleToggleTheme}
         onSearch={handleSearch}
         onOpenAdmission={() => setAdmissionOpen(true)}
-        onOpenPortal={() => setCurrentSection('portal')}
-        onGoToLanding={() => setCurrentSection('landing')}
-        activeTab={currentSection}
-        onTabChange={(tab) => setCurrentSection(tab as any)}
+        onOpenPortal={() => handleNavigateToSection('portal')}
+        onGoToLanding={() => handleNavigateToSection('landing')}
+        activeTab={activeTab}
+        onTabChange={handleNavigateToSection}
         language={language}
         onLanguageChange={setLanguage}
         mobileMenuOpen={mobileMenuOpen}
@@ -625,6 +668,16 @@ export default function App() {
         </div>
       )}
 
+      {currentSection === 'scholastic-quiz' && (
+        <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
+          <ScholasticQuiz 
+            currentTheme={currentTheme} 
+            language={language}
+            onBackToLanding={() => setCurrentSection('academic-world')}
+          />
+        </div>
+      )}
+
       <AnimatePresence mode="wait">
         {currentSection === 'landing' && (
           <motion.div
@@ -763,8 +816,8 @@ export default function App() {
       {/* SECURE MOBILE SCREEN MENU TOGGLE & PERSISTENT QUICK NAVIGATION */}
       <MobileQuickNav 
         currentTheme={currentTheme}
-        currentSection={currentSection}
-        onNavigate={(sec) => setCurrentSection(sec as any)}
+        currentSection={activeTab}
+        onNavigate={handleNavigateToSection}
         language={language}
         isOpen={mobileMenuOpen}
         setIsOpen={setMobileMenuOpen}

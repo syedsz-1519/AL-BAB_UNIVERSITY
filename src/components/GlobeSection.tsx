@@ -276,9 +276,9 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
   const activeHadith = HADITHS[hadithIndex];
 
-  // Filter courses for Celestial Globe Section: QUR'AN, HADITH, FIQH, ISLAMIC STUDIES, LOGIC, DUNIYA VI ILM
+  // Filter courses for Celestial Globe Section: QUR'AN, HADITH, FIQH, ISLAMIC STUDIES, LOGIC
   const globeCourses = useMemo(() => {
-    const ids = ['quran', 'hadith', 'fiqh', 'islamic-studies', 'logic', 'duniyavi-ilm'];
+    const ids = ['quran', 'hadith', 'fiqh', 'islamic-studies', 'logic'];
     return ids.map(id => COURSES.find(c => c.id === id)).filter(Boolean) as Course[];
   }, []);
 

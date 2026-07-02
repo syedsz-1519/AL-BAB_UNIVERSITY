@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { 
   Sparkles, BookOpen, Brain, Heart, Compass, ShieldAlert, Scale, 
-  ShieldCheck, Moon, GraduationCap, HelpCircle, ArrowRight, Search, Zap 
+  ShieldCheck, Moon, GraduationCap, HelpCircle, ArrowRight, Search, Zap, Award
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import CourseDiscussionFeed from './CourseDiscussionFeed';
@@ -171,6 +171,17 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       imageUrl: 'https://images.unsplash.com/photo-1505664194779-8bebcb95c539?auto=format&fit=crop&w=600&h=600&q=80'
     },
     {
+      id: 'scholastic-quiz',
+      title: 'Interactive Scholastic Quiz',
+      arabic: 'الاختبار الأكاديمي التفاعلي',
+      category: 'ethics',
+      categoryLabel: 'Ethics & Scholarly Systems',
+      summary: 'Audit your jurisprudential (Fiqh) or narrational (Hadith) proficiency across diverse difficulty bands, with instant references to classical texts.',
+      icon: Award,
+      tags: ['Fiqh & Hadith', 'Traditional Grading', 'Instant Feedback & Ijaza'],
+      imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=600&h=600&q=80'
+    },
+    {
       id: 'portal',
       title: 'Scholastic Student & Admin Portal',
       arabic: 'بوابة السجلات الأكاديمية',
@@ -331,7 +342,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                 key={tool.id}
                 variants={itemVariants}
                 layout
-                onClick={() => showToast(`The "${tool.title}" virtual laboratory is currently under active development and will be launching in the upcoming term.`)}
+                onClick={() => onNavigateToSection(tool.id)}
                 className={`flex flex-col md:flex-row w-full md:h-[350px] overflow-hidden rounded-md text-stone-950 dark:text-neutral-100 group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-500 relative cursor-pointer skeuo-active-click
                   ${isSpace
                     ? 'skeuo-card-space'
@@ -389,7 +400,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                       ))}
                     </div>
 
-                    {/* Coming Soon Badge Bar */}
+                    {/* Active Laboratory Badge Bar */}
                     <div className="pt-2 border-t border-[#0B4628]/10 dark:border-gold/10">
                       <div className={`w-full py-1.5 px-3 rounded-xs text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-widest border transition-all duration-300 flex items-center justify-between
                         ${isSpace 
@@ -398,11 +409,13 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                         }
                       `}>
                         <span className="flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-                          Scholastic Preview
+                          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                          Enter Laboratory
                         </span>
-                        <span className="px-2 py-0.5 rounded-xs text-[9px] font-sans font-black tracking-normal uppercase bg-amber-600 text-white">
-                          Coming Soon
+                        <span className={`px-2 py-0.5 rounded-xs text-[9px] font-sans font-black tracking-normal uppercase text-white
+                          ${isSpace ? 'bg-amber-600' : 'bg-[#0B4628]'}
+                        `}>
+                          Active
                         </span>
                       </div>
                     </div>
