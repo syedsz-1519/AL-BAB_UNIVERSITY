@@ -817,15 +817,15 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
             const handleCardClick = (e: React.MouseEvent) => {
               e.stopPropagation();
-              // For all cards, we select the course and smoothly scroll down to CurriculumInspector
+              // For all cards, we select the course and smoothly scroll down to CurriculumInspector detailed view
               onSelectCourse(course);
               if (course.id === 'hadith') {
                 triggerHadithPopup();
               }
               setTimeout(() => {
-                const el = document.getElementById('curriculum');
+                const el = document.getElementById('canonical-inspector-viewport');
                 if (el) {
-                  el.scrollIntoView({ behavior: 'smooth' });
+                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
               }, 60);
             };
@@ -893,9 +893,9 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 triggerHadithPopup();
               }
               setTimeout(() => {
-                const el = document.getElementById('curriculum');
+                const el = document.getElementById('canonical-inspector-viewport');
                 if (el) {
-                  el.scrollIntoView({ behavior: 'smooth' });
+                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
               }, 60);
             };

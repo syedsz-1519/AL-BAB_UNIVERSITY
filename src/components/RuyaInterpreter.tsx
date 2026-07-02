@@ -264,13 +264,13 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
               className="bg-[#EFEAE0] border-2 border-[#C4A35A]/50 p-6 rounded-sm mb-8 shadow-lg"
             >
               <div className="flex justify-between items-center border-b border-[#C4A35A]/30 pb-3 mb-4">
-                <h3 className="text-xl font-serif text-[#8B1A1A] flex items-center gap-2">
+                <h3 className="text-xl font-serif text-[#0B4628] flex items-center gap-2">
                   <BookMarked className="w-5 h-5 text-[#C4A35A]" />
                   <span>Your Dream Journal</span>
                 </h3>
                 <button 
                   onClick={() => setShowSavedList(false)}
-                  className="font-mono text-xs uppercase hover:text-[#8B1A1A] transition-colors cursor-pointer border border-stone-400/40 px-2.5 py-1 rounded-xs bg-[#FAF8F5]"
+                  className="font-mono text-xs uppercase hover:text-[#0B4628] transition-colors cursor-pointer border border-stone-400/40 px-2.5 py-1 rounded-xs bg-[#FAF8F5]"
                 >
                   Close
                 </button>
@@ -288,7 +288,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                     <div 
                       key={entry.id}
                       onClick={() => handleLoadEntry(entry)}
-                      className="bg-[#FAF8F5] border border-[#C4A35A]/20 hover:border-[#8B1A1A]/40 p-4 rounded shadow-xs cursor-pointer transition-all flex flex-col justify-between gap-3 group"
+                      className="bg-[#FAF8F5] border border-[#C4A35A]/20 hover:border-[#0B4628]/40 p-4 rounded shadow-xs cursor-pointer transition-all flex flex-col justify-between gap-3 group"
                     >
                       <div>
                         <div className="flex justify-between items-start">
@@ -310,7 +310,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                       </div>
 
                       <div className="flex flex-wrap gap-2 text-xs font-sans mt-1">
-                        <span className="bg-[#8B1A1A]/5 text-[#8B1A1A] border border-[#8B1A1A]/10 px-2 py-0.5 rounded-sm">
+                        <span className="bg-[#0B4628]/5 text-[#0B4628] border border-[#0B4628]/10 px-2 py-0.5 rounded-sm">
                           State: {entry.state}
                         </span>
                         <span className="bg-[#C4A35A]/5 text-[#C4A35A] border border-[#C4A35A]/10 px-2 py-0.5 rounded-sm">
@@ -319,7 +319,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                         <span className="bg-[#0A0F2E]/5 text-[#0A0F2E] border border-[#0A0F2E]/10 px-2 py-0.5 rounded-sm">
                           Feeling: {entry.feeling}
                         </span>
-                        <span className="ml-auto font-mono text-[10px] text-[#8B1A1A] bg-[#8B1A1A]/10 px-1.5 py-0.5 rounded uppercase">
+                        <span className="ml-auto font-mono text-[10px] text-[#0B4628] bg-[#0B4628]/10 px-1.5 py-0.5 rounded uppercase">
                           {entry.result.dream_type.replace('_', ' ')}
                         </span>
                       </div>
@@ -342,7 +342,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
               className="bg-[#EFEAE0] border-2 border-[#C4A35A]/30 rounded-sm shadow-md overflow-hidden p-6 sm:p-8"
               id="dream-interpret-form"
             >
-              <h2 className="text-[#8B1A1A] text-xl sm:text-2xl font-semibold mb-6 border-b border-[#C4A35A]/20 pb-3 flex items-center gap-2">
+              <h2 className="text-[#0B4628] text-xl sm:text-2xl font-semibold mb-6 border-b border-[#C4A35A]/20 pb-3 flex items-center gap-2">
                 <Eye className="w-5.5 h-5.5 stroke-[1.8]" />
                 <span>Submit Your Dreaming Matrix</span>
               </h2>
@@ -360,7 +360,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                       id="input-current-state"
                       value={state}
                       onChange={(e) => setState(e.target.value)}
-                      className="w-full bg-[#FAF8F5] border border-[#C4A35A]/40 text-stone-800 py-2.5 px-3 rounded-none outline-none focus:border-[#8B1A1A] transition-colors cursor-pointer appearance-none text-sm font-sans"
+                      className="w-full bg-[#FAF8F5] border border-[#C4A35A]/40 text-stone-800 py-2.5 px-3 rounded-none outline-none focus:border-[#0B4628] transition-colors cursor-pointer appearance-none text-sm font-sans"
                     >
                       <option value="At peace">At peace</option>
                       <option value="Anxious">Anxious</option>
@@ -369,7 +369,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                       <option value="Confused">Confused</option>
                       <option value="Grateful">Grateful</option>
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#8B1A1A]">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#0B4628]">
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                         <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                       </svg>
@@ -387,14 +387,14 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                       id="input-dream-timing"
                       value={timing}
                       onChange={(e) => setTiming(e.target.value)}
-                      className="w-full bg-[#FAF8F5] border border-[#C4A35A]/40 text-stone-800 py-2.5 px-3 rounded-none outline-none focus:border-[#8B1A1A] transition-colors cursor-pointer appearance-none text-sm font-sans"
+                      className="w-full bg-[#FAF8F5] border border-[#C4A35A]/40 text-stone-800 py-2.5 px-3 rounded-none outline-none focus:border-[#0B4628] transition-colors cursor-pointer appearance-none text-sm font-sans"
                     >
                       <option value="Before Fajr">Before Fajr</option>
                       <option value="After Fajr">After Fajr</option>
                       <option value="During daytime sleep">During daytime sleep</option>
                       <option value="Unknown">Unknown</option>
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#8B1A1A]">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#0B4628]">
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                         <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                       </svg>
@@ -412,7 +412,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                       id="input-dream-feeling"
                       value={feeling}
                       onChange={(e) => setFeeling(e.target.value)}
-                      className="w-full bg-[#FAF8F5] border border-[#C4A35A]/40 text-stone-800 py-2.5 px-3 rounded-none outline-none focus:border-[#8B1A1A] transition-colors cursor-pointer appearance-none text-sm font-sans"
+                      className="w-full bg-[#FAF8F5] border border-[#C4A35A]/40 text-stone-800 py-2.5 px-3 rounded-none outline-none focus:border-[#0B4628] transition-colors cursor-pointer appearance-none text-sm font-sans"
                     >
                       <option value="Fearful">Fearful</option>
                       <option value="Peaceful">Peaceful</option>
@@ -421,7 +421,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                       <option value="Sad">Sad</option>
                       <option value="Neutral">Neutral</option>
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#8B1A1A]">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#0B4628]">
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                         <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                       </svg>
@@ -441,7 +441,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                   value={dream}
                   onChange={(e) => setDream(e.target.value)}
                   placeholder="Describe your dream in detail — people, places, colours, symbols, emotions..."
-                  className="w-full bg-[#FAF8F5] border-2 border-[#C4A35A]/40 font-serif text-stone-900 placeholder-stone-400 p-4 outline-none focus:border-[#8B1A1A] transition-colors leading-relaxed text-sm sm:text-base min-h-[160px] resize-y"
+                  className="w-full bg-[#FAF8F5] border-2 border-[#C4A35A]/40 font-serif text-stone-900 placeholder-stone-400 p-4 outline-none focus:border-[#0B4628] transition-colors leading-relaxed text-sm sm:text-base min-h-[160px] resize-y"
                   required
                 />
               </div>
@@ -488,7 +488,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                 </svg>
               </motion.div>
 
-              <h3 className="text-xl font-serif text-[#8B1A1A] font-medium mb-2">
+              <h3 className="text-xl font-serif text-[#0B4628] font-medium mb-2">
                 Consulting Ibn Sirin...
               </h3>
               <p className="text-stone-500 font-sans text-xs max-w-sm leading-relaxed font-light">
@@ -509,9 +509,9 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
             >
 
               {/* DREAM SUMMARY HEADER ARDUINO-STYLE SHARP BOX */}
-              <div className="bg-[#FAF8F5] border-2 border-[#8B1A1A] p-6 text-center rounded-sm shadow-sm relative">
+              <div className="bg-[#FAF8F5] border-2 border-[#0B4628] p-6 text-center rounded-sm shadow-sm relative">
                 {/* Floating ribbon or decorative corners */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#8B1A1A] text-[#FAF8F5] px-4 py-0.5 text-[10px] uppercase font-sans tracking-widest font-bold">
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0B4628] text-[#FAF8F5] px-4 py-0.5 text-[10px] uppercase font-sans tracking-widest font-bold">
                   Synthesized Ledger
                 </div>
 
@@ -553,12 +553,12 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                   <div>
                     {/* Header */}
                     <div className="flex items-center gap-2 border-b border-[#C4A35A]/30 pb-3 mb-4">
-                      <GraduationCap className="w-5.5 h-5.5 text-[#8B1A1A]" />
+                      <GraduationCap className="w-5.5 h-5.5 text-[#0B4628]" />
                       <div>
                         <span className="text-[10px] text-stone-400 font-sans uppercase font-bold tracking-wider block">
                           Classical Scholar Lens
                         </span>
-                        <h3 className="text-xl font-serif text-[#8B1A1A] font-semibold">
+                        <h3 className="text-xl font-serif text-[#0B4628] font-semibold">
                           The Islamic Tradition (Ibn Sirin)
                         </h3>
                       </div>
@@ -573,9 +573,9 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                         {result.islamic.symbols?.map((item, idx) => (
                           <div 
                             key={idx} 
-                            className="bg-[#8B1A1A]/10 border border-[#8B1A1A]/20 rounded-md p-2 text-stone-800"
+                            className="bg-[#0B4628]/10 border border-[#0B4628]/20 rounded-md p-2 text-stone-800"
                           >
-                            <span className="font-mono text-xs font-bold text-[#8B1A1A] block mb-0.5">
+                            <span className="font-mono text-xs font-bold text-[#0B4628] block mb-0.5">
                               {item.symbol}
                             </span>
                             <span className="text-xs font-serif leading-snug block">
@@ -597,7 +597,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                     </div>
 
                     {/* Surah Yusuf note */}
-                    <div className="mb-6 p-3 bg-[#EFEAE0]/50 border-l-2 border-[#8B1A1A] text-stone-700 italic text-xs leading-relaxed font-sans">
+                    <div className="mb-6 p-3 bg-[#EFEAE0]/50 border-l-2 border-[#0B4628] text-stone-700 italic text-xs leading-relaxed font-sans">
                       <strong className="text-stone-800 font-semibold block mb-0.5 not-italic">
                         Relation to Yusuf (عَلَيْهِ السَّلَامُ):
                       </strong>
@@ -606,13 +606,13 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                   </div>
 
                   {/* Dua box centered */}
-                  <div className="mt-auto bg-[#8B1A1A]/5 border border-[#8B1A1A]/20 p-4 rounded-sm">
-                    <span className="text-[10px] text-[#8B1A1A] uppercase tracking-widest font-sans font-bold block text-center mb-1">
+                  <div className="mt-auto bg-[#0B4628]/5 border border-[#0B4628]/20 p-4 rounded-sm">
+                    <span className="text-[10px] text-[#0B4628] uppercase tracking-widest font-sans font-bold block text-center mb-1">
                       RECOMMENDED DHIKR &bull; دُعَاء
                     </span>
                     
                     <p 
-                      className="text-[#8B1A1A] font-serif text-xl sm:text-2xl text-center py-2 font-bold leading-normal"
+                      className="text-[#0B4628] font-serif text-xl sm:text-2xl text-center py-2 font-bold leading-normal"
                       style={{ fontFamily: 'Amiri, Georgia, serif' }}
                     >
                       {result.islamic.dua?.arabic}
@@ -626,7 +626,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                       <strong className="text-stone-800 font-semibold">Meaning:</strong> {result.islamic.dua?.meaning}
                     </p>
                     
-                    <div className="mt-2 text-center text-[10px] text-stone-400 font-sans italic border-t border-[#8B1A1A]/10 pt-1.5">
+                    <div className="mt-2 text-center text-[10px] text-stone-400 font-sans italic border-t border-[#0B4628]/10 pt-1.5">
                       Recitation: {result.islamic.dua?.when}
                     </div>
                   </div>
@@ -704,7 +704,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
 
               {/* 4. SYNTHESIS FULL-WIDTH */}
               <div className="bg-[#FAF8F5] border border-stone-300 rounded-sm p-6 sm:p-8 space-y-6">
-                <h3 className="text-xl font-serif text-[#8B1A1A] font-bold border-b border-stone-300 pb-3 flex items-center gap-2">
+                <h3 className="text-xl font-serif text-[#0B4628] font-bold border-b border-stone-300 pb-3 flex items-center gap-2">
                   <Sparkles className="w-5.5 h-5.5 text-[#C4A35A]" />
                   <span>Sublime Synthesis: Convergence of Lenses</span>
                 </h3>
@@ -733,7 +733,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
 
                 {/* Unified Wisdom (gold bg box) */}
                 <div className="bg-[#C4A35A]/10 border-l-4 border-[#C4A35A] p-5 sm:p-6 mt-4 rounded-r shadow-xs">
-                  <h4 className="text-sm font-sans font-bold text-[#8B1A1A] uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                  <h4 className="text-sm font-sans font-bold text-[#0B4628] uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
                     <Sparkle className="w-4 h-4 text-[#C4A35A] fill-[#C4A35A]" />
                     <span>Unified Practical Wisdom</span>
                   </h4>
@@ -748,7 +748,7 @@ export default function RuyaInterpreter({ currentTheme, onBackToLanding }: RuyaI
                 <button
                   onClick={handleSaveToJournal}
                   id="save-to-journal-btn"
-                  className="flex-1 bg-[#8B1A1A] hover:bg-[#a12323] text-white py-3.5 px-6 border-b-4 border-[#5E1010] font-sans text-stone-100 hover:text-white font-semibold transition-all rounded shadow cursor-pointer text-center flex items-center justify-center gap-2"
+                  className="flex-1 bg-[#0B4628] hover:bg-[#105C35] text-white py-3.5 px-6 border-b-4 border-[#052C18] font-sans text-stone-100 hover:text-white font-semibold transition-all rounded shadow cursor-pointer text-center flex items-center justify-center gap-2"
                 >
                   <Bookmark className="w-4.5 h-4.5" />
                   <span>Save to Dream Journal</span>

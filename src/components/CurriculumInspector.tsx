@@ -147,7 +147,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
               className={`w-full px-5 py-3 pl-11 text-sm rounded sm:rounded-sm border focus:outline-none transition-all font-sans
                 ${isSpace 
                   ? 'bg-space border-gold/25 text-white placeholder-white/30 focus:border-gold focus:shadow-[0_0_10px_rgba(201,147,58,0.2)]' 
-                  : 'bg-white border-crimson/15 text-charcoal placeholder-stone-400 focus:border-crimson focus:shadow-[0_4px_15px_rgba(139,0,0,0.05)]'
+                  : 'bg-white border-crimson/15 text-charcoal placeholder-stone-400 focus:border-crimson focus:shadow-[0_4px_15px_rgba(11, 70, 40,0.05)]'
                 }
               `}
             />
@@ -169,13 +169,27 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
               return (
                 <button
                   key={course.id}
-                  onClick={() => worksWithFilter && onSelectCourse(course)}
-                  className={`group relative p-6 border rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer shadow-xs min-h-[140px]
-                    ${isSpace 
-                      ? 'bg-space/40 hover:bg-space border-gold/15 text-white' 
-                      : 'bg-white hover:bg-[#FAF8F5] border-stone-200/60 text-charcoal'
+                  onClick={() => {
+                    if (worksWithFilter) {
+                      onSelectCourse(course);
+                      // Smoothly redirect the viewer to the Canonical Inspector detailed view panel
+                      setTimeout(() => {
+                        const el = document.getElementById('canonical-inspector-viewport');
+                        if (el) {
+                          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                      }, 50);
                     }
-                    ${isSelected ? (isSpace ? 'border-amber-400 ring-1 ring-amber-400/50 bg-amber-950/20' : 'border-crimson ring-1 ring-crimson/25 bg-crimson/5') : ''}
+                  }}
+                  className={`group relative p-6 border rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[140px]
+                    ${isSelected
+                      ? isSpace
+                        ? 'bg-gold/15 border-gold text-white shadow-[0_0_20px_rgba(201,147,58,0.4)] ring-2 ring-gold/30 scale-[1.03]'
+                        : 'bg-[#0B4628]/10 border-[#C9933A] text-[#0B4628] shadow-[0_0_15px_rgba(201,147,58,0.25)] ring-2 ring-[#C9933A]/30 scale-[1.03]'
+                      : isSpace
+                        ? 'bg-space/40 hover:bg-space border-gold/15 text-white hover:scale-[1.01]'
+                        : 'bg-white hover:bg-[#FAF8F5] border-stone-200/60 text-charcoal hover:scale-[1.01]'
+                    }
                     ${!worksWithFilter ? 'opacity-30 p-2 cursor-not-allowed filter grayscale' : ''}
                   `}
                 >
@@ -210,7 +224,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
           </div>
 
           {/* RIGHT DETAILED VIEWPORT (Editorial Ledger Sheet) */}
-          <div className="lg:col-span-5 relative z-10">
+          <div className="lg:col-span-5 relative z-10" id="canonical-inspector-viewport">
             <div 
               key={selectedCourseId}
               className={`relative p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
@@ -286,63 +300,6 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
             </div>
           </div>
 
-        </div>
-
-        {/* AI COGNITIVE LABS SECTOR AT BOTTOM OF CURRICULUM */}
-        <div className="mt-20 pt-16 border-t border-stone-200/15">
-          <div className="text-center mb-10 max-w-2xl mx-auto">
-            <h3 className="font-serif font-black text-2xl md:text-3xl tracking-tight text-[#8B1A1A] dark:text-gold mb-2">
-              AI Cognitive Labs — مَخَابِرُ الذَّكَاء
-            </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-400 font-sans italic">
-              Where Islamic scholarship meets artificial intelligence
-            </p>
-          </div>
-
-          <div className="max-w-2xl mx-auto">
-            <div 
-              style={{ backgroundColor: isSpace ? '#0a1024' : '#F5F0E8' }}
-              className={`p-8 rounded-sm border shadow-lg relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300
-                ${isSpace ? 'border-gold/20' : 'border-[#8B1A1A]'}
-              `}
-            >
-              {/* Little elegant background star watermark */}
-              <div className={`absolute -right-10 -bottom-10 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star ${isSpace ? 'bg-gold' : 'bg-[#8B1A1A]'}`} />
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className={`px-2 py-0.5 rounded-full font-mono text-[9px] uppercase font-bold tracking-wider text-white
-                    ${isSpace ? 'bg-amber-600' : 'bg-[#8B1A1A]'}
-                  `}>
-                    ACTIVE LAB RX
-                  </span>
-                  <span className="font-serif text-xs text-stone-400 font-bold tracking-wider select-none">
-                    وَصْفَةُ الذِّكْر
-                  </span>
-                </div>
-                <h4 className="font-serif font-black text-xl tracking-wide dark:text-gold text-stone-900 leading-tight">
-                  Dhikr Prescription Engine
-                </h4>
-                <p className="text-xs text-stone-600 dark:text-stone-300 font-sans leading-relaxed max-w-lg">
-                  Receive a personalized Dhikr, Dua, and neuroscience-backed spiritual prescription based on your emotional state.
-                </p>
-              </div>
-
-              <div className="shrink-0">
-                <button
-                  onClick={() => {
-                    window.location.hash = '#dhikr-rx';
-                    window.dispatchEvent(new HashChangeEvent('hashchange'));
-                  }}
-                  className={`w-full md:w-auto font-mono text-xs uppercase font-bold tracking-widest px-6 py-4.5 rounded shadow transition-all duration-300 cursor-pointer hover:scale-105 flex items-center justify-center gap-1.5 border-none
-                    ${isSpace ? 'bg-gold text-black hover:bg-amber-400' : 'bg-[#8B1A1A] text-white hover:bg-[#a32222]'}
-                  `}
-                >
-                  <span>Open Lab →</span>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
       </div>

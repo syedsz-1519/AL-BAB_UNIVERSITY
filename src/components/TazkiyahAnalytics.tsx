@@ -28,7 +28,7 @@ interface TazkiyahAnalyticsProps {
 interface MergedDataPoint {
   date: string;
   timestamp: string;
-  source: 'Waswas Clinic' | 'Dhikr Rx';
+  source: 'Waswas Clinic' | 'Pillars Foundation';
   label: string;
   serenity: number;     // 0-100 scale showing emotional balance
   vagalTone: number;    // vata/heart physical-spiritual resilience
@@ -38,13 +38,13 @@ interface MergedDataPoint {
 // Pre-seeded authentic dataset to display if user has not yet recorded sessions.
 // Helps visualize the emotional regulation path clearly.
 const DEFAULT_SEED_HOURS = [
-  { daysAgo: 6, serenity: 42, vagalTone: 35, focus: 45, label: "Initial Consultation (Severe Anxiety)", source: "Dhikr Rx" },
+  { daysAgo: 6, serenity: 42, vagalTone: 35, focus: 45, label: "Initial Consultation (Severe Anxiety)", source: "Pillars Foundation" },
   { daysAgo: 5, serenity: 50, vagalTone: 45, focus: 50, label: "Scholastic Waswas Session", source: "Waswas Clinic" },
-  { daysAgo: 4, serenity: 58, vagalTone: 52, focus: 58, label: "Dhikr prescription prescribed (Grief)", source: "Dhikr Rx" },
+  { daysAgo: 4, serenity: 58, vagalTone: 52, focus: 58, label: "Pillar Foundation Alignment", source: "Pillars Foundation" },
   { daysAgo: 3, serenity: 64, vagalTone: 60, focus: 68, label: "Scribal Waswas Consultation", source: "Waswas Clinic" },
-  { daysAgo: 2, serenity: 75, vagalTone: 72, focus: 80, label: "Dhikr prescription (Gratitude)", source: "Dhikr Rx" },
+  { daysAgo: 2, serenity: 75, vagalTone: 72, focus: 80, label: "Salah Focus Reflection", source: "Pillars Foundation" },
   { daysAgo: 1, serenity: 82, vagalTone: 78, focus: 84, label: "Subconscious Cognitive Defusion", source: "Waswas Clinic" },
-  { daysAgo: 0, serenity: 88, vagalTone: 85, focus: 90, label: "Current Balance", source: "Dhikr Rx" }
+  { daysAgo: 0, serenity: 88, vagalTone: 85, focus: 90, label: "Current Balance", source: "Pillars Foundation" }
 ];
 
 export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsProps) {
@@ -61,10 +61,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
       const savedWaswasText = localStorage.getItem('albab_waswas_sessions');
       const waswasSessions = savedWaswasText ? JSON.parse(savedWaswasText) : [];
 
-      // 2. Fetch Dhikr Rx prescriptions
-      const savedDhikrText = localStorage.getItem('users/albab_scribe_user/dhikr_prescriptions');
-      const dhikrRxList = savedDhikrText ? JSON.parse(savedDhikrText) : [];
-
+      // 2. Fetch Pillars Focus (or empty for now, relying on seeds)
       const mergedList: MergedDataPoint[] = [];
 
       // Map Waswas Clinic sessions
@@ -90,46 +87,6 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           timestamp: session.timestamp || new Date().toISOString(),
           source: 'Waswas Clinic',
           label: `Waswas Consultation (${session.category || 'General'})`,
-          serenity: baseSerenity,
-          vagalTone: baseVagal,
-          focus: baseFocus
-        });
-      });
-
-      // Map Dhikr Rx states
-      dhikrRxList.forEach((rx: any) => {
-        const dateObj = new Date(rx.created_at || Date.now());
-        const formattedDate = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        
-        // Parse emotional key for metrics
-        let baseSerenity = 50;
-        let baseVagal = 50;
-        let baseFocus = 55;
-
-        switch (rx.selectedEmotion) {
-          case 'anxiety':
-            baseSerenity = 45; baseVagal = 40; baseFocus = 50; break;
-          case 'grief':
-            baseSerenity = 52; baseVagal = 45; baseFocus = 55; break;
-          case 'anger':
-            baseSerenity = 40; baseVagal = 35; baseFocus = 45; break;
-          case 'loneliness':
-            baseSerenity = 55; baseVagal = 52; baseFocus = 58; break;
-          case 'arrogance':
-            baseSerenity = 60; baseVagal = 65; baseFocus = 60; break;
-          case 'envy':
-            baseSerenity = 48; baseVagal = 50; baseFocus = 52; break;
-          case 'depression':
-            baseSerenity = 42; baseVagal = 38; baseFocus = 42; break;
-          case 'gratitude':
-            baseSerenity = 88; baseVagal = 85; baseFocus = 90; break;
-        }
-
-        mergedList.push({
-          date: formattedDate,
-          timestamp: rx.created_at || new Date().toISOString(),
-          source: 'Dhikr Rx',
-          label: `Dhikr Prescription (${rx.selectedEmotion || 'Prescribed'})`,
           serenity: baseSerenity,
           vagalTone: baseVagal,
           focus: baseFocus
@@ -175,7 +132,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
   }, []);
 
   // Colors based on academic theme
-  const serenityColor = isSpace ? '#54D3C2' : '#8B1A1A'; 
+  const serenityColor = isSpace ? '#54D3C2' : '#0B4628'; 
   const vagalColor = isSpace ? '#E5B14F' : '#C4A35A';    
   const focusColor = isSpace ? '#60A5FA' : '#10B981';
 
@@ -196,7 +153,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-stone-200/10 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <Activity className={`h-4 w-4 ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}`} />
+            <Activity className={`h-4 w-4 ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} />
             <h4 className="font-serif font-black text-md">Emotional Regulation &amp; Heart Serenity Trends</h4>
           </div>
           <span className="text-[10px] font-mono tracking-widest text-[#C4A35A] uppercase font-bold block mt-1">
@@ -219,7 +176,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
       </div>
 
       <p className="text-xs text-stone-500 dark:text-stone-300 font-sans leading-relaxed mb-6">
-        This tracker aggregates data from your interactive <strong className="font-serif italic text-stone-700 dark:text-gold">Waswas Clinic</strong> defusion consults and <strong className="font-serif italic text-stone-700 dark:text-gold">Dhikr Rx</strong> prescription records. By analyzing heart vocalizations (vagal nerve stimulation) and scriptural feedback focus, it displays your structural recovery index.
+        This tracker aggregates data from your interactive <strong className="font-serif italic text-stone-700 dark:text-gold">Waswas Clinic</strong> defusion consults and <strong className="font-serif italic text-stone-700 dark:text-gold">Pillars Foundation</strong> records. By analyzing heart vocalizations (vagal nerve stimulation) and scriptural feedback focus, it displays your structural recovery index.
       </p>
 
       {isSeeded && (
@@ -230,7 +187,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           <div className="space-y-1">
             <strong className="font-semibold block">Academic Simulated Timeline Active</strong>
             <p className="opacity-95 leading-relaxed font-sans">
-              No live local sessions have been logged yet on this account. Below is an authentic spiritual training curve showing how your scores adapt after using the labs. Once you submit real-time records on the Dhikr/Waswas clinics, this chart will instantly paint your personal path.
+              No live local sessions have been logged yet on this account. Below is an authentic spiritual training curve showing how your scores adapt after using the labs. Once you submit real-time records on the Pillars/Waswas clinics, this chart will instantly paint your personal path.
             </p>
           </div>
         </div>
@@ -242,7 +199,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           onClick={() => setActiveMetric('all')}
           className={`p-3 rounded border text-left transition-all cursor-pointer bg-transparent focus:outline-none
             ${activeMetric === 'all' 
-              ? `${isSpace ? 'border-gold bg-gold/5 text-white' : 'border-[#8B1A1A] bg-[#8B1A1A]/5 text-stone-900'}` 
+              ? `${isSpace ? 'border-gold bg-gold/5 text-white' : 'border-[#0B4628] bg-[#0B4628]/5 text-stone-900'}` 
               : `${isSpace ? 'border-white/5 text-stone-400 hover:border-gold/20' : 'border-stone-200 text-stone-600 hover:border-stone-400'}`
             }
           `}
@@ -255,7 +212,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           onClick={() => setActiveMetric('serenity')}
           className={`p-3 rounded border text-left transition-all cursor-pointer bg-transparent focus:outline-none
             ${activeMetric === 'serenity' 
-              ? `${isSpace ? 'border-gold bg-[#54D3C2]/10 text-white' : 'border-[#8B1A1A] bg-[#8B1A1A]/10 text-stone-900'}` 
+              ? `${isSpace ? 'border-gold bg-[#54D3C2]/10 text-white' : 'border-[#0B4628] bg-[#0B4628]/10 text-stone-900'}` 
               : `${isSpace ? 'border-white/5 text-stone-400 hover:border-gold/20' : 'border-stone-200 text-stone-600 hover:border-stone-400'}`
             }
           `}
@@ -271,7 +228,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           onClick={() => setActiveMetric('vagalTone')}
           className={`p-3 rounded border text-left transition-all cursor-pointer bg-transparent focus:outline-none
             ${activeMetric === 'vagalTone' 
-              ? `${isSpace ? 'border-gold bg-[#E5B14F]/10 text-white' : 'border-[#8B1A1A] bg-[#C4A35A]/10 text-stone-900'}` 
+              ? `${isSpace ? 'border-gold bg-[#E5B14F]/10 text-white' : 'border-[#0B4628] bg-[#C4A35A]/10 text-stone-900'}` 
               : `${isSpace ? 'border-white/5 text-stone-400 hover:border-gold/20' : 'border-stone-200 text-stone-600 hover:border-stone-400'}`
             }
           `}
@@ -287,7 +244,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           onClick={() => setActiveMetric('focus')}
           className={`p-3 rounded border text-left transition-all cursor-pointer bg-transparent focus:outline-none
             ${activeMetric === 'focus' 
-              ? `${isSpace ? 'border-gold bg-[#60A5FA]/10 text-white' : 'border-[#8B1A1A] bg-[#10B981]/10 text-stone-900'}` 
+              ? `${isSpace ? 'border-gold bg-[#60A5FA]/10 text-white' : 'border-[#0B4628] bg-[#10B981]/10 text-stone-900'}` 
               : `${isSpace ? 'border-white/5 text-stone-400 hover:border-gold/20' : 'border-stone-200 text-stone-600 hover:border-stone-400'}`
             }
           `}
@@ -309,7 +266,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           className={`p-4 rounded border flex flex-col justify-between transition-colors relative overflow-hidden
             ${isSpace 
               ? 'bg-[#0c1432] border-gold/20 text-white shadow-[0_4px_20px_rgba(0,0,0,0.3)]' 
-              : 'bg-[#faf9f6] border-stone-250 text-charcoal shadow-[0_2px_10px_rgba(139,26,26,0.03)]'
+              : 'bg-[#faf9f6] border-stone-250 text-charcoal shadow-[0_2px_10px_rgba(11, 70, 40,0.03)]'
             }
           `}
           id="spiritual-balance-card"
@@ -332,7 +289,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
               </p>
             </div>
             <div className={`p-2.5 rounded-full shrink-0
-              ${isSpace ? 'bg-gold/10 text-gold' : 'bg-[#8B1A1A]/10 text-[#8B1A1A]'}
+              ${isSpace ? 'bg-gold/10 text-gold' : 'bg-[#0B4628]/10 text-[#0B4628]'}
             `}>
               <Heart className="h-5 w-5" />
             </div>
@@ -343,7 +300,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
               <span className="font-mono text-xs text-stone-400">Current Standing</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className={`font-serif text-3xl font-black
-                  ${isSpace ? 'text-gold-light' : 'text-[#8B1A1A]'}
+                  ${isSpace ? 'text-gold-light' : 'text-[#0B4628]'}
                 `}>
                   {overallSpiritualBalance}%
                 </span>
@@ -356,7 +313,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
             <div className="w-20 bg-stone-200/20 dark:bg-stone-700/30 h-1.5 rounded-full overflow-hidden">
               <div 
                 className={`h-full rounded-full transition-all duration-1000
-                  ${isSpace ? 'bg-gold' : 'bg-[#8B1A1A]'}
+                  ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}
                 `}
                 style={{ width: `${overallSpiritualBalance}%` }}
               />
@@ -371,7 +328,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
           className={`p-4 rounded border flex flex-col justify-between transition-colors relative overflow-hidden
             ${isSpace 
               ? 'bg-[#0c1432] border-gold/20 text-white shadow-[0_4px_20px_rgba(0,0,0,0.3)]' 
-              : 'bg-[#faf9f6] border-stone-250 text-charcoal shadow-[0_2px_10px_rgba(139,26,26,0.03)]'
+              : 'bg-[#faf9f6] border-stone-250 text-charcoal shadow-[0_2px_10px_rgba(11, 70, 40,0.03)]'
             }
           `}
           id="cognitive-focus-card"
@@ -453,7 +410,7 @@ export default function TazkiyahAnalytics({ currentTheme }: TazkiyahAnalyticsPro
             <Tooltip 
               contentStyle={{ 
                 backgroundColor: isSpace ? '#0B132B' : '#FAF8F5', 
-                borderColor: isSpace ? '#E5B14F' : '#8B1A1A',
+                borderColor: isSpace ? '#E5B14F' : '#0B4628',
                 color: isSpace ? '#ffffff' : '#1A1A1A',
                 fontSize: '11px',
                 borderRadius: '4px',

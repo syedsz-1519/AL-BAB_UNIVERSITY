@@ -32,7 +32,6 @@ export default function MobileQuickNav({
       items: [
         { id: 'landing', label: language === 'ar' ? 'الكرة السماوية' : language === 'ur' ? 'فلکیاتی گلوب' : 'Celestial Globe Hub', icon: Globe },
         { id: 'academic-world', label: language === 'ar' ? 'المنظومات الأكاديمية' : language === 'ur' ? 'علمی شعبہ جات' : 'Scholastic Universe', icon: GraduationCap },
-        { id: 'ai-bot-trigger', label: language === 'ar' ? 'ألباب ذكاء اصطناعي (ALBAB AI)' : language === 'ur' ? 'الباب اے آئی (ALBAB AI)' : 'ALBAB AI', icon: Sparkles },
       ]
     }
   ];
@@ -111,11 +110,7 @@ export default function MobileQuickNav({
                           <button
                             key={item.id}
                             onClick={() => {
-                              if (item.id === 'ai-bot-trigger') {
-                                window.dispatchEvent(new CustomEvent('open-albab-bot'));
-                              } else {
-                                onNavigate(item.id);
-                              }
+                              onNavigate(item.id);
                               setIsOpen(false);
                             }}
                             className={`flex items-center justify-between p-3 rounded-md border text-left cursor-pointer transition-all duration-150 group/item select-none

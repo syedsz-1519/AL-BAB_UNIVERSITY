@@ -274,7 +274,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
                 return (
                   <p 
                     key={pIdx} 
-                    className="font-arabic text-2xl md:text-3xl text-[#8B1A1A] text-center leading-loose py-4 italic font-bold my-4 bg-[#FFFDF9]/60 border border-[#C4A35A]/15 rounded-sm p-4"
+                    className="font-arabic text-2xl md:text-3xl text-[#0B4628] text-center leading-loose py-4 italic font-bold my-4 bg-[#FFFDF9]/60 border border-[#C4A35A]/15 rounded-sm p-4"
                     dir="rtl"
                   >
                     {p.trim()}
@@ -298,7 +298,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
         return (
           <h4 
             key={index} 
-            className="font-serif font-medium text-lg text-[#8B1A1A] mt-6 border-b-[0.5px] border-[#C4A35A] pb-[0.3rem] mb-3 uppercase tracking-wide flex items-center gap-1.5"
+            className="font-serif font-medium text-lg text-[#0B4628] mt-6 border-b-[0.5px] border-[#C4A35A] pb-[0.3rem] mb-3 uppercase tracking-wide flex items-center gap-1.5"
           >
             <span className="text-[#C4A35A] text-xs">◆</span> {part.trim()}
           </h4>
@@ -310,14 +310,14 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
   return (
     <div 
       id="waswas-clinic-viewport"
-      className="min-h-screen bg-[#F5F0E8] text-[#1A1A1A] font-sans pt-36 md:pt-40 pb-20 px-4 md:px-12 arabesque-grid selection:bg-[#8B1A1A]/10"
+      className="min-h-screen bg-[#F5F0E8] text-[#1A1A1A] font-sans pt-36 md:pt-40 pb-20 px-4 md:px-12 arabesque-grid selection:bg-[#0B4628]/10"
     >
       <div className="max-w-2xl mx-auto space-y-6">
         
         {/* BACK BUTTON */}
         <button 
           onClick={onBackToLanding}
-          className="flex items-center gap-1.5 text-xs text-[#8B1A1A]/70 hover:text-[#8B1A1A] font-mono tracking-wider uppercase transition-colors duration-200 cursor-pointer self-start"
+          className="flex items-center gap-1.5 text-xs text-[#0B4628]/70 hover:text-[#0B4628] font-mono tracking-wider uppercase transition-colors duration-200 cursor-pointer self-start"
         >
           ← Back to Sanctum
         </button>
@@ -329,7 +329,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
               initial={{ opacity: 0, y: -20, x: "-50%" }}
               animate={{ opacity: 1, y: 0, x: "-50%" }}
               exit={{ opacity: 0, y: -20, x: "-50%" }}
-              className="fixed top-24 left-1/2 z-50 bg-[#8B1A1A] text-white py-2.5 px-6 rounded-sm shadow-xl border border-[#C4A35A]/35 flex items-center gap-2 text-xs font-mono tracking-wider uppercase font-bold"
+              className="fixed top-24 left-1/2 z-50 bg-[#0B4628] text-white py-2.5 px-6 rounded-sm shadow-xl border border-[#C4A35A]/35 flex items-center gap-2 text-xs font-mono tracking-wider uppercase font-bold"
             >
               <CheckCircle2 className="h-4 w-4 text-[#C4A35A]" />
               <span>{showNotification}</span>
@@ -340,12 +340,12 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
         {/* HEADER SECTION */}
         <div className="max-w-4xl mx-auto mb-10 text-center animate-fade-in" id="waswas-header-card">
           <div className="flex justify-center items-center gap-3 mb-3">
-            <div className="h-[1px] w-8 opacity-60 bg-[#8B1A1A]"></div>
+            <div className="h-[1px] w-8 opacity-60 bg-[#0B4628]"></div>
             <span className="font-mono text-xs tracking-[0.25em] text-[#C4A35A] uppercase font-bold">AL-NAFSI CLINICAL GATE</span>
-            <div className="h-[1px] w-8 opacity-60 bg-[#8B1A1A]"></div>
+            <div className="h-[1px] w-8 opacity-60 bg-[#0B4628]"></div>
           </div>
 
-          <h1 className="font-arabic text-3xl sm:text-4xl md:text-5xl text-[#8B1A1A] leading-none mb-2 select-none font-bold" style={{ fontFamily: 'Amiri, Georgia, serif' }} dir="rtl">
+          <h1 className="font-arabic text-3xl sm:text-4xl md:text-5xl text-[#0B4628] leading-none mb-2 select-none font-bold" style={{ fontFamily: 'Amiri, Georgia, serif' }} dir="rtl">
             وَسْوَاسٌ وَشِفَاء
           </h1>
           <h2 className="font-serif font-bold text-xl sm:text-2xl text-stone-800 mb-2">
@@ -389,7 +389,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
               {/* INPUT CONTENT FORM */}
               <form onSubmit={handleFormSubmit} className="bg-[#FFFDF9] border border-[#C4A35A]/35 rounded-sm p-6 space-y-4 shadow-sm">
                 <div className="space-y-1">
-                  <label className="block text-[11px] font-bold text-[#8B1A1A] tracking-wider uppercase font-mono">
+                  <label className="block text-[11px] font-bold text-[#0B4628] tracking-wider uppercase font-mono">
                     SHARE WHAT TROUBLES YOUR HEART
                   </label>
                   <textarea
@@ -398,7 +398,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
                     maxLength={1000}
                     rows={6}
                     placeholder="Write freely... in any language. This space is safe and without judgment."
-                    className="w-full min-h-[140px] px-3.5 py-3 text-[14px] bg-[#FFFDF9] border border-[#8B1A1A]/20 focus:border-[#8B1A1A] focus:ring-1 focus:ring-[#8B1A1A]/20 rounded-sm font-serif placeholder:font-serif placeholder:italic text-stone-850 outline-none transition-colors duration-200"
+                    className="w-full min-h-[140px] px-3.5 py-3 text-[14px] bg-[#FFFDF9] border border-[#0B4628]/20 focus:border-[#0B4628] focus:ring-1 focus:ring-[#0B4628]/20 rounded-sm font-serif placeholder:font-serif placeholder:italic text-stone-850 outline-none transition-colors duration-200"
                   />
                   <div className="flex justify-end pr-0.5">
                     <span className="text-[10px] text-stone-500 font-mono">
@@ -410,7 +410,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
                 <button
                   type="submit"
                   disabled={!inputText.trim()}
-                  className="w-full bg-[#8B1A1A] text-white py-3.5 px-6 rounded-sm shadow-md font-mono tracking-widest text-[11px] font-bold uppercase transition-all hover:bg-[#8B1A1A]/90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full bg-[#0B4628] text-white py-3.5 px-6 rounded-sm shadow-md font-mono tracking-widest text-[11px] font-bold uppercase transition-all hover:bg-[#0B4628]/90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   Seek Guidance — بِسْمِ اللَّه
                 </button>
@@ -440,15 +440,15 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
                         repeat: Infinity,
                         ease: "easeInOut"
                       }}
-                      className="w-14 h-14 rounded-full bg-[#8B1A1A]/10 border border-[#8B1A1A] flex items-center justify-center"
+                      className="w-14 h-14 rounded-full bg-[#0B4628]/10 border border-[#0B4628] flex items-center justify-center"
                     >
-                      <div className="w-6 h-6 rounded-full bg-[#8B1A1A]" />
+                      <div className="w-6 h-6 rounded-full bg-[#0B4628]" />
                     </motion.div>
                     <div className="text-center space-y-2">
-                      <p className="font-serif text-base font-medium text-[#8B1A1A]">
+                      <p className="font-serif text-base font-medium text-[#0B4628]">
                         Consulting the wisdom of Ibn al-Qayyim...
                       </p>
-                      <p className="font-arabic text-xl text-[#8B1A1A] italic leading-relaxed" dir="rtl">
+                      <p className="font-arabic text-xl text-[#0B4628] italic leading-relaxed" dir="rtl">
                         اللَّهُمَّ رَبَّ النَّاسِ أَذْهِبِ الْبَأْسَ
                       </p>
                     </div>
@@ -493,7 +493,7 @@ export default function WaswasClinic({ currentTheme, onBackToLanding }: WaswasCl
                       <button
                         type="button"
                         onClick={handleAskAnother}
-                        className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-sm font-mono tracking-wider font-bold text-[10px] md:text-xs uppercase text-white bg-[#8B1A1A] hover:bg-[#8B1A1A]/90 active:scale-95 transition-all cursor-pointer"
+                        className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-sm font-mono tracking-wider font-bold text-[10px] md:text-xs uppercase text-white bg-[#0B4628] hover:bg-[#0B4628]/90 active:scale-95 transition-all cursor-pointer"
                       >
                         <RotateCcw className="h-3.5 w-3.5" />
                         Ask Another

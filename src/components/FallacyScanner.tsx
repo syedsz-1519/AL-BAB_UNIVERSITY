@@ -212,7 +212,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
       case 'fallacious':
         return {
           label: "Fallacious — مُغَالَطٌ",
-          containerClass: "bg-red-100 text-[#8B1A1A] border-red-350 font-serif"
+          containerClass: "bg-red-100 text-[#0B4628] border-red-350 font-serif"
         };
     }
   };
@@ -234,7 +234,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
 
       {/* HEADER HERO COVER */}
       <div 
-        className="relative bg-[#8B1A1A] text-white pt-36 sm:pt-40 pb-14 px-6 overflow-hidden border-b-2 border-[#C4A35A] flex flex-col items-center text-center shadow-lg"
+        className="relative bg-[#0B4628] text-white pt-36 sm:pt-40 pb-14 px-6 overflow-hidden border-b-2 border-[#C4A35A] flex flex-col items-center text-center shadow-lg"
         style={{
           backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1.2px, transparent 1.2px)',
           backgroundSize: '20px 20px'
@@ -290,13 +290,13 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
               className="bg-[#EFEAE0] border-2 border-[#C4A35A]/50 p-6 rounded-sm mb-8 shadow-md"
             >
               <div className="flex justify-between items-center border-b border-[#C4A35A]/30 pb-3 mb-4">
-                <h3 className="text-lg font-serif font-bold text-[#8B1A1A] flex items-center gap-2">
+                <h3 className="text-lg font-serif font-bold text-[#0B4628] flex items-center gap-2">
                   <ShieldAlert className="w-5 h-5 text-[#C4A35A]" />
                   <span>Scribe Analytical Archives</span>
                 </h3>
                 <button 
                   onClick={() => setShowSavedList(false)}
-                  className="font-mono text-xs uppercase hover:text-[#8B1A1A] transition-colors cursor-pointer border border-stone-400/40 px-3 py-1 rounded bg-[#FAF8F5]"
+                  className="font-mono text-xs uppercase hover:text-[#0B4628] transition-colors cursor-pointer border border-stone-400/40 px-3 py-1 rounded bg-[#FAF8F5]"
                 >
                   Close
                 </button>
@@ -313,7 +313,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                     <div 
                       key={rec.id}
                       onClick={() => handleLoadReport(rec)}
-                      className="bg-[#FAF8F5] border border-[#C4A35A]/30 hover:border-[#8B1A1A]/70 p-4 rounded-sm shadow-xs cursor-pointer transition-all flex flex-col gap-2 group"
+                      className="bg-[#FAF8F5] border border-[#C4A35A]/30 hover:border-[#0B4628]/70 p-4 rounded-sm shadow-xs cursor-pointer transition-all flex flex-col gap-2 group"
                     >
                       <div className="flex justify-between items-start">
                         <span className="font-mono text-[10px] text-stone-400 tracking-wide">
@@ -321,7 +321,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                         </span>
                         <button 
                           onClick={(e) => handleDeleteReport(rec.id, e)}
-                          className="text-stone-400 hover:text-[#8B1A1A] p-0.5 rounded cursor-pointer transition-colors"
+                          className="text-stone-400 hover:text-[#0B4628] p-0.5 rounded cursor-pointer transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -333,7 +333,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                         <span className={`text-[10px] font-sans font-bold uppercase rounded px-2 py-0.5 border ${getQualityBadgeDetails(rec.result.quality)?.containerClass}`}>
                           {rec.result.quality}
                         </span>
-                        <span className="font-mono text-[10px] text-[#8B1A1A] hover:underline font-bold">
+                        <span className="font-mono text-[10px] text-[#0B4628] hover:underline font-bold">
                           Load analysis &rarr;
                         </span>
                       </div>
@@ -356,7 +356,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
               className="bg-[#EFEAE0] border-2 border-[#C4A35A]/30 rounded-sm shadow-md p-6 sm:p-8"
               id="fallacy-scanner-form"
             >
-              <h2 className="text-[#8B1A1A] text-xl font-serif font-bold mb-5 border-b border-[#C4A35A]/20 pb-3 flex items-center gap-2">
+              <h2 className="text-[#0B4628] text-xl font-serif font-bold mb-5 border-b border-[#C4A35A]/20 pb-3 flex items-center gap-2">
                 <ShieldAlert className="w-5.5 h-5.5 text-[#C4A35A]" />
                 <span>Submit Syllogism for Inspection</span>
               </h2>
@@ -374,7 +374,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                       onClick={() => handleSelectExample(p.text)}
                       className="text-left bg-[#FAF8F5] hover:bg-[#FAF8F5]/80 active:bg-stone-200/20 px-3 py-3 rounded border border-stone-300 font-serif text-xs leading-relaxed transition-all text-stone-700 cursor-pointer shadow-xs group"
                     >
-                      <div className="font-mono text-[9px] uppercase tracking-wider font-bold text-[#8B1A1A] group-hover:text-[#C4A35A] mb-1">
+                      <div className="font-mono text-[9px] uppercase tracking-wider font-bold text-[#0B4628] group-hover:text-[#C4A35A] mb-1">
                         {p.label}
                       </div>
                       <span className="italic">"{p.text}"</span>
@@ -394,7 +394,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                     value={argumentText}
                     onChange={(e) => handleTextChange(e.target.value)}
                     placeholder="Paste any Islamic argument, fatwa claim, or religious social media post..."
-                    className="w-full min-h-[190px] p-4 bg-[#FAF8F5] border-2 border-[#C4A35A]/30 font-mono text-xs sm:text-sm text-stone-900 placeholder-stone-400 focus:border-[#8B1A1A] focus:ring-0 outline-none transition-colors leading-relaxed"
+                    className="w-full min-h-[190px] p-4 bg-[#FAF8F5] border-2 border-[#C4A35A]/30 font-mono text-xs sm:text-sm text-stone-900 placeholder-stone-400 focus:border-[#0B4628] focus:ring-0 outline-none transition-colors leading-relaxed"
                     maxLength={2000}
                     required
                   />
@@ -420,7 +420,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                 type="submit"
                 id="sumbit-scan-btn"
                 disabled={argumentText.trim().length === 0}
-                className="w-full bg-[#8B1A1A] hover:bg-[#a12323] text-stone-100 hover:text-white py-3.5 px-6 border-b-4 border-[#5E1010] font-sans font-bold tracking-wider transition-all shadow active:translate-y-px disabled:opacity-40 disabled:cursor-not-allowed select-none text-center cursor-pointer flex items-center justify-center gap-2 uppercase text-sm"
+                className="w-full bg-[#0B4628] hover:bg-[#105C35] text-stone-100 hover:text-white py-3.5 px-6 border-b-4 border-[#052C18] font-sans font-bold tracking-wider transition-all shadow active:translate-y-px disabled:opacity-40 disabled:cursor-not-allowed select-none text-center cursor-pointer flex items-center justify-center gap-2 uppercase text-sm"
               >
                 <span>Scan for Fallacies — افْحَصِ الْحُجَّةَ</span>
               </button>
@@ -443,12 +443,12 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                   <span className="text-[8px] font-mono text-stone-300">]</span>
                 </div>
                 {/* Searching transition */}
-                <div className="ti-search-anim absolute text-[#8B1A1A]">
+                <div className="ti-search-anim absolute text-[#0B4628]">
                   <Search className="w-7 h-7" />
                 </div>
               </div>
 
-              <h3 className="text-lg font-serif font-bold text-[#8B1A1A] mb-1">
+              <h3 className="text-lg font-serif font-bold text-[#0B4628] mb-1">
                 Scanning with classical Mantiq...
               </h3>
               <p className="text-stone-500 font-sans text-xs max-w-sm leading-relaxed font-light">
@@ -461,14 +461,14 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
         {/* RELIABLE JSON PARSE RETRY ERROR COMPONENT */}
         {jsonError && (
           <div className="bg-red-50 border border-red-200 text-red-900 p-6 rounded shadow-sm text-center font-sans space-y-4">
-            <AlertTriangle className="w-12 h-12 text-[#8B1A1A] mx-auto opacity-80" />
-            <h3 className="text-lg font-bold font-serif text-[#8B1A1A]">Logical Parse Suspension</h3>
+            <AlertTriangle className="w-12 h-12 text-[#0B4628] mx-auto opacity-80" />
+            <h3 className="text-lg font-bold font-serif text-[#0B4628]">Logical Parse Suspension</h3>
             <p className="text-xs text-stone-600 max-w-md mx-auto leading-relaxed">
               We encountered a disruption compiling the scholarly JSON ledger from our mantiq engine. This can happen with complex inputs. Let's try again!
             </p>
             <button
               onClick={handleScanSubmit}
-              className="px-5 py-2.5 bg-[#8B1A1A] text-white text-xs font-bold uppercase rounded hover:bg-[#a12323] cursor-pointer"
+              className="px-5 py-2.5 bg-[#0B4628] text-white text-xs font-bold uppercase rounded hover:bg-[#105C35] cursor-pointer"
             >
               Re-scan Argument
             </button>
@@ -485,8 +485,8 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
               id="fallacy-results-matrix"
             >
               {/* 1. KEY SUMMARY & CALIBER BADGE */}
-              <div className="bg-[#FAF8F5] border-2 border-[#8B1A1A] p-6 text-center rounded-sm shadow-xs relative">
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#8B1A1A] text-[#FAF8F5] px-4 py-0.5 text-[9px] uppercase font-sans tracking-widest font-semibold border border-[#C4A35A]">
+              <div className="bg-[#FAF8F5] border-2 border-[#0B4628] p-6 text-center rounded-sm shadow-xs relative">
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0B4628] text-[#FAF8F5] px-4 py-0.5 text-[9px] uppercase font-sans tracking-widest font-semibold border border-[#C4A35A]">
                   Syllogistic Quality
                 </div>
 
@@ -520,7 +520,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
 
               {/* 3. FALLACIES DETECTED SECTION */}
               <div className="space-y-4">
-                <h3 className="text-xl font-serif text-[#8B1A1A] font-bold border-b border-[#C4A35A]/30 pb-2 flex items-center justify-between">
+                <h3 className="text-xl font-serif text-[#0B4628] font-bold border-b border-[#C4A35A]/30 pb-2 flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <ShieldAlert className="w-5 h-5 text-[#C4A35A]" />
                     <span>Fallacies Detected — الْمُغَالَطَاتُ</span>
@@ -551,10 +551,10 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                         {/* FALLACY HIGH CONTROL BAR */}
                         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200/60 pb-3">
                           <div className="flex items-center gap-2.5">
-                            <span className="w-6 h-6 rounded-full bg-[#8B1A1A] text-white flex items-center justify-center font-mono text-xs font-bold leading-none">
+                            <span className="w-6 h-6 rounded-full bg-[#0B4628] text-white flex items-center justify-center font-mono text-xs font-bold leading-none">
                               {idx + 1}
                             </span>
-                            <span className="font-serif font-bold text-[#8B1A1A] text-sm tracking-wide">
+                            <span className="font-serif font-bold text-[#0B4628] text-sm tracking-wide">
                               {fal.classical_name}
                             </span>
                             <span className="font-mono text-[10px] text-stone-400">
@@ -587,13 +587,13 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                           <span className="block text-[8px] font-mono text-stone-400 uppercase tracking-widest leading-none mb-1">
                             Modern Equivalent term:
                           </span>
-                          <span className="text-[#8B1A1A] text-sm font-sans font-bold block">
+                          <span className="text-[#0B4628] text-sm font-sans font-bold block">
                             {fal.modern_name}
                           </span>
                         </div>
 
                         {/* EXACT QUOTE BOX: monospace, light gray bg, red left border */}
-                        <div className="bg-stone-100 border-l-4 border-l-[#8B1A1A] p-2.5 text-stone-800 text-[11px] font-mono italic leading-relaxed">
+                        <div className="bg-stone-100 border-l-4 border-l-[#0B4628] p-2.5 text-stone-800 text-[11px] font-mono italic leading-relaxed">
                           "{fal.quote}"
                         </div>
 
@@ -637,10 +637,10 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
 
               {/* 5. CORRECTED ARGUMENT: gold bg with maroon bold text */}
               <div className="bg-[#C4A35A]/15 border-2 border-[#C4A35A] rounded p-6 shadow-sm space-y-3">
-                <span className="text-[10px] font-sans font-bold text-[#8B1A1A] uppercase tracking-widest block border-b border-[#C4A35A]/30 pb-1.5">
+                <span className="text-[10px] font-sans font-bold text-[#0B4628] uppercase tracking-widest block border-b border-[#C4A35A]/30 pb-1.5">
                   Argument Strengthened — الْحُجَّةُ الْمُصَوَّبَةُ
                 </span>
-                <p className="text-[#8B1A1A] font-serif font-semibold text-base sm:text-lg italic leading-relaxed">
+                <p className="text-[#0B4628] font-serif font-semibold text-base sm:text-lg italic leading-relaxed">
                   "{result.corrected}"
                 </p>
               </div>
@@ -650,7 +650,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                 <span className="block text-[8px] font-mono tracking-widest text-stone-500 uppercase font-bold">
                   Rule of Ash-Shifa Applied:
                 </span>
-                <h3 className="font-arabic text-2xl sm:text-3xl text-[#8B1A1A] font-bold text-center leading-normal" style={{ fontFamily: 'Amiri, serif' }}>
+                <h3 className="font-arabic text-2xl sm:text-3xl text-[#0B4628] font-bold text-center leading-normal" style={{ fontFamily: 'Amiri, serif' }}>
                   {result.mantiq_principle.arabic}
                 </h3>
                 <p className="font-sans text-xs sm:text-sm text-stone-600 max-w-xl mx-auto leading-relaxed">
@@ -663,7 +663,7 @@ export default function FallacyScanner({ currentTheme, onBackToLanding }: Fallac
                 <button
                   onClick={handleSaveReport}
                   disabled={saveSuccess}
-                  className="flex-1 bg-[#8B1A1A] hover:bg-[#a12323] text-white py-3.5 px-6 border-b-4 border-[#5E1010] font-sans font-bold tracking-wider transition-all rounded shadow cursor-pointer text-center flex items-center justify-center gap-2"
+                  className="flex-1 bg-[#0B4628] hover:bg-[#105C35] text-white py-3.5 px-6 border-b-4 border-[#052C18] font-sans font-bold tracking-wider transition-all rounded shadow cursor-pointer text-center flex items-center justify-center gap-2"
                 >
                   <Save className="w-4.5 h-4.5 text-[#C4A35A]" />
                   <span>{saveSuccess ? "Report Saved to Archive Scribe!" : "Save Report"}</span>

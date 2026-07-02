@@ -136,7 +136,7 @@ export default function FiqhRuling({ currentTheme }: FiqhRulingProps) {
         <button
           onClick={() => handleFetchRuling()}
           disabled={loading || !question.trim()}
-          className="font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#8B0000] border border-transparent font-bold tracking-widest px-8 py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer disabled:opacity-50 flex justify-center items-center gap-2 w-full"
+          className="font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#0B4628] border border-transparent font-bold tracking-widest px-8 py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer disabled:opacity-50 flex justify-center items-center gap-2 w-full"
         >
           <Sparkles className="h-4 w-4 shrink-0" />
           {loading ? 'Consulting the Juristic Board Council...' : 'Request Fatwa Ruling'}

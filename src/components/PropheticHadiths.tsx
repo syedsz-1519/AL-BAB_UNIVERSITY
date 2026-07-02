@@ -29,7 +29,7 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
       style={{
         backgroundImage: isSpace 
           ? 'radial-gradient(circle, rgba(196,163,90,0.04) 1.5px, transparent 1.5px)' 
-          : 'radial-gradient(circle, rgba(139,26,26,0.03) 1.5px, transparent 1.5px)',
+          : 'radial-gradient(circle, rgba(11, 70, 40,0.03) 1.5px, transparent 1.5px)',
         backgroundSize: '32px 32px'
       }}
     >
@@ -40,14 +40,14 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
           <div className={`p-3 rounded-md mb-4 border
             ${isSpace 
               ? 'bg-gold/10 border-gold/25 text-gold' 
-              : 'bg-crimson/5 border-[#8B1A1A]/15 text-[#8B1A1A]'
+              : 'bg-crimson/5 border-[#0B4628]/15 text-[#0B4628]'
             }
           `}>
             <MessageSquareQuote className="h-6 w-6" />
           </div>
 
           <h2 className={`font-eb font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-2
-            ${isSpace ? 'text-white' : 'text-[#8B1A1A]'}
+            ${isSpace ? 'text-white' : 'text-[#0B4628]'}
           `}>
             Authentic Prophetic Hadiths
           </h2>
@@ -73,13 +73,13 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
                 }
               `}
               style={{
-                borderLeft: isSpace ? '4px solid #C4A35A' : '4px solid #8B1A1A'
+                borderLeft: isSpace ? '4px solid #C4A35A' : '4px solid #0B4628'
               }}
             >
               {/* ARABIC TEXT */}
               <div 
                 className={`font-arabic text-3xl sm:text-4xl text-center select-none font-bold leading-normal mb-6
-                  ${isSpace ? 'text-gold-light' : 'text-[#8B1A1A]'}
+                  ${isSpace ? 'text-gold-light' : 'text-[#0B4628]'}
                 `}
                 dir="rtl"
                 style={{ fontFamily: 'Amiri, Georgia, serif' }}
@@ -97,7 +97,7 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
                 <span className={`px-4 py-1.5 rounded-sm text-[11px] font-mono tracking-wide uppercase border font-bold
                   ${isSpace 
                     ? 'bg-black/40 border-gold/20 text-gold-light' 
-                    : 'bg-crimson/5 border-[#8B1A1A]/25 text-[#8B1A1A]'
+                    : 'bg-crimson/5 border-[#0B4628]/25 text-[#0B4628]'
                   }
                 `}>
                   {currentHadith.source}
@@ -106,7 +106,7 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
 
               {/* CONTEXT BLOCK */}
               <p className="text-xs text-stone-500 dark:text-zinc-450 max-w-2xl mx-auto leading-relaxed font-sans font-medium">
-                <span className={`font-black uppercase tracking-wider mr-1.5 ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}`}>
+                <span className={`font-black uppercase tracking-wider mr-1.5 ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`}>
                   Context:
                 </span>
                 {currentHadith.context}
@@ -122,7 +122,7 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
             className={`px-6 py-3.5 rounded-sm text-xs font-mono font-bold uppercase tracking-widest border transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.02] active:scale-[0.98]
               ${isSpace 
                 ? 'bg-gold border-gold text-space hover:bg-white hover:text-space' 
-                : 'bg-[#8B1A1A] border-[#8B1A1A] text-[#FAF6EE] hover:bg-black hover:text-white'
+                : 'bg-[#0B4628] border-[#0B4628] text-[#FAF6EE] hover:bg-black hover:text-white'
               }
             `}
           >

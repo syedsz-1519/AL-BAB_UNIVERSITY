@@ -931,7 +931,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
           <div className={`w-full max-w-md p-6 rounded border-2 shadow-2xl relative overflow-hidden transition-all text-left font-sans
             ${isSpace 
               ? 'bg-space-dark border-[#C9933A] text-white' 
-              : 'bg-[#FAF6EF] border-[#8B0000]/60 text-stone-900'
+              : 'bg-[#FAF6EF] border-[#0B4628]/60 text-stone-900'
             }
           `}>
             {/* Elegant header */}
@@ -1020,7 +1020,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
             University Portals
           </h2>
           <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-lg mx-auto leading-relaxed mt-2">
-            Sign into the specialized student and administration frameworks of <span className="text-[#8B1A1A] font-bold">Albab Islamic University</span> to manage notices, covenants, and critique evaluations.
+            Sign into the specialized student and administration frameworks of <span className="text-[#0B4628] font-bold">Albab Islamic University</span> to manage notices, covenants, and critique evaluations.
           </p>
         </div>
 
@@ -1964,10 +1964,10 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                 
                 {/* MY COVENANT MINI CERTIFICATE CARD */}
                 <div className="relative border-4 border-double p-5 text-center font-serif bg-[#FAF6EF] text-[#1A1A1A] rounded shadow-md border-[#C9933A]/60 overflow-hidden">
-                  <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-[#8B1A1A]" />
-                  <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-[#8B1A1A]" />
+                  <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-[#0B4628]" />
+                  <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-[#0B4628]" />
                   
-                  <span className="text-[7px] tracking-[0.2em] font-mono font-black uppercase text-[#8B1A1A] block mt-1">
+                  <span className="text-[7px] tracking-[0.2em] font-mono font-black uppercase text-[#0B4628] block mt-1">
                     Albab Islamic University
                   </span>
                   
@@ -1976,7 +1976,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                   </h4>
 
                   <span className="text-[8px] uppercase tracking-widest font-mono text-stone-400 block mb-0.5">Under scholarly name of</span>
-                  <div className="font-serif italic font-extrabold text-[#8B1A1A] text-base leading-tight font-black border-b border-[#C9933A]/35 pb-2 mb-2">
+                  <div className="font-serif italic font-extrabold text-[#0B4628] text-base leading-tight font-black border-b border-[#C9933A]/35 pb-2 mb-2">
                     {activeStudent.fullName}
                   </div>
 
@@ -2017,7 +2017,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-[8px] font-mono text-stone-400">{n.date}</span>
                             {n.priority === 'High' && (
-                              <span className="text-[7px] font-mono font-semibold uppercase tracking-widest text-[#8B0000] bg-red-500/10 px-1 py-0.5 rounded">
+                              <span className="text-[7px] font-mono font-semibold uppercase tracking-widest text-[#0B4628] bg-red-500/10 px-1 py-0.5 rounded">
                                 Urgent
                               </span>
                             )}
@@ -2396,7 +2396,7 @@ export default function DashboardPortal({ currentTheme, onBackToLanding }: Dashb
                           />
                           Normal info
                         </label>
-                        <label className="flex items-center gap-1.5 text-xs font-mono cursor-pointer text-[#8B0000] dark:text-red-400 font-bold">
+                        <label className="flex items-center gap-1.5 text-xs font-mono cursor-pointer text-[#0B4628] dark:text-red-400 font-bold">
                           <input 
                             type="radio" 
                             name="priority" 

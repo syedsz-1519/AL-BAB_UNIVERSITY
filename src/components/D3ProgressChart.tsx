@@ -69,10 +69,10 @@ export default function D3ProgressChart({ currentTheme, completedCount }: D3Prog
       .range([height - margin.bottom, margin.top]);
 
     // Theme values configuration
-    const lineColor = isSpace ? '#C9933A' : '#8B0000'; // gold vs crimson
+    const lineColor = isSpace ? '#C9933A' : '#0B4628'; // gold vs crimson
     const accentColor = isSpace ? '#4ade80' : '#16a34a'; // green progress
     const textColor = isSpace ? 'rgba(255, 255, 255, 0.4)' : '#6b7280';
-    const gridColor = isSpace ? 'rgba(201, 147, 58, 0.1)' : 'rgba(139, 0, 0, 0.06)';
+    const gridColor = isSpace ? 'rgba(201, 147, 58, 0.1)' : 'rgba(11, 70, 40, 0.06)';
 
     // Gradient definition for area fill
     const defs = svg.append('defs');
@@ -95,11 +95,11 @@ export default function D3ProgressChart({ currentTheme, completedCount }: D3Prog
     } else {
       areaGradient.append('stop')
         .attr('offset', '0%')
-        .attr('stop-color', '#8B0000')
+        .attr('stop-color', '#0B4628')
         .attr('stop-opacity', '0.15');
       areaGradient.append('stop')
         .attr('offset', '100%')
-        .attr('stop-color', '#8B0000')
+        .attr('stop-color', '#0B4628')
         .attr('stop-opacity', '0.00');
     }
 

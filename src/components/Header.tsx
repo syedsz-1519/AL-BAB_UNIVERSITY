@@ -92,17 +92,17 @@ export default function Header({
             <img 
               alt="Albab Logo" 
               className="relative h-8 w-8 sm:h-11 sm:w-11 object-contain rounded-full border border-gold/30 shadow-md transform group-hover:scale-105 transition-transform"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6GPkUINYomPqZtlU7xopLCQf3q2nN-uUtfe1o0-i5-PYC9iizfy-0wzrokp8ZPsjwLw73OXyCEdL6yFr3uEb8pGYC1RHOHQADviljCbiMBXz7dn_ODjpxpQqyCH0IAfxdN4L-0H5a5HhTMbMpnVUet1SZ4jv33EnJ5hiAGRvpTQBIY9SfPkb6QEK-q5kZ06lCsprBWndsJOg3Q8bnWR_Bd-YSHR1sc4dBtaDowmYtYkMfqOkVQmsnr_F4sh4V_rnuzy8iOO-MdNYs"
+              src="https://learn.logicwhile.com/home/test/ed6db4a4-1f4c-4eb2-9038-d56d1d82308a"
             />
           </div>
           <div>
             <h1 className={`font-serif font-black text-xs sm:text-base md:text-lg leading-none tracking-wide
-              ${isSpace ? 'text-[#E8B86D]' : 'text-[#8B1A1A]'}
+              ${isSpace ? 'text-[#E8B86D]' : 'text-[#0B4628]'}
             `}>
               {t.title}
             </h1>
             <p className={`text-[8px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] font-mono font-black mt-0.5 sm:mt-1 opacity-100
-              ${isSpace ? 'text-[#E8B86D]' : 'text-[#8B1A1A]'}
+              ${isSpace ? 'text-[#E8B86D]' : 'text-[#0B4628]'}
             `}>
               {t.subtitle}
             </p>

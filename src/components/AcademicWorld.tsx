@@ -126,17 +126,6 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&h=600&q=80'
     },
     {
-      id: 'dhikr-rx',
-      title: 'Dhikr Neuro-Rx Pharmacy',
-      arabic: 'صيدلية الأذكار الحيوية',
-      category: 'psycho',
-      categoryLabel: 'Psycho-Spiritual Healing',
-      summary: 'Personalized spiritual prescriptions matching 8 cognitive-behavioral distress states with prophetic litanies.',
-      icon: Sparkles,
-      tags: ['Remedial Remembrance', 'Vagus Stimulation', 'Lifestyle Medicine'],
-      imageUrl: 'https://images.unsplash.com/photo-1574246604907-db8c710f637a?auto=format&fit=crop&w=600&h=600&q=80'
-    },
-    {
       id: 'nafs-assessment',
       title: 'Spiritual Nafs Assessment',
       arabic: 'تزكية وسيكولوجية النفس',
@@ -209,13 +198,13 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       {/* EXQUISITE SCHOLASTIC HEADER */}
       <div className="text-center max-w-3xl mx-auto mb-12 mt-4">
         <div className="inline-flex items-center gap-3 justify-center mb-4">
-          <span className={`h-[1px] w-10 ${isSpace ? 'bg-gold/40' : 'bg-[#8B1A1A]/40'}`} />
+          <span className={`h-[1px] w-10 ${isSpace ? 'bg-gold/40' : 'bg-[#0B4628]/40'}`} />
           <span className={`text-[10px] uppercase tracking-[0.3em] font-mono font-bold
-            ${isSpace ? 'text-gold-light' : 'text-[#8B1A1A]'}`}
+            ${isSpace ? 'text-gold-light' : 'text-[#0B4628]'}`}
           >
             Bismillah Al-Rahman Al-Rahim
           </span>
-          <span className={`h-[1px] w-10 ${isSpace ? 'bg-gold/40' : 'bg-[#8B1A1A]/40'}`} />
+          <span className={`h-[1px] w-10 ${isSpace ? 'bg-gold/40' : 'bg-[#0B4628]/40'}`} />
         </div>
         
         <h2 className="font-eb font-bold text-4xl sm:text-5xl tracking-tight leading-tight mb-4 text-stone-900 dark:text-stone-100">
@@ -239,11 +228,11 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                 ${selectedCategory === cat.id
                   ? (isSpace 
                       ? 'bg-gold text-space border-gold font-bold shadow-md' 
-                      : 'bg-[#8B1A1A] text-[#FAF6EE] border-[#8B1A1A] font-bold shadow-md'
+                      : 'bg-[#0B4628] text-[#FAF6EE] border-[#0B4628] font-bold shadow-md'
                     )
                   : (isSpace 
                       ? 'bg-space-dark/40 border-gold/15 text-gold-light hover:bg-zinc-900/60 hover:border-gold' 
-                      : 'bg-[#FAF6EE]/50 border-stone-200 text-[#8B1A1A] hover:bg-[#FAF6EE] hover:border-[#8B1A1A]'
+                      : 'bg-[#FAF6EE]/50 border-stone-200 text-[#0B4628] hover:bg-[#FAF6EE] hover:border-[#0B4628]'
                     )
                 }
               `}
@@ -263,11 +252,11 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
             className={`w-full py-2.5 pl-11 pr-4 text-xs tracking-wide rounded-sm border outline-none font-sans transition-all
               ${isSpace 
                 ? 'bg-[#020509] border-gold/20 text-white focus:border-gold focus:ring-1 focus:ring-gold/30' 
-                : 'bg-[#FAF6EE] border-stone-300 text-stone-900 focus:border-[#8B1A1A] focus:ring-1 focus:ring-crimson/20'
+                : 'bg-[#FAF6EE] border-stone-300 text-stone-900 focus:border-[#0B4628] focus:ring-1 focus:ring-crimson/20'
               }
             `}
           />
-          <Search className={`absolute left-4 top-3.5 h-3.5 w-3.5 ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}`} />
+          <Search className={`absolute left-4 top-3.5 h-3.5 w-3.5 ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} />
         </div>
       </div>
 
@@ -297,13 +286,13 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                 className={`flex flex-col md:flex-row w-full md:h-[350px] overflow-hidden rounded-md border text-stone-950 dark:text-neutral-100 bg-[#FAF6EE] dark:bg-zinc-950/20 group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-500 relative cursor-pointer
                   ${isSpace
                     ? 'border-gold/20 hover:border-gold/50'
-                    : 'border-stone-200 hover:border-[#8B1A1A]'
+                    : 'border-stone-200 hover:border-[#0B4628]'
                   }
                 `}
               >
                 {/* Visual Top Highlight Bar */}
                 <div className={`absolute top-0 left-0 right-0 h-[2.5px] transition-transform duration-300 scale-x-0 group-hover:scale-x-100
-                  ${isSpace ? 'bg-gold' : 'bg-[#8B1A1A]'}
+                  ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}
                 `} />
 
                 {/* Left side: Square Card Context */}
@@ -312,19 +301,19 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                     {/* Category Caps Badge */}
                     <div className="flex items-center justify-between">
                       <span className={`text-[10px] font-mono tracking-widest uppercase font-black
-                        ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}
+                        ${isSpace ? 'text-gold' : 'text-[#0B4628]'}
                       `}>
                         {tool.categoryLabel}
                       </span>
-                      <Icon className={`h-4 w-4 opacity-50 ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}`} />
+                      <Icon className={`h-4 w-4 opacity-50 ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} />
                     </div>
 
                     {/* Arabic title + English separator */}
-                    <div className="space-y-1 pb-1 border-b border-[#8B1A1A]/10 dark:border-gold/10">
-                      <div className="font-arabic amiri text-3xl text-right select-none pr-1 tracking-normal font-bold leading-normal" style={{ color: isSpace ? '#E8B86D' : '#8B1A1A' }}>
+                    <div className="space-y-1 pb-1 border-b border-[#0B4628]/10 dark:border-gold/10">
+                      <div className="font-arabic amiri text-3xl text-right select-none pr-1 tracking-normal font-bold leading-normal" style={{ color: isSpace ? '#E8B86D' : '#0B4628' }}>
                         {tool.arabic}
                       </div>
-                      <h3 className="font-eb font-bold text-xl leading-snug pt-1 text-stone-900 dark:text-neutral-100 group-hover:text-[#8B1A1A] dark:group-hover:text-gold transition-colors duration-150">
+                      <h3 className="font-eb font-bold text-xl leading-snug pt-1 text-stone-900 dark:text-neutral-100 group-hover:text-[#0B4628] dark:group-hover:text-gold transition-colors duration-150">
                         {tool.title}
                       </h3>
                     </div>
@@ -343,7 +332,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                         <span
                           key={tag}
                           className={`text-[8.5px] font-mono uppercase bg-black/5 dark:bg-white/5 border border-stone-300/30 dark:border-white/10 px-2 py-0.5 rounded-xs font-bold
-                            ${isSpace ? 'text-gold-light' : 'text-[#8B1A1A]'}
+                            ${isSpace ? 'text-gold-light' : 'text-[#0B4628]'}
                           `}
                         >
                           {tag}
@@ -352,11 +341,11 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                     </div>
 
                     {/* Launch trigger action bar */}
-                    <div className="pt-2 border-t border-[#8B1A1A]/10 dark:border-gold/10">
-                      <div className={`w-full py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-xs text-[9.5px] sm:text-[10.5px] font-mono font-bold uppercase tracking-wider border transition-all duration-300 flex items-center justify-between group-hover:bg-[#8B1A1A] dark:group-hover:bg-gold-light group-hover:text-white dark:group-hover:text-space
+                    <div className="pt-2 border-t border-[#0B4628]/10 dark:border-gold/10">
+                      <div className={`w-full py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-xs text-[9.5px] sm:text-[10.5px] font-mono font-bold uppercase tracking-wider border transition-all duration-300 flex items-center justify-between group-hover:bg-[#0B4628] dark:group-hover:bg-gold-light group-hover:text-white dark:group-hover:text-space
                         ${isSpace 
                           ? 'border-gold/30 text-gold' 
-                          : 'border-[#8B1A1A]/30 text-[#8B1A1A]'
+                          : 'border-[#0B4628]/30 text-[#0B4628]'
                         }
                       `}>
                         <span>Launch Section</span>
@@ -368,7 +357,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
 
                 {/* Connected subtle vertical maroon divider */}
                 <div className={`hidden md:block w-[1.5px] shrink-0 self-stretch opacity-60
-                  ${isSpace ? 'bg-gold/30' : 'bg-[#8B1A1A]'}
+                  ${isSpace ? 'bg-gold/30' : 'bg-[#0B4628]'}
                 `} />
 
                 {/* Right side: Square contextual image */}
@@ -394,10 +383,10 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
 
       {/* SYSTEM DIRECTORY FOOTER BRIEFING */}
       <div className={`mt-16 p-8 border text-center rounded-sm max-w-3xl mx-auto space-y-3
-        ${isSpace ? 'bg-[#030611] border-gold/15' : 'bg-[#FAF6EE] border-[#8B1A1A]/10'}
+        ${isSpace ? 'bg-[#030611] border-gold/15' : 'bg-[#FAF6EE] border-[#0B4628]/10'}
       `}>
         <div className="flex justify-center mb-1">
-          <Zap className={`h-5 w-5 ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}`} />
+          <Zap className={`h-5 w-5 ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} />
         </div>
         <h4 className="font-eb font-bold text-xl tracking-wide text-stone-900 dark:text-stone-100">
           Intelligent Synoptic Indexing

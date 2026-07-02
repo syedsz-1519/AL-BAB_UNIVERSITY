@@ -19,14 +19,14 @@ import CognitiveLabs from './components/CognitiveLabs';
 import WaswasClinic from './components/WaswasClinic';
 import MantiqTutor from './components/MantiqTutor';
 import FallacyScanner from './components/FallacyScanner';
-import DhikrRx from './components/DhikrRx';
 import NafsAssessmentScreen from './components/NafsAssessmentScreen';
 import MaqasidAnalyzer from './components/MaqasidAnalyzer';
 import AqeedahFirewall from './components/AqeedahFirewall';
 import RuyaInterpreter from './components/RuyaInterpreter';
 import AcademicWorld from './components/AcademicWorld';
+import FivePillarsSection from './components/FivePillarsSection';
+import DhikrSection from './components/DhikrSection';
 import MobileQuickNav from './components/MobileQuickNav';
-import AlbabAIBot from './components/AlbabAIBot';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -39,7 +39,7 @@ export default function App() {
   const [searchText, setSearchText] = useState<string>('');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'dhikr-rx' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith'>(() => {
+  const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith'>(() => {
     if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
       return 'academic-world';
     }
@@ -60,9 +60,6 @@ export default function App() {
     }
     if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
       return 'mantiq-tutor';
-    }
-    if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
-      return 'dhikr-rx';
     }
     if (window.location.hash === '#nafs-assessment' || window.location.pathname === '/nafs-assessment') {
       return 'nafs-assessment';
@@ -109,8 +106,6 @@ export default function App() {
          setCurrentSection('maqasid-analyzer');
       } else if (window.location.hash === '#mantiq-tutor' || window.location.pathname === '/mantiq-tutor') {
          setCurrentSection('mantiq-tutor');
-      } else if (window.location.hash === '#dhikr-rx' || window.location.pathname === '/dhikr-rx') {
-         setCurrentSection('dhikr-rx');
       } else if (window.location.hash === '#nafs-assessment' || window.location.pathname === '/nafs-assessment') {
          setCurrentSection('nafs-assessment');
       } else if (window.location.hash === '#hadith' || window.location.pathname === '/hadith') {
@@ -182,9 +177,9 @@ export default function App() {
     setSelectedCourseId(courseId);
     setCurrentSection('landing');
     setTimeout(() => {
-      const el = document.getElementById('curriculum');
+      const el = document.getElementById('canonical-inspector-viewport');
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 80);
   };
@@ -195,9 +190,9 @@ export default function App() {
     if (term) {
       setCurrentSection('landing');
       setTimeout(() => {
-        const el = document.getElementById('curriculum');
+        const el = document.getElementById('canonical-inspector-viewport');
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }, 50);
     }
@@ -345,15 +340,6 @@ export default function App() {
         </div>
       )}
 
-      {currentSection === 'dhikr-rx' && (
-        <div className="animate-fade-in">
-          <DhikrRx 
-            currentTheme={currentTheme}
-            onBackToLanding={() => setCurrentSection('academic-world')}
-          />
-        </div>
-      )}
-
       {currentSection === 'nafs-assessment' && (
         <div className="pt-36 sm:pt-40 pb-16 min-h-[80vh] animate-fade-in">
           <NafsAssessmentScreen 
@@ -431,8 +417,8 @@ export default function App() {
           <EditorialSection 
             currentTheme={currentTheme}
             onFindMore={() => {
-              const el = document.getElementById('curriculum');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
+              const el = document.getElementById('canonical-inspector-viewport');
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }}
           />
 
@@ -443,6 +429,12 @@ export default function App() {
             onSelectCourse={handleSelectCourse}
             searchText={searchText}
           />
+
+          {/* DYNAMIC INTERACTIVE FIVE PILLARS OF ISLAM FOUNDATION */}
+          <FivePillarsSection currentTheme={currentTheme} />
+
+          {/* DYNAMIC 1 MINUTE DHIKR CHECKLIST */}
+          <DhikrSection currentTheme={currentTheme} />
 
           {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}
           <section className={`py-16 px-6 md:px-12 border-t relative overflow-hidden text-center
@@ -470,7 +462,7 @@ export default function App() {
               <div className="flex flex-wrap justify-center gap-4 pt-4">
                 <button
                   onClick={() => setCurrentSection('portal')}
-                  className="font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#8B0000] border border-transparent font-bold tracking-widest px-6 py-3 rounded-sm shadow-md transition-all duration-300 cursor-pointer hover:scale-[1.01]"
+                  className="font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#0B4628] border border-transparent font-bold tracking-widest px-6 py-3 rounded-sm shadow-md transition-all duration-300 cursor-pointer hover:scale-[1.01]"
                 >
                   Enter Scholar Student Portal
                 </button>
@@ -504,9 +496,6 @@ export default function App() {
 
       {/* FLOATING SOCIAL & DIRECT ADMISSIONS CHANNELS */}
       <FloatingContacts currentTheme={currentTheme} />
-
-      {/* DRAGGABLE ALBAB SCHOLAR AI ASSISTANT CHATBOT */}
-      <AlbabAIBot currentTheme={currentTheme} />
 
       {/* SECURE MOBILE SCREEN MENU TOGGLE & PERSISTENT QUICK NAVIGATION */}
       <MobileQuickNav 

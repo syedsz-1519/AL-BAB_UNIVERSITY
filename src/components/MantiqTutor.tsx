@@ -741,7 +741,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
   return (
     <div 
       id="mantiq-tutor-container"
-      className="min-h-screen pt-36 lg:pt-40 pb-16 px-4 sm:px-6 md:px-12 bg-[#F5F0E8] text-[#1A1A1A] font-sans selection:bg-[#8B1A1A]/10 text-left"
+      className="min-h-screen pt-36 lg:pt-40 pb-16 px-4 sm:px-6 md:px-12 bg-[#F5F0E8] text-[#1A1A1A] font-sans selection:bg-[#0B4628]/10 text-left"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
         
@@ -752,7 +752,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-[#8B1A1A] text-white py-3.5 px-6 rounded-md shadow-xl border border-[#C4A35A]/30 flex items-center gap-3 text-xs md:text-sm font-mono uppercase tracking-wider"
+              className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-[#0B4628] text-white py-3.5 px-6 rounded-md shadow-xl border border-[#C4A35A]/30 flex items-center gap-3 text-xs md:text-sm font-mono uppercase tracking-wider"
             >
               <Sparkles className="h-4 w-4 text-[#C4A35A]" />
               <span>{notification}</span>
@@ -762,12 +762,12 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
 
         {/* LEFT SIDEBAR (DESKTOP) */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="sticky top-28 bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-5 sm:p-6 shadow-md space-y-6">
+          <div className="sticky top-28 bg-[#FAF8F5] border border-[#0B4628]/10 rounded-sm p-5 sm:p-6 shadow-md space-y-6">
             
             {/* LOGOTYPE TITLE */}
             <div className="border-b border-[#C4A35A]/20 pb-4 text-center lg:text-left space-y-1.5">
-              <p className="font-arabic text-2xl text-[#8B1A1A] text-center lg:text-left font-bold">عِلْمُ الْمَنْطِق</p>
-              <h2 className="font-serif font-black text-2xl text-[#8B1A1A] leading-tight select-none">
+              <p className="font-arabic text-2xl text-[#0B4628] text-center lg:text-left font-bold">عِلْمُ الْمَنْطِق</p>
+              <h2 className="font-serif font-black text-2xl text-[#0B4628] leading-tight select-none">
                 Ilm al-Mantiq
               </h2>
               <p className="text-[11px] font-mono tracking-wide text-[#555555] uppercase font-semibold">
@@ -780,11 +780,11 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
             <div className="space-y-2">
               <div className="flex justify-between items-center text-xs font-mono">
                 <span className="text-stone-500 font-bold uppercase tracking-wider">Progress</span>
-                <span className="text-[#8B1A1A] font-black">{completedCount} of 5 Complete</span>
+                <span className="text-[#0B4628] font-black">{completedCount} of 5 Complete</span>
               </div>
               <div className="w-full bg-[#E5DFD5] h-2 rounded-full overflow-hidden">
                 <div 
-                  className="bg-[#8B1A1A] h-full transition-all duration-500"
+                  className="bg-[#0B4628] h-full transition-all duration-500"
                   style={{ width: `${(completedCount / 5) * 100}%` }}
                 />
               </div>
@@ -804,7 +804,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                     }}
                     className={`w-full text-left py-3.5 px-4 rounded-sm border transition-all duration-300 cursor-pointer flex items-center justify-between
                       ${isActive 
-                        ? 'bg-[#8B1A1A] text-white border-transparent shadow' 
+                        ? 'bg-[#0B4628] text-white border-transparent shadow' 
                         : isLocked
                         ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed opacity-60'
                         : isCompleted
@@ -829,7 +829,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                       ) : isLocked ? (
                         <Lock className="h-3.5 w-3.5 text-stone-400" />
                       ) : (
-                        <div className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-[#C4A35A] ring-4 ring-[#C4A35A]/30' : 'bg-[#8B1A1A]'}`} />
+                        <div className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-[#C4A35A] ring-4 ring-[#C4A35A]/30' : 'bg-[#0B4628]'}`} />
                       )}
                       <span className="font-arabic text-[12px] leading-none opacity-95">{mod.arabicName}</span>
                     </div>
@@ -856,7 +856,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                   }}
                   className={`py-2 px-3.5 rounded-sm border transition-all duration-350 flex items-center gap-2 shrink-0 text-xs
                     ${isActive 
-                      ? 'bg-[#8B1A1A] text-white border-transparent shadow' 
+                      ? 'bg-[#0B4628] text-white border-transparent shadow' 
                       : isLocked
                       ? 'bg-stone-150 text-stone-400 border-stone-200 cursor-not-allowed opacity-65'
                       : isCompleted
@@ -873,7 +873,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                   ) : isLocked ? (
                     <Lock className="h-3 w-3 text-stone-400 shrink-0" />
                   ) : (
-                    <span className="h-1 w-1 bg-[#8B1A1A] rounded-full shrink-0" />
+                    <span className="h-1 w-1 bg-[#0B4628] rounded-full shrink-0" />
                   )}
                 </button>
               );
@@ -885,16 +885,16 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
         <div ref={mainContentRef} className="lg:col-span-3 space-y-8">
           
           {/* HEADER EMBELLISHMENT PANEL */}
-          <div className="bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-6 sm:p-8 shadow-sm relative overflow-hidden space-y-3">
-            <div className="absolute right-6 top-6 opacity-[0.03] text-[#8B1A1A] select-none pointer-events-none">
+          <div className="bg-[#FAF8F5] border border-[#0B4628]/10 rounded-sm p-6 sm:p-8 shadow-sm relative overflow-hidden space-y-3">
+            <div className="absolute right-6 top-6 opacity-[0.03] text-[#0B4628] select-none pointer-events-none">
               <Award className="h-32 w-32" />
             </div>
             
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#8B1A1A] uppercase font-extrabold block">
+            <span className="text-[10px] font-mono tracking-[0.2em] text-[#0B4628] uppercase font-extrabold block">
               Albab Logic Academy • عِلْمُ الْمَنْطِق
             </span>
             <div className="flex flex-wrap items-baseline gap-3">
-              <h1 className="font-serif font-black text-3xl sm:text-4xl text-[#8B1A1A]">
+              <h1 className="font-serif font-black text-3xl sm:text-4xl text-[#0B4628]">
                 {currentModule.name}
               </h1>
               <span className="font-arabic text-[#C4A35A] text-2xl leading-none">
@@ -909,17 +909,17 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
           {/* STATE A & STATE B: LESSON, EXERCISE BOX, STUDENT ANSWER */}
           {activeState === 'lessons_answers' && (
             <div className="space-y-6">
-              <div className="bg-white border border-[#8B1A1A]/10 p-6 sm:p-10 rounded-sm shadow-md space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#8B1A1A] via-[#C4A35A] to-[#8B1A1A]" />
+              <div className="bg-white border border-[#0B4628]/10 p-6 sm:p-10 rounded-sm shadow-md space-y-6 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0B4628] via-[#C4A35A] to-[#0B4628]" />
                 
-                <h3 className="font-serif font-black text-xs md:text-sm uppercase tracking-widest text-[#8B1A1A] border-b border-[#C4A35A]/25 pb-3 block">
+                <h3 className="font-serif font-black text-xs md:text-sm uppercase tracking-widest text-[#0B4628] border-b border-[#C4A35A]/25 pb-3 block">
                   Ibn Sina's Scholarly Parchment
                 </h3>
 
                 {lessonLoading && !lessonContent && (
                   <div className="py-20 flex flex-col items-center justify-center gap-4 text-center">
-                    <RefreshCw className="h-10 w-10 text-[#8B1A1A] animate-spin" />
-                    <p className="font-mono text-xs uppercase tracking-widest text-[#8B1A1A] font-bold animate-pulse">
+                    <RefreshCw className="h-10 w-10 text-[#0B4628] animate-spin" />
+                    <p className="font-mono text-xs uppercase tracking-widest text-[#0B4628] font-bold animate-pulse">
                       Summoning classical Logic Lesson... Passing Compendium Index
                     </p>
                   </div>
@@ -932,8 +932,8 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                     {parsedLesson.concept ? (
                       <div className="space-y-3">
                         <div className="flex items-center gap-1.5 border-b border-stone-200 pb-2">
-                          <span className="font-arabic text-[#8B1A1A] text-xl font-bold">الْمَفْهُومُ —</span>
-                          <h4 className="font-serif font-black text-[#8B1A1A] text-lg">The Concept</h4>
+                          <span className="font-arabic text-[#0B4628] text-xl font-bold">الْمَفْهُومُ —</span>
+                          <h4 className="font-serif font-black text-[#0B4628] text-lg">The Concept</h4>
                         </div>
                         <p className="whitespace-pre-line text-stone-800 text-base leading-relaxed">
                           {parsedLesson.concept}
@@ -950,8 +950,8 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                     {parsedLesson.classical && (
                       <div className="bg-[#FAF8F5] p-5 border-l-4 border-l-[#C4A35A] border border-stone-200/50 rounded-r-md space-y-2">
                         <div className="flex items-center gap-1.5 pb-1">
-                          <span className="font-arabic text-[#8B1A1A] text-lg font-bold">الْمِثَالُ الْكَلَاسِيكِيُّ —</span>
-                          <h4 className="font-serif font-black text-[#8B1A1A] text-base">Classical Example</h4>
+                          <span className="font-arabic text-[#0B4628] text-lg font-bold">الْمِثَالُ الْكَلَاسِيكِيُّ —</span>
+                          <h4 className="font-serif font-black text-[#0B4628] text-base">Classical Example</h4>
                         </div>
                         <p className="text-stone-800 text-sm leading-relaxed whitespace-pre-line italic">
                           {parsedLesson.classical}
@@ -981,7 +981,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                   
                   {/* EXERCISE BOX */}
                   <div className="space-y-2 bg-[#FDFCF7] p-4 rounded border border-[#C4A35A]/35 shadow-sm">
-                    <h4 className="font-serif font-black text-[#8B1A1A] text-base flex items-center gap-2">
+                    <h4 className="font-serif font-black text-[#0B4628] text-base flex items-center gap-2">
                       <Compass className="h-4 w-4 text-[#C4A35A]" />
                       <span>التَّطْبِيقُ — Your Practice Exercise</span>
                     </h4>
@@ -993,7 +993,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                   {/* STUDENT ANSWER SHEET INPUT */}
                   <form onSubmit={handlePracticeSubmit} className="space-y-4">
                     <div className="space-y-1.5">
-                      <label htmlFor="student-textarea" className="font-mono text-[10px] font-black uppercase tracking-wider text-[#8B1A1A] block">
+                      <label htmlFor="student-textarea" className="font-mono text-[10px] font-black uppercase tracking-wider text-[#0B4628] block">
                         Your Answer — الإجابة
                       </label>
                       <textarea
@@ -1004,14 +1004,14 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                         placeholder="Define the logic terms or formulate your reasoning precisely. Write with logic and devotion..."
                         value={studentAnswer}
                         onChange={(e) => setStudentAnswer(e.target.value)}
-                        className="w-full bg-[#FAF8F5] border border-[#8B1A1A]/20 focus:border-[#8B1A1A] focus:ring-1 focus:ring-[#8B1A1A] rounded-sm p-4 font-serif text-sm leading-relaxed outline-none shadow-inner transition-colors duration-250 min-h-[80px]"
+                        className="w-full bg-[#FAF8F5] border border-[#0B4628]/20 focus:border-[#0B4628] focus:ring-1 focus:ring-[#0B4628] rounded-sm p-4 font-serif text-sm leading-relaxed outline-none shadow-inner transition-colors duration-250 min-h-[80px]"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={isEvaluating || !studentAnswer.trim()}
-                      className={`w-full py-3.5 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-black rounded-sm border border-[#C4A35A]/50 transition-all duration-300 shadow flex items-center justify-center gap-2.5 cursor-pointer
+                      className={`w-full py-3.5 bg-[#0B4628] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-black rounded-sm border border-[#C4A35A]/50 transition-all duration-300 shadow flex items-center justify-center gap-2.5 cursor-pointer
                         ${(isEvaluating || !studentAnswer.trim()) ? 'bg-stone-300 border-stone-200 cursor-not-allowed text-stone-500' : ''}
                       `}
                     >
@@ -1043,14 +1043,14 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                 <div className="flex items-center gap-3 border-b border-stone-200 pb-3">
                   <Award className="h-6 w-6 text-[#C4A35A]" />
                   <div>
-                    <h3 className="font-serif font-black text-xl text-[#8B1A1A]">Master Sage Evaluation</h3>
+                    <h3 className="font-serif font-black text-xl text-[#0B4628]">Master Sage Evaluation</h3>
                     <p className="text-[9px] font-mono text-stone-500 uppercase tracking-widest">Al-Shifa Scholar's Verdict</p>
                   </div>
                 </div>
 
                 {isEvaluating && !evaluation && (
                   <div className="py-12 flex flex-col items-center justify-center gap-4 text-center">
-                    <RefreshCw className="h-8 w-8 text-[#8B1A1A] animate-spin" />
+                    <RefreshCw className="h-8 w-8 text-[#0B4628] animate-spin" />
                     <p className="font-mono text-xs uppercase tracking-widest text-stone-500 font-bold animate-pulse">
                       Analyzing Sincerity & Syllogism Rules...
                     </p>
@@ -1063,7 +1063,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                     {parsedEval ? (
                       <div className="space-y-6">
                         {/* Result pill status */}
-                        <div className="flex flex-wrap items-center gap-2 text-base font-bold text-[#8B1A1A]">
+                        <div className="flex flex-wrap items-center gap-2 text-base font-bold text-[#0B4628]">
                           <span className="font-arabic font-extrabold">النَّتِيجَةُ — Result:</span>
                           <span className="px-3 py-1 bg-amber-50 rounded border border-[#C4A35A] text-stone-850 text-xs font-serif uppercase tracking-wider font-extrabold shadow-sm">
                             {parsedEval.result}
@@ -1092,7 +1092,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
 
                         {/* Encouragement Content Block */}
                         {parsedEval.encouragement && (
-                          <div className="bg-[#8B1A1A]/5 p-5 rounded-md border-l-4 border-[#8B1A1A] italic text-[#8B1A1A]">
+                          <div className="bg-[#0B4628]/5 p-5 rounded-md border-l-4 border-[#0B4628] italic text-[#0B4628]">
                             <p className="font-bold font-mono text-[9px] uppercase tracking-widest not-italic mb-1.5 text-slate-500">التَّشْجِيعُ — Encouragement</p>
                             "{parsedEval.encouragement}"
                           </div>
@@ -1113,7 +1113,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                     <button
                       type="button"
                       onClick={loadMCQQuiz}
-                      className="py-3 px-8 bg-[#8B1A1A] hover:bg-black text-white font-mono text-xs uppercase tracking-widest font-black rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
+                      className="py-3 px-8 bg-[#0B4628] hover:bg-black text-white font-mono text-xs uppercase tracking-widest font-black rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
                     >
                       <span>Proceed to Exam Quiz</span>
                       <ChevronRight className="h-4.5 w-4.5" />
@@ -1128,13 +1128,13 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
           {/* STATE D: MINI EXAMINATION MCQ QUIZ */}
           {activeState === 'quiz' && (
             <div className="space-y-6">
-              <div className="bg-[#FAF8F5] border border-[#8B1A1A]/10 p-6 sm:p-10 rounded-sm shadow-md space-y-6">
+              <div className="bg-[#FAF8F5] border border-[#0B4628]/10 p-6 sm:p-10 rounded-sm shadow-md space-y-6">
                 
                 <div className="border-b border-[#C4A35A]/45 pb-4">
-                  <span className="text-[9px] font-mono tracking-widest uppercase text-[#8B1A1A] font-extrabold block mb-1">
+                  <span className="text-[9px] font-mono tracking-widest uppercase text-[#0B4628] font-extrabold block mb-1">
                     Formal Examination Room
                   </span>
-                  <h3 className="font-serif font-black text-2xl text-[#8B1A1A]">
+                  <h3 className="font-serif font-black text-2xl text-[#0B4628]">
                     Test Your Understanding
                   </h3>
                   <p className="text-xs text-[#555555] font-serif italic mt-0.5">
@@ -1143,7 +1143,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                 </div>
 
                 {quizLoading ? (
-                  <div className="py-16 flex flex-col items-center justify-center gap-4 font-mono text-xs uppercase tracking-widest text-[#8B1A1A] font-bold">
+                  <div className="py-16 flex flex-col items-center justify-center gap-4 font-mono text-xs uppercase tracking-widest text-[#0B4628] font-bold">
                     <RefreshCw className="h-8 w-8 animate-spin" />
                     Formulating Logic Exam Questions...
                   </div>
@@ -1184,9 +1184,9 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                                 if (quizSubmitted) {
                                   bgClass = isCorrect 
                                     ? "bg-emerald-50 border-emerald-500 text-emerald-800 ring-1 ring-emerald-500" 
-                                    : "bg-red-50 border-[#8B1A1A] text-[#8B1A1A] ring-1 ring-[#8B1A1A]";
+                                    : "bg-red-50 border-[#0B4628] text-[#0B4628] ring-1 ring-[#0B4628]";
                                 } else {
-                                  bgClass = "bg-[#8B1A1A] border-transparent text-white shadow";
+                                  bgClass = "bg-[#0B4628] border-transparent text-white shadow";
                                 }
                               } else if (quizSubmitted && isThisCorrectOption) {
                                 bgClass = "bg-emerald-50 border-emerald-400 text-emerald-800 font-semibold";
@@ -1219,7 +1219,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                           {/* EXPLANATION AREA CHIEF */}
                           {quizSubmitted && (
                             <div className="p-3 bg-stone-50 border-l-2 border-[#C4A35A] text-xs leading-relaxed text-stone-600 rounded-r shadow-inner font-serif">
-                              <span className="font-extrabold text-[#8B1A1A] block mb-0.5">Assessment Basis:</span>
+                              <span className="font-extrabold text-[#0B4628] block mb-0.5">Assessment Basis:</span>
                               {q.explanation}
                             </div>
                           )}
@@ -1234,7 +1234,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                         type="button"
                         onClick={submitQuiz}
                         disabled={Object.keys(selectedAnswers).length < 3}
-                        className={`w-full py-4 bg-[#8B1A1A] text-white font-mono text-xs uppercase tracking-widest font-black rounded-sm transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer border border-[#C4A35A]/50
+                        className={`w-full py-4 bg-[#0B4628] text-white font-mono text-xs uppercase tracking-widest font-black rounded-sm transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer border border-[#C4A35A]/50
                           ${Object.keys(selectedAnswers).length < 3 ? 'bg-stone-300 border-stone-200 text-stone-500 cursor-not-allowed opacity-75 hover:bg-stone-300' : 'hover:bg-black'}
                         `}
                       >
@@ -1244,12 +1244,12 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                     ) : (
                       /* RESULT REPORT BLOCK */
                       <div className="p-6 bg-white border border-stone-200 rounded-sm space-y-4 text-center">
-                        <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#8B1A1A]/5 border-2 border-[#8B1A1A] text-[#8B1A1A] font-serif font-black text-xl">
+                        <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#0B4628]/5 border-2 border-[#0B4628] text-[#0B4628] font-serif font-black text-xl">
                           {quizScore}/3
                         </div>
 
                         <div className="space-y-1">
-                          <h4 className="font-serif font-black text-lg text-[#8B1A1A]">
+                          <h4 className="font-serif font-black text-lg text-[#0B4628]">
                             {quizScore >= 2 ? "Scholastic Examination Passed! — ناجح" : "Requires Further Contemplation — لم ينجح"}
                           </h4>
                           <p className="text-xs text-stone-500 leading-relaxed font-serif max-w-md mx-auto">
@@ -1272,7 +1272,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                               <button
                                 type="button"
                                 onClick={handleNextModuleAndUnlock}
-                                className="px-6 py-3 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
+                                className="px-6 py-3 bg-[#0B4628] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
                               >
                                 <span>Unlock Next Module</span>
                                 <ChevronRight className="h-4.5 w-4.5" />
@@ -1281,7 +1281,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                               <button
                                 type="button"
                                 onClick={onBackToLanding}
-                                className="px-6 py-3 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
+                                className="px-6 py-3 bg-[#0B4628] text-white hover:bg-black font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-[#C4A35A]/50 transition-all duration-300 cursor-pointer flex items-center gap-2"
                               >
                                 <span>Finish — Return to Dashboard</span>
                                 <ArrowRight className="h-4.5 w-4.5" />
@@ -1293,7 +1293,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
                               onClick={loadMCQQuiz}
                               className="px-6 py-3 bg-stone-100 hover:bg-stone-200 text-[#1A1A1A] font-mono text-xs uppercase tracking-widest font-bold rounded-sm border border-stone-300 transition-all duration-300 cursor-pointer flex items-center gap-2"
                             >
-                              <RefreshCw className="h-3.5 w-3.5 text-[#8B1A1A]" />
+                              <RefreshCw className="h-3.5 w-3.5 text-[#0B4628]" />
                               Try the quiz again
                             </button>
                           )}
@@ -1312,7 +1312,7 @@ EXERCISE: Argument: 'This book contains truth because its author is famous, and 
           <div className="text-center pt-4">
             <button
               onClick={onBackToLanding}
-              className="text-stone-500 hover:text-[#8B1A1A] transition-all font-mono text-[10px] uppercase tracking-widest font-extrabold inline-flex items-center gap-2 cursor-pointer bg-transparent border-none outline-none leading-none select-none"
+              className="text-stone-500 hover:text-[#0B4628] transition-all font-mono text-[10px] uppercase tracking-widest font-extrabold inline-flex items-center gap-2 cursor-pointer bg-transparent border-none outline-none leading-none select-none"
             >
               ← Return to Celestial Globe Dashboard
             </button>

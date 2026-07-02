@@ -255,10 +255,10 @@ JazakAllah khair!`;
               <div className="absolute inset-0 opacity-10 bg-repeat bg-contain arabesque-grid pointer-events-none rounded-inner" />
 
               {/* Crimson corner ticks */}
-              <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#8B1A1A]" />
-              <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#8B1A1A]" />
+              <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#0B4628]" />
+              <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#0B4628]" />
 
-              <h4 className="text-[10px] tracking-[0.3em] font-mono font-black uppercase text-[#8B1A1A] mb-2 leading-none">
+              <h4 className="text-[10px] tracking-[0.3em] font-mono font-black uppercase text-[#0B4628] mb-2 leading-none">
                 Albab Islamic University
               </h4>
               <p className="text-[9px] uppercase tracking-widest font-mono text-[#C9933A] mb-6 block leading-none">
@@ -280,7 +280,7 @@ JazakAllah khair!`;
                 has officially inscribed their name, declaring full commitment of intellect under the path of canonical understanding in the field of:
               </p>
 
-              <div className="inline-block py-2.5 px-6 border-y border-[#C9933A]/45 mb-6 text-sm font-semibold uppercase tracking-widest text-[#8B0000] bg-[#FAF8F5]">
+              <div className="inline-block py-2.5 px-6 border-y border-[#C9933A]/45 mb-6 text-sm font-semibold uppercase tracking-widest text-[#0B4628] bg-[#FAF8F5]">
                 {activeCourseName}
               </div>
 

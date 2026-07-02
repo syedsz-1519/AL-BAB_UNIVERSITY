@@ -62,7 +62,7 @@ const COURSES_BASE: Course[] = [
     icon: 'TriangleAlert',
     branches: ['Atheism', 'Liberalism', 'Feminism', 'Materialism', 'Secularism'],
     description: 'Scholarly critique of contemporary ideologies. Undertake a rigorous, respectful academic breakdown of current sociopolitical and theological challenges.',
-    accentColor: 'red-600'
+    accentColor: 'emerald-600'
   },
   {
     id: 'modernity',

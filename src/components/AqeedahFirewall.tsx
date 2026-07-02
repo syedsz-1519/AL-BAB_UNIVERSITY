@@ -226,7 +226,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
 
   return (
     <div 
-      className="min-h-screen pb-24 pt-0 font-sans text-[#1A1A1A] selection:bg-[#8B1A1A]/10 text-left"
+      className="min-h-screen pb-24 pt-0 font-sans text-[#1A1A1A] selection:bg-[#0B4628]/10 text-left"
       style={{ backgroundColor: '#F5F0E8' }}
     >
       {/* DARK MAROON HERO HEADER */}
@@ -274,7 +274,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-28 left-1/2 -translate-x-1/2 z-50 bg-[#8B1A1A] text-white border border-[#C4A35A]/50 px-6 py-3 rounded-sm shadow-2xl flex items-center gap-3 text-xs font-mono tracking-wider uppercase"
+            className="fixed top-28 left-1/2 -translate-x-1/2 z-50 bg-[#0B4628] text-white border border-[#C4A35A]/50 px-6 py-3 rounded-sm shadow-2xl flex items-center gap-3 text-xs font-mono tracking-wider uppercase"
           >
             <Sparkles className="h-4 w-4 text-[#C4A35A] animate-pulse" />
             <span>{toastMessage}</span>
@@ -292,13 +292,13 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-[#FAF8F5] p-6 sm:p-10 border border-[#8B1A1A]/10 rounded-sm shadow-md space-y-8"
+              className="bg-[#FAF8F5] p-6 sm:p-10 border border-[#0B4628]/10 rounded-sm shadow-md space-y-8"
             >
               <div className="space-y-2 border-b border-stone-150 pb-4">
-                <span className="text-[10px] font-mono tracking-[0.2em] text-[#8B1A1A] font-bold uppercase block">
+                <span className="text-[10px] font-mono tracking-[0.2em] text-[#0B4628] font-bold uppercase block">
                   Interactive Socratic Shield
                 </span>
-                <h3 className="font-serif text-lg sm:text-xl font-black text-[#8B1A1A] uppercase">
+                <h3 className="font-serif text-lg sm:text-xl font-black text-[#0B4628] uppercase">
                   Select your philosophical challenge:
                 </h3>
               </div>
@@ -315,11 +315,11 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
                       onClick={() => setSelectedChallenge(challenge.id)}
                       className={`p-4 rounded-sm border transition-all duration-300 pointer-events-auto cursor-pointer text-left flex items-start gap-4 select-none ${
                         isSelected 
-                          ? 'bg-[#8B1A1A] text-white border-transparent shadow-md' 
+                          ? 'bg-[#0B4628] text-white border-transparent shadow-md' 
                           : 'bg-[#F5F0E8] text-stone-800 border-stone-250 hover:border-[#C4A35A] hover:bg-stone-50'
                       }`}
                     >
-                      <div className={`p-2.5 rounded-sm ${isSelected ? 'bg-white/15 text-[#C4A35A]' : 'bg-[#8B1A1A]/10 text-[#8B1A1A]'}`}>
+                      <div className={`p-2.5 rounded-sm ${isSelected ? 'bg-white/15 text-[#C4A35A]' : 'bg-[#0B4628]/10 text-[#0B4628]'}`}>
                         <IconComponent className="h-5 w-5" />
                       </div>
                       <div className="space-y-1">
@@ -344,7 +344,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
                 >
                   <button
                     onClick={handleBuildRefutation}
-                    className="w-full py-4.5 bg-[#8B1A1A] text-white hover:bg-[#2D0A0A] font-mono text-xs uppercase tracking-[0.2em] font-black rounded-sm border border-[#C4A35A]/50 cursor-pointer transition-all duration-300 shadow flex items-center justify-center gap-2.5 select-none"
+                    className="w-full py-4.5 bg-[#0B4628] text-white hover:bg-[#2D0A0A] font-mono text-xs uppercase tracking-[0.2em] font-black rounded-sm border border-[#C4A35A]/50 cursor-pointer transition-all duration-300 shadow flex items-center justify-center gap-2.5 select-none"
                   >
                     <span>Build Refutation — أَقِمِ الْحُجَّةَ</span>
                     <ArrowRight className="h-4.5 w-4.5" />
@@ -355,7 +355,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
               {/* RECENT ARCHIVES HISTORY */}
               {savedRecords.length > 0 && (
                 <div className="border-t border-stone-200 pt-8 mt-5 space-y-4 text-left">
-                  <h3 className="font-serif font-black text-xs uppercase tracking-wider text-[#8B1A1A] flex items-center gap-2">
+                  <h3 className="font-serif font-black text-xs uppercase tracking-wider text-[#0B4628] flex items-center gap-2">
                     <Bookmark className="h-4 w-4 text-[#C4A35A]" />
                     <span>Historical Refutations In Your Journal</span>
                   </h3>
@@ -368,7 +368,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
                           setStreamedText(item.text);
                           setError(null);
                         }}
-                        className="p-4 bg-white hover:bg-[#FAF8F5] border border-stone-200 hover:border-[#8B1A1A]/30 rounded-sm text-left transition-all duration-200 cursor-pointer pointer-events-auto flex justify-between items-start gap-3 shadow-xs"
+                        className="p-4 bg-white hover:bg-[#FAF8F5] border border-stone-200 hover:border-[#0B4628]/30 rounded-sm text-left transition-all duration-200 cursor-pointer pointer-events-auto flex justify-between items-start gap-3 shadow-xs"
                       >
                         <div className="space-y-1">
                           <p className="font-serif font-bold text-xs sm:text-sm text-stone-850">
@@ -378,7 +378,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
                             Logged: {item.timestamp}
                           </p>
                         </div>
-                        <span className="text-[9px] uppercase font-bold font-mono text-[#8B1A1A]">
+                        <span className="text-[9px] uppercase font-bold font-mono text-[#0B4628]">
                           View
                         </span>
                       </button>
@@ -392,9 +392,9 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
 
           {/* LOADING STREAM SCREEN */}
           {loading && !streamedText && (
-            <div className="bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-12 text-center shadow-lg space-y-6 py-16 flex flex-col items-center justify-center min-h-[350px]">
-              <ShieldAlert className="h-10 w-10 text-[#8B1A1A] animate-pulse mb-2" />
-              <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#8B1A1A] font-black animate-pulse">
+            <div className="bg-[#FAF8F5] border border-[#0B4628]/10 rounded-sm p-12 text-center shadow-lg space-y-6 py-16 flex flex-col items-center justify-center min-h-[350px]">
+              <ShieldAlert className="h-10 w-10 text-[#0B4628] animate-pulse mb-2" />
+              <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#0B4628] font-black animate-pulse">
                 Initiating Dialectical Anti-Virus
               </h3>
               <p className="font-serif text-stone-500 text-sm italic max-w-sm mx-auto">
@@ -418,7 +418,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
               )}
 
               {/* STREAMING RENDER CONTAINER */}
-              <div className="bg-[#FAF8F5] border border-[#8B1A1A]/15 rounded-sm p-6 sm:p-10 shadow-lg space-y-8">
+              <div className="bg-[#FAF8F5] border border-[#0B4628]/15 rounded-sm p-6 sm:p-10 shadow-lg space-y-8">
                 
                 {/* STATUS BAR WITH ACTIVE PULSING */}
                 <div className="flex items-center justify-between border-b border-stone-200 pb-3">
@@ -428,7 +428,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
                       {loading ? 'Synthesizing Stream — جَارٍ...' : 'Refutation Document Ready — كَامِلٌ'}
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono font-black text-[#8B1A1A] uppercase tracking-widest bg-[#8B1A1A]/5 px-2.5 py-1">
+                  <span className="text-[10px] font-mono font-black text-[#0B4628] uppercase tracking-widest bg-[#0B4628]/5 px-2.5 py-1">
                     Defending: {CHALLENGES.find(c => c.id === selectedChallenge)?.name}
                   </span>
                 </div>
@@ -445,7 +445,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
                     >
                       {/* Section header parsed strictly as required */}
                       {sec.header !== 'INTRODUCTION' && (
-                        <h3 className="font-medium text-[#8B1A1A] border-b border-[#C4A35A]/50 pb-1.5 text-base sm:text-lg tracking-wide uppercase font-serif">
+                        <h3 className="font-medium text-[#0B4628] border-b border-[#C4A35A]/50 pb-1.5 text-base sm:text-lg tracking-wide uppercase font-serif">
                           {sec.header}
                         </h3>
                       )}
@@ -465,7 +465,7 @@ export default function AqeedahFirewall({ currentTheme, onBackToLanding }: Aqeed
                 <div className="flex flex-wrap items-center gap-3.5 pt-2">
                   <button
                     onClick={handleSaveToJournal}
-                    className="flex items-center gap-2 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-[0.15em] font-bold px-6 py-4 rounded-sm border border-[#C4A35A]/45 transition-all duration-300 shadow cursor-pointer uppercase select-none pointer-events-auto"
+                    className="flex items-center gap-2 bg-[#0B4628] text-white hover:bg-black font-mono text-xs uppercase tracking-[0.15em] font-bold px-6 py-4 rounded-sm border border-[#C4A35A]/45 transition-all duration-300 shadow cursor-pointer uppercase select-none pointer-events-auto"
                   >
                     <Save className="h-4 w-4 text-[#C4A35A]" />
                     <span>Save to Aqeedah Journal</span>

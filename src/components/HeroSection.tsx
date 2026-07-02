@@ -32,7 +32,7 @@ export default function HeroSection({ currentTheme, onApplyNow }: HeroSectionPro
           <span className={`h-[1px] w-8 ${isSpace ? 'bg-gold' : 'bg-crimson'}`} />
         </div>
 
-        <h1 className="font-serif font-black text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none mb-6 text-[#8B1A1A]">
+        <h1 className="font-serif font-black text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-none mb-6 text-[#0B4628]">
           Albab Islamic <br />
           <span>University</span>
         </h1>
@@ -45,10 +45,10 @@ export default function HeroSection({ currentTheme, onApplyNow }: HeroSectionPro
           A state-of-the-art virtual seminary mapping canonical texts alongside contemporary logic, clinical psychology, and critical philosophy of artificial intelligence.
         </p>
 
-        <div className="flex flex-wrap gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto justify-center items-center">
           <button 
             onClick={onApplyNow}
-            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm transition-all duration-300 transform active:translate-y-px shadow-md hover:scale-105
+            className={`w-full sm:w-auto text-center justify-center text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm transition-all duration-300 transform active:translate-y-px shadow-md hover:scale-105 cursor-pointer
               ${isSpace 
                 ? 'bg-gold hover:bg-white text-space hover:text-space shadow-gold/20' 
                 : 'bg-crimson hover:bg-black text-white shadow-crimson/20'
@@ -58,23 +58,9 @@ export default function HeroSection({ currentTheme, onApplyNow }: HeroSectionPro
             Enroll Online
           </button>
 
-          <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('open-albab-bot'))}
-            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm border flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer
-              ${isSpace 
-                ? 'bg-gold/10 border-gold text-gold-light hover:bg-[#8b1a1a] hover:text-white hover:border-transparent' 
-                : 'bg-[#8b1a1a]/5 border-[#8b1a1a] text-[#8b1a1a] hover:bg-[#8b1a1a] hover:text-white'
-              }
-            `}
-            style={{ transition: 'all 0.3s' }}
-          >
-            <Sparkles className="h-4 w-4 animate-pulse shrink-0" />
-            <span>Consult ALBAB AI</span>
-          </button>
-
           <a 
             href="#scholarly" 
-            className={`text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm border transition-all duration-300 hover:scale-105
+            className={`w-full sm:w-auto text-center justify-center text-xs font-bold tracking-widest uppercase py-3.5 px-8 rounded-sm border transition-all duration-300 hover:scale-105
               ${isSpace 
                 ? 'border-gold/40 text-gold-light hover:bg-gold/10' 
                 : 'border-crimson/30 text-crimson hover:bg-crimson/5'

@@ -398,10 +398,10 @@ export default function HadithDisplay({ currentTheme }: HadithDisplayProps) {
           >
             كُتُبُ الْحَدِيثِ الشَّرِيفِ
           </span>
-          <h2 className="text-2xl sm:text-4xl font-serif tracking-tight text-[#8B0000] dark:text-[#E87A7D] mb-4 font-black cormorant leading-tight">
+          <h2 className="text-2xl sm:text-4xl font-serif tracking-tight text-[#0B4628] dark:text-[#E87A7D] mb-4 font-black cormorant leading-tight">
             Hadith Library — The Authentic Collections
           </h2>
-          <p className="text-[#8B0000]/90 dark:text-zinc-300 font-sans text-[11px] sm:text-xs uppercase tracking-[0.16em] font-black max-w-2xl leading-relaxed">
+          <p className="text-[#0B4628]/90 dark:text-zinc-300 font-sans text-[11px] sm:text-xs uppercase tracking-[0.16em] font-black max-w-2xl leading-relaxed">
             SAHIH BUKHARI • SAHIH MUSLIM • MUWATTA MALIK • MUSNAD AHMAD • SUNAN ABU DAWUD • TIRMIDHI • NASA'I • IBN MAJAH
           </p>
         </div>

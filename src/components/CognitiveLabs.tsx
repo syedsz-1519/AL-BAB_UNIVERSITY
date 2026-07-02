@@ -616,7 +616,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
         
         {/* GLOBAL NOTIFICATION TOAST */}
         {globalNotification && (
-          <div className="fixed top-24 right-6 z-50 bg-[#8B1A1A] border border-gold/40 text-white font-mono text-xs py-3 px-5 shadow-2xl rounded-sm animate-bounce flex items-center gap-2">
+          <div className="fixed top-24 right-6 z-50 bg-[#0B4628] border border-gold/40 text-white font-mono text-xs py-3 px-5 shadow-2xl rounded-sm animate-bounce flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-gold" />
             <span>{globalNotification}</span>
           </div>
@@ -641,7 +641,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
           {/* SCRIPTURAL GUEST WARNING & SESSION BAR */}
           <div className={`mt-8 inline-flex flex-wrap items-center justify-center gap-3 px-4 py-2.5 rounded border text-xs font-mono max-w-full
             ${userEmail 
-              ? 'bg-[#8B1A1A]/10 border-gold/30 text-gold-light' 
+              ? 'bg-[#0B4628]/10 border-gold/30 text-gold-light' 
               : 'bg-stone-500/5 border-stone-200 text-stone-500 dark:border-white/5 dark:text-stone-400'
             }
           `}>
@@ -650,7 +650,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                 <UserCheck className="h-4 w-4 text-gold flex-shrink-0" />
                 <span>Scholar Logged: <strong className="text-white dark:text-gold">{userName}</strong> ({userEmail})</span>
                 <span className="text-gold opacity-50">•</span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[#8B1A1A]">Ledger Connected</span>
+                <span className="text-[10px] uppercase font-bold tracking-widest text-[#0B4628]">Ledger Connected</span>
               </>
             ) : (
               <>
@@ -751,7 +751,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                       </p>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-stone-200/10 flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-[#8B1A1A] font-bold group-hover:text-gold">
+                    <div className="mt-6 pt-4 border-t border-stone-200/10 flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-[#0B4628] font-bold group-hover:text-gold">
                       <span>Initiate Lab Session</span>
                       <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -787,7 +787,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                         `}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-mono bg-[#8B1A1A] text-white px-2 py-0.5 text-[9px] uppercase font-semibold rounded-xs">
+                          <span className="font-mono bg-[#0B4628] text-white px-2 py-0.5 text-[9px] uppercase font-semibold rounded-xs">
                             {item.featureName}
                           </span>
                           <span className="text-stone-400 font-serif italic flex items-center gap-1">
@@ -841,7 +841,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
               
               <div className="flex items-center gap-3">
                 <span className="text-xs font-serif italic text-stone-400">Active Node:</span>
-                <span className="font-mono text-xs bg-[#8B1A1A] text-white font-bold tracking-widest px-3 py-1 rounded-sm uppercase">
+                <span className="font-mono text-xs bg-[#0B4628] text-white font-bold tracking-widest px-3 py-1 rounded-sm uppercase">
                   {COGNITIVE_LABS_MENU.find(l => l.id === activeLab)?.title}
                 </span>
               </div>
@@ -869,7 +869,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     </div>
                     <button
                       onClick={() => setNafsStep(1)}
-                      className="font-mono text-xs uppercase bg-[#8B1A1A] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-[#8B1A1A] text-white border border-[#8B1A1A] dark:border-gold font-bold tracking-widest px-8 py-3.5 rounded-sm transition cursor-pointer"
+                      className="font-mono text-xs uppercase bg-[#0B4628] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-[#0B4628] text-white border border-[#0B4628] dark:border-gold font-bold tracking-widest px-8 py-3.5 rounded-sm transition cursor-pointer"
                     >
                       Begin Assessment
                     </button>
@@ -900,7 +900,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                           `}
                         >
                           <span className="font-semibold leading-relaxed max-w-[90%]">{opt.text}</span>
-                          <span className="font-mono bg-[#8B1A1A] text-white text-[10px] py-1 px-2 rounded-full font-bold">
+                          <span className="font-mono bg-[#0B4628] text-white text-[10px] py-1 px-2 rounded-full font-bold">
                             {opt.key}
                           </span>
                         </button>
@@ -918,7 +918,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
 
                 {nafsStep === 100 && (
                   <div className="space-y-6">
-                    <div className="p-6 md:p-8 bg-[#FAF2E5] dark:bg-[#070b18] border border-gold/30 text-charcoal dark:text-white rounded-sm font-sans relative overflow-hidden shadow-inner font-serif italic text-sm leading-relaxed whitespace-pre-line border-l-4 border-l-[#8B1A1A]">
+                    <div className="p-6 md:p-8 bg-[#FAF2E5] dark:bg-[#070b18] border border-gold/30 text-charcoal dark:text-white rounded-sm font-sans relative overflow-hidden shadow-inner font-serif italic text-sm leading-relaxed whitespace-pre-line border-l-4 border-l-[#0B4628]">
                       {nafsReport}
                     </div>
 
@@ -952,7 +952,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                   <div className={`p-4 border rounded-sm font-sans space-y-1
                     ${isSpace ? 'bg-space/30 border-white/5' : 'bg-white border-stone-200'}
                   `}>
-                    <p className="text-[10px] uppercase tracking-widest text-[#8B1A1A] font-bold font-mono text-center">Aristotelian study tracks</p>
+                    <p className="text-[10px] uppercase tracking-widest text-[#0B4628] font-bold font-mono text-center">Aristotelian study tracks</p>
                   </div>
                   {MANTIQ_MODULES.map((mod) => (
                     <button
@@ -989,7 +989,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                         }}
                         className={`px-6 py-3 font-mono text-xs uppercase tracking-widest border-b-2 font-bold cursor-pointer transition
                           ${mantiqTab === tab 
-                            ? 'border-[#8B1A1A] text-[#8B1A1A]' 
+                            ? 'border-[#0B4628] text-[#0B4628]' 
                             : 'border-transparent text-stone-400 hover:text-stone-300'
                           }
                         `}
@@ -1021,7 +1021,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                       {/* PRACTICE / ESSAY CRITIQUE GRID */}
                       {mantiqTab === 'practice' && (
                         <div className="space-y-4">
-                          <label className="block text-xs font-mono uppercase text-[#8B1A1A] font-bold">Exercise Thesis Submission</label>
+                          <label className="block text-xs font-mono uppercase text-[#0B4628] font-bold">Exercise Thesis Submission</label>
                           <p className="text-xs font-serif text-stone-400 italic">
                             Construct a scholastic answer to the practice objective outlined inside the Lesson Corpus.
                           </p>
@@ -1040,7 +1040,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                           <button
                             onClick={submitMantiqPractice}
                             disabled={!studentAnswer.trim()}
-                            className="font-mono text-xs uppercase bg-[#8B1A1A] hover:bg-black hover:text-white text-white font-bold tracking-widest px-6 py-3.5 rounded-sm transition cursor-pointer disabled:opacity-40"
+                            className="font-mono text-xs uppercase bg-[#0B4628] hover:bg-black hover:text-white text-white font-bold tracking-widest px-6 py-3.5 rounded-sm transition cursor-pointer disabled:opacity-40"
                           >
                             Submit Essay Critique
                           </button>
@@ -1079,7 +1079,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                                       }}
                                       className={`p-3 border rounded-sm text-left font-sans transition flex items-center justify-between cursor-pointer
                                         ${isChecked 
-                                          ? 'border-[#8B1A1A] bg-[#8B1A1A]/5 font-bold text-[#8B1A1A]' 
+                                          ? 'border-[#0B4628] bg-[#0B4628]/5 font-bold text-[#0B4628]' 
                                           : 'border-stone-200 dark:border-white/5 text-stone-500 hover:bg-black/10'
                                         }
                                       `}
@@ -1107,7 +1107,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                           {!mantiqQuizSubmitted ? (
                             <button
                               onClick={() => setMantiqQuizSubmitted(true)}
-                              className="font-mono text-xs uppercase bg-[#8B1A1A] hover:bg-black hover:text-white text-white font-bold tracking-widest px-6 py-3 rounded-sm transition cursor-pointer"
+                              className="font-mono text-xs uppercase bg-[#0B4628] hover:bg-black hover:text-white text-white font-bold tracking-widest px-6 py-3 rounded-sm transition cursor-pointer"
                             >
                               Finalize Core Evaluation
                             </button>
@@ -1115,7 +1115,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                             <div className="flex gap-3">
                               <button
                                 onClick={fetchMantiqQuiz}
-                                className="font-mono text-xs uppercase border border-[#8B1A1A] text-[#8B1A1A] font-bold tracking-widest px-6 py-3 rounded-sm transition cursor-pointer"
+                                className="font-mono text-xs uppercase border border-[#0B4628] text-[#0B4628] font-bold tracking-widest px-6 py-3 rounded-sm transition cursor-pointer"
                               >
                                 Re-Generate Interactive Challenges
                               </button>
@@ -1155,7 +1155,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     >
                       <div className={`p-4 max-w-[85%] text-xs rounded-sm font-sans relative overflow-hidden leading-relaxed whitespace-pre-line
                         ${msg.role === 'user' 
-                          ? 'bg-[#8B1A1A] text-white rounded-br-none' 
+                          ? 'bg-[#0B4628] text-white rounded-br-none' 
                           : (isSpace ? 'bg-[#070b18] border border-white/5 text-stone-200 rounded-bl-none' : 'bg-stone-100 border border-stone-200 text-charcoal rounded-bl-none')
                         }
                       `}>
@@ -1202,7 +1202,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                   />
                   <button
                     onClick={sendWaswasMessage}
-                    className="p-3 bg-[#8B1A1A] text-white hover:bg-black rounded-sm cursor-pointer transition flex justify-center items-center"
+                    className="p-3 bg-[#0B4628] text-white hover:bg-black rounded-sm cursor-pointer transition flex justify-center items-center"
                   >
                     <Send className="h-4 w-4" />
                   </button>
@@ -1218,7 +1218,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                 <div className={`p-6 border rounded-sm max-w-4xl mx-auto transition-colors
                   ${isSpace ? 'bg-space/30 border-white/5' : 'bg-white border-stone-200'}
                 `}>
-                  <h3 className="font-serif font-black text-xl mb-4 text-[#8B1A1A] flex items-center gap-2">
+                  <h3 className="font-serif font-black text-xl mb-4 text-[#0B4628] flex items-center gap-2">
                     <Compass className="h-5 w-5" />
                     Bio-Tech & Structural Ethical Dilemma Formulator
                   </h3>
@@ -1254,7 +1254,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     <button
                       onClick={() => submitMaqasidAnalysis()}
                       disabled={maqasidLoading || !maqasidInput.trim()}
-                      className="font-mono text-xs uppercase bg-[#8B1A1A] text-white hover:bg-black font-bold tracking-widest px-6 py-3.5 rounded-sm transition cursor-pointer disabled:opacity-40"
+                      className="font-mono text-xs uppercase bg-[#0B4628] text-white hover:bg-black font-bold tracking-widest px-6 py-3.5 rounded-sm transition cursor-pointer disabled:opacity-40"
                     >
                       {maqasidLoading ? "Generating 5-Column Ledger..." : "Synthesize Maqasid Ledger"}
                     </button>
@@ -1274,7 +1274,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     
                     {/* 5 COLUMN MAQASID LEDGER */}
                     <div>
-                      <h4 className="font-mono text-xs uppercase text-[#8B1A1A] font-bold tracking-widest mb-4">
+                      <h4 className="font-mono text-xs uppercase text-[#0B4628] font-bold tracking-widest mb-4">
                         Maqasid Objective Alignment (5-Column Ledger Matrix)
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -1317,7 +1317,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                       ${isSpace ? 'bg-[#070b18] border-white/5' : 'bg-stone-50 border-stone-200'}
                     `}>
                       <div className="space-y-4">
-                        <h5 className="font-serif font-black text-sm text-[#8B1A1A]">Western Secular Paradigms COMPARATIVE</h5>
+                        <h5 className="font-serif font-black text-sm text-[#0B4628]">Western Secular Paradigms COMPARATIVE</h5>
                         <div className="space-y-3 text-xs font-sans text-stone-400">
                           <p>
                             <strong className="text-stone-300">Utilitarian Synthesis:</strong> {maqasidResult.comparative.utilitarian}
@@ -1348,7 +1348,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     <div className="flex justify-center">
                       <button
                         onClick={() => saveLabResult("Maqasid Analyzer", maqasidInput, maqasidResult)}
-                        className="font-mono text-xs uppercase bg-[#8B1A1A] hover:bg-black tracking-widest text-white px-8 py-3.5 rounded-sm transition cursor-pointer"
+                        className="font-mono text-xs uppercase bg-[#0B4628] hover:bg-black tracking-widest text-white px-8 py-3.5 rounded-sm transition cursor-pointer"
                       >
                         Save Ethical Analysis to Archives
                       </button>
@@ -1395,7 +1395,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     <button
                       onClick={constructShield}
                       disabled={aqeedahLoading}
-                      className="w-full sm:w-auto font-mono text-xs uppercase bg-[#8B1A1A] text-white hover:bg-black font-bold tracking-widest px-8 py-3.5 rounded-sm transition cursor-pointer"
+                      className="w-full sm:w-auto font-mono text-xs uppercase bg-[#0B4628] text-white hover:bg-black font-bold tracking-widest px-8 py-3.5 rounded-sm transition cursor-pointer"
                     >
                       {aqeedahLoading ? "Constructing Dialectics..." : "Erect Belief Firewall"}
                     </button>
@@ -1412,7 +1412,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                 {/* DYNAMIC SHIELD RESULTS OUT */}
                 {aqeedahOutput && (
                   <div className="max-w-3xl mx-auto space-y-6">
-                    <div className={`p-6 md:p-8 border rounded-sm text-xs font-sans leading-relaxed whitespace-pre-line border-l-4 border-l-[#8B1A1A] relative shadow-inner
+                    <div className={`p-6 md:p-8 border rounded-sm text-xs font-sans leading-relaxed whitespace-pre-line border-l-4 border-l-[#0B4628] relative shadow-inner
                       ${isSpace ? 'bg-[#070b18] border-white/5 text-stone-200' : 'bg-[#FAF2E5] border-stone-200 text-charcoal'}
                     `}>
                       {aqeedahOutput}
@@ -1464,7 +1464,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     <button
                       onClick={interpretDream}
                       disabled={dreamLoading || !dreamText.trim()}
-                      className="font-mono text-xs uppercase bg-[#8B1A1A] text-white hover:bg-black font-bold tracking-widest px-8 py-3.5 rounded-sm transition cursor-pointer"
+                      className="font-mono text-xs uppercase bg-[#0B4628] text-white hover:bg-black font-bold tracking-widest px-8 py-3.5 rounded-sm transition cursor-pointer"
                     >
                       {dreamLoading ? "Consulting Scrolls..." : "Launch Dream Analysis"}
                     </button>
@@ -1487,7 +1487,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                       <div className={`p-6 border rounded-sm text-xs font-sans leading-relaxed space-y-3 relative
                         ${isSpace ? 'bg-[#070b18] border-white/5 text-stone-200' : 'bg-stone-50 border-stone-200 text-charcoal'}
                       `}>
-                        <h4 className="font-serif font-black text-sm text-[#8B1A1A] border-b pb-2 border-stone-200/5">Classical Islamic sirin model</h4>
+                        <h4 className="font-serif font-black text-sm text-[#0B4628] border-b pb-2 border-stone-200/5">Classical Islamic sirin model</h4>
                         <div className="italic font-serif whitespace-pre-wrap">{dreamReport.islamic}</div>
                       </div>
 
@@ -1515,7 +1515,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     <div className="flex justify-center">
                       <button
                         onClick={() => saveLabResult("Dream Interpretation", dreamText, dreamReport)}
-                        className="font-mono text-xs uppercase bg-[#8B1A1A] hover:bg-black tracking-widest text-white px-8 py-3.5 rounded-sm transition cursor-pointer"
+                        className="font-mono text-xs uppercase bg-[#0B4628] hover:bg-black tracking-widest text-white px-8 py-3.5 rounded-sm transition cursor-pointer"
                       >
                         Document in Dream Journal
                       </button>
@@ -1585,7 +1585,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                         <div className="text-xs text-stone-500 max-w-md mx-auto leading-relaxed italic font-serif">
                           Meaning: "{dhikrResult.meaning}"
                         </div>
-                        <div className="inline-block mt-3 px-3 py-1 rounded bg-[#8B1A1A]/15 border border-gold/30 font-mono text-[10px] text-gold-light uppercase font-bold tracking-widest">
+                        <div className="inline-block mt-3 px-3 py-1 rounded bg-[#0B4628]/15 border border-gold/30 font-mono text-[10px] text-gold-light uppercase font-bold tracking-widest">
                           {dhikrResult.repetition}
                         </div>
                       </div>
@@ -1593,21 +1593,21 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-sans text-stone-400 leading-relaxed">
                         <div className="space-y-2.5">
                           <h5 className="font-mono text-amber-500 font-bold uppercase tracking-widest text-[10px]">Cortisal & Vagal Biomechanics</h5>
-                          <p className="font-serif italic border-l pl-3 border-[#8B1A1A]/40">
+                          <p className="font-serif italic border-l pl-3 border-[#0B4628]/40">
                             {dhikrResult.neuroscience}
                           </p>
                         </div>
                         
                         <div className="space-y-2.5">
                           <h5 className="font-mono text-amber-500 font-bold uppercase tracking-widest text-[10px]">Complementary lifestyle medicine</h5>
-                          <p className="font-serif italic border-l pl-3 border-[#8B1A1A]/40">
+                          <p className="font-serif italic border-l pl-3 border-[#0B4628]/40">
                             {dhikrResult.lifestyle}
                           </p>
                         </div>
                       </div>
 
                       <div className="pt-4 border-t border-stone-200/5 text-center leading-relaxed">
-                        <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#8B1A1A]">Chronological Recovery Estimate: </span>
+                        <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#0B4628]">Chronological Recovery Estimate: </span>
                         <span className="text-xs font-serif text-stone-600 dark:text-stone-300 font-bold">{dhikrResult.timeline}</span>
                       </div>
                     </div>
@@ -1675,7 +1675,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                     <button
                       onClick={() => scanFallacy()}
                       disabled={fallacyLoading || !fallacyInput.trim()}
-                      className="font-mono text-xs uppercase bg-[#8B1A1A] text-white hover:bg-black font-bold tracking-widest px-6 py-3 rounded-sm transition cursor-pointer"
+                      className="font-mono text-xs uppercase bg-[#0B4628] text-white hover:bg-black font-bold tracking-widest px-6 py-3 rounded-sm transition cursor-pointer"
                     >
                       {fallacyLoading ? "Scanning syllogisms..." : "Scan For Mughalata Errors"}
                     </button>
@@ -1692,7 +1692,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                 {/* SHOW SCAN CONVENTIONS RESULTS */}
                 {fallacyReport && (
                   <div className="max-w-3xl mx-auto space-y-6">
-                    <h4 className="font-mono text-xs uppercase text-[#8B1A1A] font-bold tracking-widest">
+                    <h4 className="font-mono text-xs uppercase text-[#0B4628] font-bold tracking-widest">
                       Logic Diagnostics Scanner Report
                     </h4>
                     
@@ -1739,7 +1739,7 @@ export default function CognitiveLabs({ currentTheme, onNavigateToPortal, onNavi
                         <div className="flex justify-center pt-4">
                           <button
                             onClick={() => saveLabResult("Fallacy Scan", fallacyInput, fallacyReport)}
-                            className="font-mono text-xs uppercase bg-[#8B1A1A] hover:bg-black tracking-widest text-white px-8 py-3.5 rounded-sm transition cursor-pointer"
+                            className="font-mono text-xs uppercase bg-[#0B4628] hover:bg-black tracking-widest text-white px-8 py-3.5 rounded-sm transition cursor-pointer"
                           >
                             Save Diagnostics to Covenant Log
                           </button>

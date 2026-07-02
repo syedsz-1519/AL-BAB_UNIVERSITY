@@ -143,7 +143,7 @@ export default function QuranExplorer({ currentTheme, onBookmarkAdd, bookmarkedK
           <button
             type="submit"
             disabled={loading}
-            className="w-full font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#8B0000] border border-transparent font-bold tracking-widest py-3 rounded-sm transition-all duration-300 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#0B4628] border border-transparent font-bold tracking-widest py-3 rounded-sm transition-all duration-300 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <Search className="h-3.5 w-3.5" />
             {loading ? 'Consulting Repositories...' : 'Explore Verse'}
@@ -202,7 +202,7 @@ export default function QuranExplorer({ currentTheme, onBookmarkAdd, bookmarkedK
 
           {/* ARABIC CHRONOLOGY */}
           <div className="p-8 py-10 rounded-sm text-center border bg-white dark:bg-space-dark border-stone-200/50 dark:border-gold/10 relative">
-            <div className="absolute top-2 left-2 text-[8px] font-mono tracking-widest text-[#8B0000] dark:text-gold opacity-40 uppercase">
+            <div className="absolute top-2 left-2 text-[8px] font-mono tracking-widest text-[#0B4628] dark:text-gold opacity-40 uppercase">
               Original Arabized Script
             </div>
             <div 

@@ -158,14 +158,14 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
     <div id="scholastic-discussions" className={`p-6 sm:p-8 rounded-md mt-12 border ${
       isSpace 
         ? 'bg-[#030611] border-gold/15 text-neutral-100' 
-        : 'bg-[#FAF6EE] border-[#8B1A1A]/10 text-stone-900'
+        : 'bg-[#FAF6EE] border-[#0B4628]/10 text-stone-900'
     }`}>
       
       {/* SECTION HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-4 border-b border-stone-300/30 dark:border-white/10">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <MessageSquare className={`h-4 w-4 ${isSpace ? 'text-gold' : 'text-[#8B1A1A]'}`} />
+            <MessageSquare className={`h-4 w-4 ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} />
             <h3 className="font-eb font-bold text-xl sm:text-2xl tracking-normal">
               Scholarly Assembly & Feed
             </h3>
@@ -177,7 +177,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
 
         {/* FEED FILTER BOX */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#8B1A1A]/70 dark:text-gold-light/70">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#0B4628]/70 dark:text-gold-light/70">
             Course Filter:
           </span>
           <select
@@ -186,7 +186,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
             className={`text-xs p-1.5 px-3 font-mono rounded-xs border outline-none cursor-pointer transition-colors ${
               isSpace 
                 ? 'bg-space-dark border-gold/20 text-gold-light focus:border-gold' 
-                : 'bg-[#FAF6EE] border-stone-300 text-stone-800 focus:border-[#8B1A1A]'
+                : 'bg-[#FAF6EE] border-stone-300 text-stone-800 focus:border-[#0B4628]'
             }`}
           >
             <option value="all">All Disciplines</option>
@@ -204,9 +204,9 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
           <div className={`p-5 rounded border ${
             isSpace 
               ? 'bg-[#020509] border-gold/10' 
-              : 'bg-[#FAF6EE]/50 border-[#8B1A1A]/15'
+              : 'bg-[#FAF6EE]/50 border-[#0B4628]/15'
           }`}>
-            <h4 className="font-eb font-black text-sm uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: isSpace ? '#E8B86D' : '#8B1A1A' }}>
+            <h4 className="font-eb font-black text-sm uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: isSpace ? '#E8B86D' : '#0B4628' }}>
               <HelpCircle className="h-4 w-4" />
               Submit Intellectual Inquiry
             </h4>
@@ -239,7 +239,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
                         postCourseId === course.id
                           ? (isSpace 
                               ? 'bg-gold/15 text-gold border-gold/40' 
-                              : 'bg-[#8B1A1A]/10 text-[#8B1A1A] border-[#8B1A1A]/30 font-semibold'
+                              : 'bg-[#0B4628]/10 text-[#0B4628] border-[#0B4628]/30 font-semibold'
                             )
                           : (isSpace 
                               ? 'bg-[#020509] border-transparent text-neutral-400 hover:text-white' 
@@ -280,7 +280,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
                       className={`w-full py-2 pl-9 pr-3 text-xs rounded-xs border outline-none font-sans focus:ring-1 ${
                         isSpace 
                           ? 'bg-[#020509] border-gold/25 text-white focus:border-gold focus:ring-gold/20' 
-                          : 'bg-[#FAF6EE] border-stone-300 text-[#1E120A] focus:border-[#8B1A1A] focus:ring-crimson/10'
+                          : 'bg-[#FAF6EE] border-stone-300 text-[#1E120A] focus:border-[#0B4628] focus:ring-crimson/10'
                       }`}
                     />
                     <User className="absolute left-3 top-2.5 h-3.5 w-3.5 text-stone-400" />
@@ -303,7 +303,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
                   className={`w-full p-3 text-xs rounded-xs border outline-none font-sans leading-relaxed focus:ring-1 resize-none ${
                     isSpace 
                       ? 'bg-[#020509] border-gold/25 text-white focus:border-gold focus:ring-gold/20' 
-                      : 'bg-[#FAF6EE] border-stone-300 text-[#1E120A] focus:border-[#8B1A1A] focus:ring-crimson/10'
+                      : 'bg-[#FAF6EE] border-stone-300 text-[#1E120A] focus:border-[#0B4628] focus:ring-crimson/10'
                   }`}
                 />
               </div>
@@ -315,7 +315,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
                 className={`w-full py-2 px-4 rounded-xs text-xs font-mono font-bold uppercase tracking-wider border cursor-pointer select-none transition-all duration-300 flex items-center justify-center gap-2 ${
                   isSpace 
                     ? 'border-gold bg-gold/10 text-gold hover:bg-gold hover:text-space' 
-                    : 'border-[#8B1A1A] bg-[#8B1A1A]/5 text-[#8B1A1A] hover:bg-[#8B1A1A] hover:text-[#FAF6EE]'
+                    : 'border-[#0B4628] bg-[#0B4628]/5 text-[#0B4628] hover:bg-[#0B4628] hover:text-[#FAF6EE]'
                 } ${submitting ? 'opacity-40 pointer-events-none' : ''}`}
               >
                 <span>{submitting ? 'Streaming Ledger...' : 'Post Scholar Question'}</span>
@@ -333,7 +333,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
             <div className="text-center py-12">
               <div className="animate-pulse flex flex-col items-center gap-3">
                 <div className={`h-6 w-6 border-2 border-t-transparent rounded-full animate-spin ${
-                  isSpace ? 'border-gold' : 'border-[#8B1A1A]'
+                  isSpace ? 'border-gold' : 'border-[#0B4628]'
                 }`} />
                 <p className="text-xs font-mono text-stone-500">Retrieving assembly scroll...</p>
               </div>
@@ -346,7 +346,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
               <p className="font-serif italic text-xs text-stone-500">
                 Silence is golden. No active questions have been raised under this discipline.
               </p>
-              <p className="text-[10px] uppercase font-mono tracking-widest text-[#8B1A1A]/60 dark:text-gold-light/60 mt-1">
+              <p className="text-[10px] uppercase font-mono tracking-widest text-[#0B4628]/60 dark:text-gold-light/60 mt-1">
                 Be the first to commence!
               </p>
             </div>
@@ -377,7 +377,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
                           <span className={`text-[8.5px] px-2 py-0.5 rounded-sm font-mono uppercase tracking-wider font-extrabold ${
                             isSpace 
                               ? 'bg-gold/10 text-gold-light border border-gold/20' 
-                              : 'bg-[#8B1A1A]/10 text-[#8B1A1A] border border-[#8B1A1A]/15'
+                              : 'bg-[#0B4628]/10 text-[#0B4628] border border-[#0B4628]/15'
                           }`}>
                             {q.courseName}
                           </span>
@@ -398,7 +398,7 @@ export default function CourseDiscussionFeed({ currentTheme }: CourseDiscussionF
                       <div className="flex items-center justify-between mt-1">
                         <div className="flex items-center gap-1 text-[10.5px] font-mono">
                           <span className="opacity-65 text-stone-400">Author:</span>
-                          <span className={isSpace ? 'text-gold-light font-bold' : 'text-[#8B1A1A] font-bold'}>
+                          <span className={isSpace ? 'text-gold-light font-bold' : 'text-[#0B4628] font-bold'}>
                             {q.studentName}
                           </span>
                           {q.uid !== 'guest' && (

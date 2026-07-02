@@ -494,7 +494,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             className={`border rounded-md shadow-lg p-8 md:p-12 relative overflow-hidden transition-all duration-300 max-w-2xl mx-auto
               ${isSpace 
                 ? 'bg-stone-950/90 border-gold/20 text-stone-100' 
-                : 'bg-[#F5F0E8] border-[#C4A35A]/50 text-[#8B1A1A]'
+                : 'bg-[#F5F0E8] border-[#C4A35A]/50 text-[#0B4628]'
               }
             `}
             id="nafs-intro-panel"
@@ -505,7 +505,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             </div>
 
             <div className="max-w-2xl mx-auto space-y-6 text-center">
-              <span className="text-4xl text-[#8B1A1A] dark:text-gold font-arabic block font-bold mb-2">
+              <span className="text-4xl text-[#0B4628] dark:text-gold font-arabic block font-bold mb-2">
                 نَفْسٌ تَتَزَكَّى
               </span>
               <h2 className="font-serif text-3xl font-extrabold tracking-tight text-stone-900 dark:text-white leading-none">
@@ -523,7 +523,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
               <div className="pt-6">
                 <button
                   onClick={handleStartQuiz}
-                  className="w-full font-mono text-xs uppercase bg-[#8B1A1A] dark:bg-gold text-white dark:text-space hover:opacity-90 border border-transparent font-bold tracking-widest py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer min-h-[44px]"
+                  className="w-full font-mono text-xs uppercase bg-[#0B4628] dark:bg-gold text-white dark:text-space hover:opacity-90 border border-transparent font-bold tracking-widest py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer min-h-[44px]"
                   id="begin-assessment-btn"
                 >
                   Begin Assessment →
@@ -548,7 +548,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             `}
           >
             {/* Progress metrics */}
-            <div className="flex justify-between items-center text-xs font-mono tracking-widest uppercase mb-4 text-[#8B1A1A] dark:text-gold font-bold animate-fade-in">
+            <div className="flex justify-between items-center text-xs font-mono tracking-widest uppercase mb-4 text-[#0B4628] dark:text-gold font-bold animate-fade-in">
               <span>Question {currentQuestionIndex + 1} of 15</span>
               <span className="opacity-75">{NAFS_QUESTIONS[currentQuestionIndex].topic}</span>
             </div>
@@ -556,7 +556,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             {/* Seamless gold progress bar with cream background */}
             <div className="w-full bg-[#E8E2D5] dark:bg-stone-850 h-[6px] rounded-full mb-8 relative overflow-hidden">
               <motion.div 
-                className="bg-[#8B1A1A] dark:bg-gold h-full rounded-full"
+                className="bg-[#0B4628] dark:bg-gold h-full rounded-full"
                 initial={{ width: `${(currentQuestionIndex / 15) * 100}%` }}
                 animate={{ width: `${((currentQuestionIndex + 1) / 15) * 100}%` }}
                 transition={{ duration: 0.3 }}
@@ -580,10 +580,10 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                       id={`option-btn-${option.key}`}
                       className={`text-left border transition-all duration-300 px-6 py-4 rounded-sm relative overflow-hidden flex gap-4 items-center cursor-pointer select-none group min-h-[60px]
                         ${isSelected
-                          ? 'bg-[#8B1A1A] border-[#8B1A1A] text-white shadow-md'
+                          ? 'bg-[#0B4628] border-[#0B4628] text-white shadow-md'
                           : isSpace
                             ? 'border-stone-800 bg-stone-900/40 hover:border-gold/50 hover:bg-gold/5 hover:text-white'
-                            : 'border-[#8B1A1A]/35 bg-[#FFFDF9] hover:border-[#8B1A1A] hover:bg-[#8B1A1A]/5 hover:text-stone-900 hover:shadow-sm'
+                            : 'border-[#0B4628]/35 bg-[#FFFDF9] hover:border-[#0B4628] hover:bg-[#0B4628]/5 hover:text-stone-900 hover:shadow-sm'
                         }
                       `}
                     >
@@ -592,7 +592,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                           ? 'bg-transparent border-white text-white'
                           : isSpace
                             ? 'bg-stone-800 border-stone-700 text-stone-400 group-hover:border-gold/50 group-hover:text-gold'
-                            : 'bg-[#FDFBF7] border-stone-300 text-stone-500 group-hover:border-[#8B1A1A]/50 group-hover:text-[#8B1A1A]'
+                            : 'bg-[#FDFBF7] border-stone-300 text-stone-500 group-hover:border-[#0B4628]/50 group-hover:text-[#0B4628]'
                         }
                       `}>
                         {isSelected ? <Check className="h-4 w-4" /> : option.key}
@@ -629,7 +629,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                 transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
                 className="absolute w-24 h-24 rounded-full flex items-center justify-center"
               >
-                <span className="font-arabic text-5xl text-[#8B1A1A] dark:text-gold select-none font-bold">
+                <span className="font-arabic text-5xl text-[#0B4628] dark:text-gold select-none font-bold">
                   نَفْس
                 </span>
               </motion.div>
@@ -638,7 +638,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
             <h3 className="font-serif text-2xl font-bold tracking-tight text-stone-900 dark:text-white mb-2">
               Analysing your Nafs with Gemini...
             </h3>
-            <p className="font-arabic text-xl tracking-wider text-[#8B1A1A] dark:text-gold font-bold mb-4">
+            <p className="font-arabic text-xl tracking-wider text-[#0B4628] dark:text-gold font-bold mb-4">
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </p>
             <p className="text-xs text-stone-500 max-w-sm mx-auto leading-relaxed font-serif">
@@ -683,13 +683,13 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                         Predominant Spiritual Stage
                       </span>
                       
-                      <h2 className="font-arabic text-4xl sm:text-5xl font-black text-[#8B1A1A] dark:text-gold tracking-wide mt-2">
+                      <h2 className="font-arabic text-4xl sm:text-5xl font-black text-[#0B4628] dark:text-gold tracking-wide mt-2">
                         {result.arabic}
                       </h2>
 
                       {/* Phase Gold Badge (gold bg, maroon text) */}
-                      <div className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#C4A35A] text-[#8B1A1A] rounded-full tracking-widest text-xs uppercase font-bold shadow-inner mt-2">
-                        <Award className="h-4 w-4 text-[#8B1A1A]" />
+                      <div className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#C4A35A] text-[#0B4628] rounded-full tracking-widest text-xs uppercase font-bold shadow-inner mt-2">
+                        <Award className="h-4 w-4 text-[#0B4628]" />
                         Nafs al-{result.stage}
                       </div>
                     </div>
@@ -701,7 +701,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
 
                     {/* Short description profile (14px font, relaxed leading) */}
                     <div className="space-y-3 text-left">
-                      <h4 className="font-serif text-sm font-bold uppercase tracking-widest text-[#8B1A1A] dark:text-gold border-b border-stone-200 dark:border-stone-850 pb-1.5">
+                      <h4 className="font-serif text-sm font-bold uppercase tracking-widest text-[#0B4628] dark:text-gold border-b border-stone-200 dark:border-stone-850 pb-1.5">
                         Spiritual Character Profile
                       </h4>
                       <p className="font-serif text-sm sm:text-[14px] leading-relaxed text-stone-700 dark:text-stone-300">
@@ -710,7 +710,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                     </div>
 
                     {/* Quote from Ibn al-Qayyim (italic, maroon text) below the profile */}
-                    <blockquote className="border-l-4 border-[#8B1A1A] pl-5 py-2 italic font-serif text-sm sm:text-base text-[#8B1A1A] dark:text-stone-450 leading-relaxed bg-[#FFFDF9]/60 dark:bg-stone-900/20 pr-4 text-left">
+                    <blockquote className="border-l-4 border-[#0B4628] pl-5 py-2 italic font-serif text-sm sm:text-base text-[#0B4628] dark:text-stone-450 leading-relaxed bg-[#FFFDF9]/60 dark:bg-stone-900/20 pr-4 text-left">
                       "{result.ibn_qayyim_quote}"
                       <span className="block mt-2 font-mono text-[10px] tracking-widest uppercase text-[#C4A35A] dark:text-gold/85 font-bold not-italic">
                         — Ibn al-Qayyim al-Jawziyyah
@@ -721,7 +721,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                   {/* RIGHT COLUMN: 7-day Tazkiyah Prescription accordion */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 pb-1 border-b border-stone-200 dark:border-stone-850">
-                      <Calendar className="h-5 w-5 text-[#8B1A1A] dark:text-gold" />
+                      <Calendar className="h-5 w-5 text-[#0B4628] dark:text-gold" />
                       <h4 className="font-serif text-md font-bold uppercase tracking-widest text-[#2B2B2B] dark:text-gold">
                         7-day Tazkiyah Prescription
                       </h4>
@@ -749,14 +749,14 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                             >
                               <span className="flex items-center gap-2.5">
                                 <span className={`font-mono text-xs text-stone-400 w-5 h-5 rounded-full flex items-center justify-center border font-bold
-                                  ${isOpen ? 'border-[#C4A35A] text-[#8B1A1A] bg-[#C4A35A]/25' : 'border-stone-500'}`}
+                                  ${isOpen ? 'border-[#C4A35A] text-[#0B4628] bg-[#C4A35A]/25' : 'border-stone-500'}`}
                                 >
                                   {day.day}
                                 </span>
                                 Day {day.day} — Spiritual Regimen
                               </span>
                               <span className={`text-xs font-mono tracking-widest uppercase transition-all duration-300
-                                ${isOpen ? 'text-[#8B1A1A] dark:text-gold font-bold rotate-90 scale-105' : 'text-stone-400 group-hover:text-stone-700'}`}
+                                ${isOpen ? 'text-[#0B4628] dark:text-gold font-bold rotate-90 scale-105' : 'text-stone-400 group-hover:text-stone-700'}`}
                               >
                                 {isOpen ? "Close" : "Open"}
                               </span>
@@ -769,8 +769,8 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                                 transition={{ duration: 0.25 }}
                                 className="px-5 pb-5 border-t border-dashed border-stone-250 dark:border-stone-800 pt-3.5 space-y-4 font-sans text-xs sm:text-sm"
                               >
-                                <div className="space-y-1.5 bg-stone-100/60 dark:bg-stone-905/40 p-3 rounded-sm border-l-2 border-[#8B1A1A] dark:border-gold">
-                                  <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#8B1A1A] dark:text-gold block">
+                                <div className="space-y-1.5 bg-stone-100/60 dark:bg-stone-905/40 p-3 rounded-sm border-l-2 border-[#0B4628] dark:border-gold">
+                                  <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#0B4628] dark:text-gold block">
                                     Daily Litanies / Adhkar Prescription
                                   </span>
                                   <p className="font-serif text-[#2B2B2B] dark:text-stone-300 leading-relaxed text-sm">
@@ -818,7 +818,7 @@ export default function NafsAssessmentScreen({ currentTheme, onBackToLanding }: 
                     className={`font-mono text-xs uppercase border tracking-widest px-6 py-3.5 rounded-sm transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 min-h-[44px]
                       ${isSaved
                         ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-400 cursor-default shadow-inner'
-                        : 'bg-[#8B1A1A] hover:opacity-90 text-white border-transparent font-bold'
+                        : 'bg-[#0B4628] hover:opacity-90 text-white border-transparent font-bold'
                       }
                     `}
                     id="save-to-journal-btn"

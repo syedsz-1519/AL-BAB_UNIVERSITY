@@ -126,7 +126,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
   };
 
   const totalObjectives = [
-    { key: 'deen', label: 'Deen', color: 'bg-[#8B1A1A]' },
+    { key: 'deen', label: 'Deen', color: 'bg-[#0B4628]' },
     { key: 'nafs', label: 'Nafs', color: 'bg-[#C4A35A]' },
     { key: 'aql', label: 'Aql', color: 'bg-[#1E3A8A]' },
     { key: 'nasl', label: 'Nasl', color: 'bg-[#059669]' },
@@ -135,11 +135,11 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
 
   return (
     <div 
-      className="min-h-screen pb-20 pt-0 font-sans text-[#1A1A1A] selection:bg-[#8B1A1A]/10 text-left"
+      className="min-h-screen pb-20 pt-0 font-sans text-[#1A1A1A] selection:bg-[#0B4628]/10 text-left"
       style={{ backgroundColor: '#F5F0E8' }}
     >
       {/* MAROON HEADER BOX */}
-      <header className="relative pt-36 sm:pt-40 pb-12 px-6 md:px-12 text-center bg-[#8B1A1A] border-b border-[#C4A35A]/30 overflow-hidden shadow-md">
+      <header className="relative pt-36 sm:pt-40 pb-12 px-6 md:px-12 text-center bg-[#0B4628] border-b border-[#C4A35A]/30 overflow-hidden shadow-md">
         <div className="absolute inset-0 bg-black/10 pointer-events-none" />
         <div className="max-w-4xl mx-auto space-y-4 relative z-10 flex flex-col items-center">
           <button 
@@ -181,7 +181,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-28 left-1/2 -translate-x-1/2 z-50 bg-[#8B1A1A] text-white border border-[#C4A35A]/50 px-6 py-3.5 rounded-sm shadow-2xl flex items-center gap-3 text-xs font-mono tracking-wider uppercase"
+            className="fixed top-28 left-1/2 -translate-x-1/2 z-50 bg-[#0B4628] text-white border border-[#C4A35A]/50 px-6 py-3.5 rounded-sm shadow-2xl flex items-center gap-3 text-xs font-mono tracking-wider uppercase"
           >
             <Sparkles className="h-4 w-4 text-[#C4A35A] animate-pulse" />
             <span>{notification}</span>
@@ -199,10 +199,10 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-6 sm:p-10 shadow-lg space-y-8"
+              className="bg-[#FAF8F5] border border-[#0B4628]/10 rounded-sm p-6 sm:p-10 shadow-lg space-y-8"
             >
               <div className="space-y-3">
-                <span className="text-[10px] font-mono tracking-[0.25em] text-[#8B1A1A] font-bold block uppercase">
+                <span className="text-[10px] font-mono tracking-[0.25em] text-[#0B4628] font-bold block uppercase">
                   Select a Dilemma or Write Your Own
                 </span>
                 <div className="flex flex-wrap gap-2.5">
@@ -213,8 +213,8 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                       type="button"
                       className={`text-[11px] font-mono tracking-wide px-3.5 py-2.5 rounded-sm border transition-all duration-300 pointer-events-auto cursor-pointer text-left leading-relaxed max-w-full sm:max-w-md ${
                         dilemma === ex 
-                          ? 'bg-[#8B1A1A] text-white border-transparent shadow-md font-bold' 
-                          : 'bg-white text-stone-700 border-stone-250 hover:border-[#8B1A1A] hover:bg-stone-50'
+                          ? 'bg-[#0B4628] text-white border-transparent shadow-md font-bold' 
+                          : 'bg-white text-stone-700 border-stone-250 hover:border-[#0B4628] hover:bg-stone-50'
                       }`}
                     >
                       {ex}
@@ -227,7 +227,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                 <div className="space-y-2">
                   <label 
                     htmlFor="dilemma-textarea" 
-                    className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-[#8B1A1A] block"
+                    className="font-mono text-[10px] font-black uppercase tracking-[0.15em] text-[#0B4628] block"
                   >
                     DESCRIBE YOUR ETHICAL DILEMMA
                   </label>
@@ -242,7 +242,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                       setError(null);
                     }}
                     style={{ minHeight: '130px' }}
-                    className="w-full bg-white border border-[#8B1A1A]/15 focus:border-[#8B1A1A] focus:ring-1 focus:ring-[#8B1A1A] rounded-sm p-4 font-serif text-sm sm:text-base leading-relaxed outline-none shadow-inner transition-colors duration-300"
+                    className="w-full bg-white border border-[#0B4628]/15 focus:border-[#0B4628] focus:ring-1 focus:ring-[#0B4628] rounded-sm p-4 font-serif text-sm sm:text-base leading-relaxed outline-none shadow-inner transition-colors duration-300"
                   />
                 </div>
 
@@ -259,7 +259,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                 <button
                   type="submit"
                   disabled={!dilemma.trim()}
-                  className={`w-full py-4 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-[0.2em] font-black rounded-sm border border-[#C4A35A]/45 cursor-pointer select-none transition-all duration-300 shadow flex items-center justify-center gap-2.5 ${
+                  className={`w-full py-4 bg-[#0B4628] text-white hover:bg-black font-mono text-xs uppercase tracking-[0.2em] font-black rounded-sm border border-[#C4A35A]/45 cursor-pointer select-none transition-all duration-300 shadow flex items-center justify-center gap-2.5 ${
                     !dilemma.trim() ? 'opacity-50 cursor-not-allowed bg-stone-450' : ''
                   }`}
                 >
@@ -271,7 +271,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
               {/* ARCHIVED ANALYSES (IF ANY) */}
               {savedAnalyses.length > 0 && (
                 <div className="border-t border-stone-200 pt-8 mt-4 space-y-4">
-                  <h3 className="font-serif font-black text-sm uppercase tracking-wider text-[#8B1A1A] flex items-center gap-2">
+                  <h3 className="font-serif font-black text-sm uppercase tracking-wider text-[#0B4628] flex items-center gap-2">
                     <Bookmark className="h-4 w-4 text-[#C4A35A]" />
                     <span>Your Previous Saved Scribe Determinations</span>
                   </h3>
@@ -284,7 +284,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                           setResult(item.result);
                           setError(null);
                         }}
-                        className="p-4 bg-white hover:bg-[#FAF8F5] border border-stone-200 hover:border-[#8B1A1A]/30 rounded-sm text-left transition-all duration-200 cursor-pointer pointer-events-auto flex justify-between items-start gap-4 shadow-sm"
+                        className="p-4 bg-white hover:bg-[#FAF8F5] border border-stone-200 hover:border-[#0B4628]/30 rounded-sm text-left transition-all duration-200 cursor-pointer pointer-events-auto flex justify-between items-start gap-4 shadow-sm"
                       >
                         <div className="space-y-1">
                           <p className="font-serif font-bold text-xs sm:text-sm text-stone-850 line-clamp-2 italic">
@@ -317,11 +317,11 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-12 text-center shadow-lg space-y-10 py-16 flex flex-col items-center justify-center min-h-[400px]"
+              className="bg-[#FAF8F5] border border-[#0B4628]/10 rounded-sm p-12 text-center shadow-lg space-y-10 py-16 flex flex-col items-center justify-center min-h-[400px]"
             >
               <div className="space-y-3">
-                <Compass className="h-10 w-10 text-[#8B1A1A] animate-spin mx-auto mb-2" />
-                <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#8B1A1A] font-black">
+                <Compass className="h-10 w-10 text-[#0B4628] animate-spin mx-auto mb-2" />
+                <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#0B4628] font-black">
                   Activating Maqasid Synthesis Engine
                 </h3>
                 <p className="font-serif text-stone-500 text-sm italic max-w-sm mx-auto">
@@ -378,9 +378,9 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
             >
               
               {/* SUMMARY HIGHLIGHT CARD */}
-              <div className="bg-[#FAF8F5] border border-[#8B1A1A]/10 rounded-sm p-6 sm:p-8 shadow text-center relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#8B1A1A] via-[#C4A35A] to-[#8B1A1A]" />
-                <span className="text-[10px] font-mono tracking-[0.2em] text-[#8B1A1A] uppercase font-bold block mb-2.5">
+              <div className="bg-[#FAF8F5] border border-[#0B4628]/10 rounded-sm p-6 sm:p-8 shadow text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0B4628] via-[#C4A35A] to-[#0B4628]" />
+                <span className="text-[10px] font-mono tracking-[0.2em] text-[#0B4628] uppercase font-bold block mb-2.5">
                   Dilemma Restatement
                 </span>
                 <p className="font-serif italic font-semibold text-[#1A1A1A] text-lg sm:text-xl leading-relaxed max-w-3xl mx-auto">
@@ -390,7 +390,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
 
               {/* 5 MAQASID CARDS GRID */}
               <div className="space-y-3">
-                <h3 className="font-mono text-[10px] uppercase font-black tracking-[0.2em] text-[#8B1A1A]">
+                <h3 className="font-mono text-[10px] uppercase font-black tracking-[0.2em] text-[#0B4628]">
                   Traditional Jurisprudential Lenses — الْأَقْسَامُ الْخَمْسَة
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -399,13 +399,13 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                     return (
                       <div 
                         key={key}
-                        className="bg-white border-t-[3px] border-t-[#8B1A1A] border-l border-r border-b border-stone-200 p-5 rounded-r-md rounded-b-md shadow-sm xl:p-6 flex flex-col justify-between gap-4"
+                        className="bg-white border-t-[3px] border-t-[#0B4628] border-l border-r border-b border-stone-200 p-5 rounded-r-md rounded-b-md shadow-sm xl:p-6 flex flex-col justify-between gap-4"
                       >
                         <div className="space-y-3">
                           <div className="flex justify-between items-baseline border-b border-stone-100 pb-2">
                             <div>
                               <span 
-                                className="font-serif font-black block text-[#8B1A1A] text-lg leading-tight"
+                                className="font-serif font-black block text-[#0B4628] text-lg leading-tight"
                                 style={{ fontFamily: 'Amiri, Georgia, serif' }}
                               >
                                 {mappedDetails.arabic}
@@ -450,7 +450,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
 
               {/* COMPARISON TABLE */}
               <div className="space-y-3">
-                <h3 className="font-mono text-[10px] uppercase font-black tracking-[0.2em] text-[#8B1A1A]">
+                <h3 className="font-mono text-[10px] uppercase font-black tracking-[0.2em] text-[#0B4628]">
                   Compartal Ethics Contrast Board — الْأَخْلَاقُ الْمُقَارَنَةُ
                 </h3>
                 
@@ -471,7 +471,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                       {/* ROW 1: UTILITARIAN vs RULING */}
                       <tr>
                         <td className="px-4 py-3 border-r border-stone-200 leading-relaxed text-stone-750">
-                          <span className="font-mono text-[9px] text-[#8B1A1A] block uppercase font-bold tracking-wider mb-0.5">
+                          <span className="font-mono text-[9px] text-[#0B4628] block uppercase font-bold tracking-wider mb-0.5">
                             Utilitarian perspective (Consecution)
                           </span>
                           {result.utilitarian}
@@ -487,7 +487,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                       {/* ROW 2: DEONTOLOGICAL vs RULING */}
                       <tr>
                         <td className="px-4 py-3 border-r border-stone-200 leading-relaxed text-stone-750">
-                          <span className="font-mono text-[9px] text-[#8B1A1A] block uppercase font-bold tracking-wider mb-0.5">
+                          <span className="font-mono text-[9px] text-[#0B4628] block uppercase font-bold tracking-wider mb-0.5">
                             Deontological perspective (Kantian Duty)
                           </span>
                           {result.deontological}
@@ -522,7 +522,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
               </div>
 
               {/* FINAL RULING BOX */}
-              <div className="border border-[#8B1A1A] rounded-sm p-6 sm:p-8 bg-amber-50/10 relative overflow-hidden space-y-4">
+              <div className="border border-[#0B4628] rounded-sm p-6 sm:p-8 bg-amber-50/10 relative overflow-hidden space-y-4">
                 <div className="absolute top-0 right-0 py-1.5 px-3 bg-[#C4A35A]/15 text-stone-800 rounded-bl-sm border-l border-b border-[#C4A35A]/30">
                   <div className="flex items-center gap-1.5">
                     <span className="font-mono text-[9px] uppercase tracking-wider font-bold">
@@ -541,10 +541,10 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                 </div>
 
                 <div className="space-y-1.5 border-b border-[#C4A35A]/15 pb-2.5">
-                  <span className="font-mono text-[10px] tracking-[0.25em] text-[#8B1A1A] uppercase font-black block">
+                  <span className="font-mono text-[10px] tracking-[0.25em] text-[#0B4628] uppercase font-black block">
                     Adjudicated Shariah Verdict — نَتِيجَةُ الْحُكْمِ الْكُلِّيِّ
                   </span>
-                  <h2 className="font-serif text-[#8B1A1A] font-bold text-xl sm:text-2xl leading-none">
+                  <h2 className="font-serif text-[#0B4628] font-bold text-xl sm:text-2xl leading-none">
                     Unified Shariah Determinate Framework
                   </h2>
                 </div>
@@ -563,7 +563,7 @@ export default function MaqasidAnalyzer({ currentTheme, onBackToLanding }: Maqas
                 
                 <button
                   onClick={handleSave}
-                  className="flex items-center gap-2 bg-[#8B1A1A] text-white hover:bg-black font-mono text-xs uppercase tracking-[0.15em] font-bold px-5 py-3.5 rounded-sm border border-[#C4A35A]/40 transition-all duration-300 shadow cursor-pointer uppercase select-none pointer-events-auto"
+                  className="flex items-center gap-2 bg-[#0B4628] text-white hover:bg-black font-mono text-xs uppercase tracking-[0.15em] font-bold px-5 py-3.5 rounded-sm border border-[#C4A35A]/40 transition-all duration-300 shadow cursor-pointer uppercase select-none pointer-events-auto"
                 >
                   <Save className="h-4 w-4 text-[#C4A35A]" />
                   <span>Save Determination Document</span>

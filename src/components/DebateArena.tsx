@@ -170,7 +170,7 @@ export default function DebateArena({ currentTheme }: DebateArenaProps) {
       <button
         onClick={handleBeginMunazara}
         disabled={loading}
-        className="mt-8 font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#8B0000] border border-transparent font-bold tracking-widest px-8 py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none w-full flex justify-center items-center gap-2"
+        className="mt-8 font-mono text-xs uppercase bg-crimson dark:bg-gold text-white dark:text-space hover:bg-black hover:text-gold dark:hover:bg-white dark:hover:text-[#0B4628] border border-transparent font-bold tracking-widest px-8 py-4 rounded-sm shadow-md transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none w-full flex justify-center items-center gap-2"
       >
         <Languages className="h-4 w-4" />
         {loading ? 'Convening the Munazara Assemblies...' : 'Begin Munazara (Start Scholarly Debate)'}
