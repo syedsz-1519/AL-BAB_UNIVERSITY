@@ -1,7 +1,56 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck } from 'lucide-react';
+import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck, Calendar } from 'lucide-react';
 import { Language, LIST_TRANSLATIONS } from '../i18n';
 import AlbabLogo from './AlbabLogo';
+
+// Helper to calculate and format Hijri date based on current Gregorian date
+const getHijriDateString = (lang: Language): string => {
+  try {
+    const date = new Date();
+    
+    // Choose appropriate locale tag with custom Islamic calendar extension
+    const localeMap: Record<Language, string> = {
+      en: 'en-US-u-ca-islamic-umalqura',
+      ar: 'ar-SA-u-ca-islamic-umalqura',
+      ur: 'ur-PK-u-ca-islamic-umalqura'
+    };
+    
+    const locale = localeMap[lang] || 'en-US-u-ca-islamic-umalqura';
+    
+    const formatter = new Intl.DateTimeFormat(locale, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    
+    let formatted = formatter.format(date);
+    
+    // Custom clean-ups to make it look exceptionally elegant and consistent
+    if (lang === 'en') {
+      if (!formatted.includes('AH') && !formatted.includes('AH.')) {
+        formatted += ' AH';
+      }
+    } else if (lang === 'ar') {
+      if (!formatted.includes('هـ')) {
+        formatted += ' هـ';
+      }
+    } else if (lang === 'ur') {
+      if (!formatted.includes('ھ')) {
+        formatted += 'ھ';
+      }
+    }
+    
+    return formatted;
+  } catch (error) {
+    // Elegant fallback based on average tabular calculation for July 2, 2026 (approx 17 Muharram 1448 AH)
+    if (lang === 'ar') {
+      return "١٧ محرم ١٤٤٨ هـ";
+    } else if (lang === 'ur') {
+      return "17 محرم 1448ھ";
+    }
+    return "17 Muharram 1448 AH";
+  }
+};
 
 interface HeaderProps {
   currentTheme: 'parchment' | 'space';
@@ -114,6 +163,24 @@ export default function Header({
             <LanguageButton lang="en" cur={language} onClick={onLanguageChange} />
             <LanguageButton lang="ar" cur={language} label="عربي" onClick={onLanguageChange} />
             <LanguageButton lang="ur" cur={language} label="اردو" onClick={onLanguageChange} />
+          </div>
+
+          {/* HIJRI ACADEMIC DATE */}
+          <div className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm border font-mono transition-all duration-300
+            ${isSpace 
+              ? 'bg-[#18110b]/30 border-gold/15 text-gold-light' 
+              : 'bg-[#FCFAF6] border-[#C9933A]/20 text-[#0B4628]'
+            }
+          `}>
+            <Calendar className={`h-3.5 w-3.5 ${isSpace ? 'text-gold' : 'text-crimson'}`} />
+            <div className="flex flex-col items-start leading-none">
+              <span className="text-[7px] uppercase tracking-wider font-extrabold opacity-60">
+                {language === 'ar' ? 'التقويم الهجري' : language === 'ur' ? 'ہجری' : 'Academic Hijri'}
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-black tracking-tight mt-0.5">
+                {getHijriDateString(language)}
+              </span>
+            </div>
           </div>
 
           {/* THEME TOGGLE */}

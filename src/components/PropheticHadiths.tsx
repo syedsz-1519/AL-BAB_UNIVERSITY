@@ -26,13 +26,13 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
           : 'bg-[#FAF8F5] border-t border-stone-200 text-stone-900'
         }
       `}
-      style={{
-        backgroundImage: isSpace 
-          ? 'radial-gradient(circle, rgba(196,163,90,0.04) 1.5px, transparent 1.5px)' 
-          : 'radial-gradient(circle, rgba(11, 70, 40,0.03) 1.5px, transparent 1.5px)',
-        backgroundSize: '32px 32px'
-      }}
     >
+      {/* Background arabesque-grid overlay for rich Islamic art atmosphere */}
+      <div className="absolute inset-0 opacity-[0.025] bg-repeat arabesque-grid pointer-events-none" />
+
+      {/* Decorative Traditional Arabic Motifs in Corners */}
+      <div className="absolute top-0 left-0 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star bg-current" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star bg-current" />
       <div className="max-w-4xl mx-auto relative z-10 text-center">
         
         {/* SECTION HEADER BLOCK */}
