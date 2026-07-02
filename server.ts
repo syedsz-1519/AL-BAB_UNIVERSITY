@@ -136,20 +136,57 @@ let localAssignments: any[] = [
   }
 ];
 
+let isSupabaseUnreachable = false;
+
 // Helper: Attempt Supabase operation, fallback otherwise
 async function trySupabaseFetch(table: string, fallbackData: any[]) {
-  if (!isSupabaseConfigured || !supabase) return { data: fallbackData, source: "fallback" };
+  if (!isSupabaseConfigured || !supabase || isSupabaseUnreachable) {
+    return { data: fallbackData, source: "fallback" };
+  }
   try {
     const { data, error } = await supabase.from(table).select("*").order("id", { ascending: false });
     if (error) {
-      // Table might not exist, fallback gracefully
-      console.warn(`Supabase fetch failed for "${table}". Error logic:`, error.message);
+      if (error.message && (error.message.includes("fetch failed") || error.message.includes("TypeError") || error.message.includes("Failed to fetch") || error.message.includes("unreachable"))) {
+        isSupabaseUnreachable = true;
+        console.log(`[INFO] Supabase network is unreachable. Falling back silently to local offline-memory storage.`);
+        return { data: fallbackData, source: "fallback" };
+      }
+      // Table might not exist, fallback gracefully with a low-priority log
+      console.log(`[INFO] Supabase table "${table}" is not accessible. Using fallback:`, error.message);
       return { data: fallbackData, source: "fallback (table missing or error)" };
     }
     return { data, source: "supabase" };
   } catch (err: any) {
-    console.error(`Subsystem error fetching from ${table}:`, err.message);
+    if (err.message && (err.message.includes("fetch failed") || err.message.includes("TypeError") || err.message.includes("Failed to fetch") || err.message.includes("unreachable"))) {
+      isSupabaseUnreachable = true;
+      console.log(`[INFO] Supabase network exception. Falling back silently to local offline-memory storage.`);
+      return { data: fallbackData, source: "fallback" };
+    }
+    console.log(`[INFO] Subsystem error fetching from ${table}:`, err.message);
     return { data: fallbackData, source: "fallback (exception)" };
+  }
+}
+
+// Helpers to cleanly handle Supabase write operations when offline
+function handleSupabaseWriteError(error: any, contextMsg: string) {
+  if (error) {
+    const errMsg = error.message || "";
+    if (errMsg.includes("fetch failed") || errMsg.includes("TypeError") || errMsg.includes("Failed to fetch") || errMsg.includes("unreachable")) {
+      isSupabaseUnreachable = true;
+      console.log(`[INFO] Supabase network offline during ${contextMsg}. Falling back silently to offline memory mode.`);
+    } else {
+      console.log(`[INFO] Supabase write failed during ${contextMsg}:`, errMsg);
+    }
+  }
+}
+
+function handleSupabaseWriteException(err: any, contextMsg: string) {
+  const errMsg = err.message || "";
+  if (errMsg.includes("fetch failed") || errMsg.includes("TypeError") || errMsg.includes("Failed to fetch") || errMsg.includes("unreachable")) {
+    isSupabaseUnreachable = true;
+    console.log(`[INFO] Supabase network exception during ${contextMsg}. Falling back silently to offline memory mode.`);
+  } else {
+    console.log(`[INFO] Supabase exception during ${contextMsg}:`, errMsg);
   }
 }
 
@@ -200,23 +237,65 @@ async function startServer() {
     let noticesStatus = "Unknown";
     let assignmentsStatus = "Unknown";
 
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const fetchAdmissions = await supabase.from("albab_admissions").select("id").limit(1);
-        admissionsStatus = fetchAdmissions.error ? `Missing/Error: ${fetchAdmissions.error.message}` : "Ready";
+        if (fetchAdmissions.error) {
+          const errMsg = fetchAdmissions.error.message || "";
+          if (errMsg.includes("fetch failed") || errMsg.includes("TypeError") || errMsg.includes("Failed to fetch") || errMsg.includes("unreachable")) {
+            isSupabaseUnreachable = true;
+            admissionsStatus = "Offline Fallback Active";
+          } else {
+            admissionsStatus = `Missing/Error: ${errMsg}`;
+          }
+        } else {
+          admissionsStatus = "Ready";
+        }
         
-        const fetchNotices = await supabase.from("albab_notices").select("id").limit(1);
-        noticesStatus = fetchNotices.error ? `Missing/Error: ${fetchNotices.error.message}` : "Ready";
+        if (!isSupabaseUnreachable) {
+          const fetchNotices = await supabase.from("albab_notices").select("id").limit(1);
+          if (fetchNotices.error) {
+            const errMsg = fetchNotices.error.message || "";
+            if (errMsg.includes("fetch failed") || errMsg.includes("TypeError") || errMsg.includes("Failed to fetch") || errMsg.includes("unreachable")) {
+              isSupabaseUnreachable = true;
+              noticesStatus = "Offline Fallback Active";
+            } else {
+              noticesStatus = `Missing/Error: ${errMsg}`;
+            }
+          } else {
+            noticesStatus = "Ready";
+          }
+        } else {
+          noticesStatus = "Offline Fallback Active";
+        }
 
-        const fetchAsgs = await supabase.from("albab_assignments").select("id").limit(1);
-        assignmentsStatus = fetchAsgs.error ? `Missing/Error: ${fetchAsgs.error.message}` : "Ready";
+        if (!isSupabaseUnreachable) {
+          const fetchAsgs = await supabase.from("albab_assignments").select("id").limit(1);
+          if (fetchAsgs.error) {
+            const errMsg = fetchAsgs.error.message || "";
+            if (errMsg.includes("fetch failed") || errMsg.includes("TypeError") || errMsg.includes("Failed to fetch") || errMsg.includes("unreachable")) {
+              isSupabaseUnreachable = true;
+              assignmentsStatus = "Offline Fallback Active";
+            } else {
+              assignmentsStatus = `Missing/Error: ${errMsg}`;
+            }
+          } else {
+            assignmentsStatus = "Ready";
+          }
+        } else {
+          assignmentsStatus = "Offline Fallback Active";
+        }
       } catch (e: any) {
-        console.error("Diagnostic sweep failed:", e.message);
+        console.log("[INFO] Diagnostic sweep bypassed due to connection limits:", e.message);
       }
+    } else if (isSupabaseUnreachable) {
+      admissionsStatus = "Offline Fallback Active";
+      noticesStatus = "Offline Fallback Active";
+      assignmentsStatus = "Offline Fallback Active";
     }
 
     res.json({
-      configured: isSupabaseConfigured,
+      configured: isSupabaseConfigured && !isSupabaseUnreachable,
       project_id: "wmxjnzgfvirfaiutskvg",
       url: supabaseUrl,
       endpoints: {
@@ -297,16 +376,16 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
     localAdmissions = [record, ...localAdmissions.filter(a => a.email.toLowerCase() !== record.email.toLowerCase())];
 
     let source = "fallback";
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const { error } = await supabase.from("albab_admissions").upsert(record);
         if (!error) {
           source = "supabase";
         } else {
-          console.warn("Supabase insert/upsert failed. Falling back. Error:", error.message);
+          handleSupabaseWriteError(error, "insert/upsert admissions");
         }
       } catch (err: any) {
-        console.error("Supabase write exception:", err.message);
+        handleSupabaseWriteException(err, "insert/upsert admissions");
       }
     }
 
@@ -321,16 +400,16 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
     localAdmissions = localAdmissions.map(a => a.id === id ? { ...a, status } : a);
 
     let source = "fallback";
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const { error } = await supabase.from("albab_admissions").update({ status }).eq("id", id);
         if (!error) {
           source = "supabase";
         } else {
-          console.warn("Supabase update status failed. Falling back. Error:", error.message);
+          handleSupabaseWriteError(error, "update admissions status");
         }
       } catch (err: any) {
-        console.error("Supabase update status exception:", err.message);
+        handleSupabaseWriteException(err, "update admissions status");
       }
     }
 
@@ -357,16 +436,16 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
     localNotices = [record, ...localNotices];
 
     let source = "fallback";
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const { error } = await supabase.from("albab_notices").insert(record);
         if (!error) {
           source = "supabase";
         } else {
-          console.warn("Supabase notice insert failed. Error:", error.message);
+          handleSupabaseWriteError(error, "insert notice");
         }
       } catch (err: any) {
-        console.error("Supabase notice insert exception:", err.message);
+        handleSupabaseWriteException(err, "insert notice");
       }
     }
 
@@ -380,16 +459,16 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
     localNotices = localNotices.filter(n => n.id !== id);
 
     let source = "fallback";
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const { error } = await supabase.from("albab_notices").delete().eq("id", id);
         if (!error) {
           source = "supabase";
         } else {
-          console.warn("Supabase notice delete failed. Error:", error.message);
+          handleSupabaseWriteError(error, "delete notice");
         }
       } catch (err: any) {
-        console.error("Supabase notice delete exception:", err.message);
+        handleSupabaseWriteException(err, "delete notice");
       }
     }
 
@@ -418,16 +497,16 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
     localAssignments = [record, ...localAssignments];
 
     let source = "fallback";
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const { error } = await supabase.from("albab_assignments").upsert(record);
         if (!error) {
           source = "supabase";
         } else {
-          console.warn("Supabase assignment insert/upsert failed. Error:", error.message);
+          handleSupabaseWriteError(error, "insert/upsert assignment");
         }
       } catch (err: any) {
-        console.error("Supabase assignment insert/upsert exception:", err.message);
+        handleSupabaseWriteException(err, "insert/upsert assignment");
       }
     }
 
@@ -444,16 +523,16 @@ CREATE POLICY "Allow read/write assignments operations" ON albab_assignments FOR
     );
 
     let source = "fallback";
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const { error } = await supabase.from("albab_assignments").update({ status, grade, feedback }).eq("id", id);
         if (!error) {
           source = "supabase";
         } else {
-          console.warn("Supabase grading failed. Error:", error.message);
+          handleSupabaseWriteError(error, "grading assignment");
         }
       } catch (err: any) {
-        console.error("Supabase grading exception:", err.message);
+        handleSupabaseWriteException(err, "grading assignment");
       }
     }
 
@@ -2990,14 +3069,14 @@ Provide deep critical evaluations. If no severe fallacies are present, return an
 
     localCognitiveSaves.push(newSave);
 
-    if (isSupabaseConfigured && supabase && email) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable && email) {
       try {
         const { error } = await supabase.from("albab_cognitive_saves").insert([newSave]);
         if (error) {
-          console.warn("Could not save to Supabase table (yet):", error.message);
+          handleSupabaseWriteError(error, "insert cognitive save");
         }
       } catch (err: any) {
-        console.warn("Exception during Supabase labs save:", err.message);
+        handleSupabaseWriteException(err, "insert cognitive save");
       }
     }
 
@@ -3009,15 +3088,17 @@ Provide deep critical evaluations. If no severe fallacies are present, return an
     const { email } = req.params;
     let userSaves = localCognitiveSaves.filter(s => s.email.toLowerCase() === email.toLowerCase());
 
-    if (isSupabaseConfigured && supabase) {
+    if (isSupabaseConfigured && supabase && !isSupabaseUnreachable) {
       try {
         const { data, error } = await supabase.from("albab_cognitive_saves").select("*").eq("email", email);
         if (data && !error) {
           // Parse stringified output if needed
           return res.json({ history: data });
+        } else if (error) {
+          handleSupabaseWriteError(error, "fetch cognitive history");
         }
       } catch (err) {
-        console.warn("Fallback to local labs list:", err);
+        handleSupabaseWriteException(err, "fetch cognitive history");
       }
     }
 

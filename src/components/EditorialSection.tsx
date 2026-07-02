@@ -10,35 +10,6 @@ interface EditorialSectionProps {
 export default function EditorialSection({ currentTheme, onFindMore }: EditorialSectionProps) {
   const isSpace = currentTheme === 'space';
 
-  // Helper to render partner shape vectors
-  const renderShape = (shape: 'square' | 'circle' | 'triangle') => {
-    const isSpace = currentTheme === 'space';
-    const colorClass = isSpace ? 'fill-gold stroke-gold-light' : 'fill-crimson stroke-crimson-light';
-
-    switch (shape) {
-      case 'square':
-        return (
-          <svg className="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="3" width="18" height="18" rx="1" className={colorClass} fillOpacity="0.15" />
-          </svg>
-        );
-      case 'circle':
-        return (
-          <svg className="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="9" className={colorClass} fillOpacity="0.15" />
-          </svg>
-        );
-      case 'triangle':
-        return (
-          <svg className="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polygon points="12,3 21,20 3,20" className={colorClass} fillOpacity="0.15" />
-          </svg>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <section 
       id="scholarly"
@@ -49,6 +20,20 @@ export default function EditorialSection({ currentTheme, onFindMore }: Editorial
       
       {/* Soft warm gold glow in the center */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gold/15 blur-[120px] pointer-events-none" />
+
+      {/* LAYER: DETAILED SVG ISLAMIC GEOMETRIC ARCHITECTURAL MANDALA FOR GREEN SECTIONS */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none opacity-[0.035] animate-slow-rotate text-gold select-none z-0">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.2">
+          <circle cx="50" cy="50" r="48" strokeDasharray="1 1" />
+          <circle cx="50" cy="50" r="42" />
+          <polygon points="50,2 62,20 80,12 70,30 88,38 74,50 88,62 70,70 80,88 62,80 50,98 38,80 20,88 30,70 12,62 26,50 12,38 30,30 20,12 38,20" />
+          <rect x="20" y="20" width="60" height="60" transform="rotate(15 50 50)" />
+          <rect x="20" y="20" width="60" height="60" transform="rotate(30 50 50)" />
+          <rect x="20" y="20" width="60" height="60" transform="rotate(45 50 50)" />
+          <rect x="20" y="20" width="60" height="60" transform="rotate(60 50 50)" />
+          <rect x="20" y="20" width="60" height="60" transform="rotate(75 50 50)" />
+        </svg>
+      </div>
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
         
@@ -91,24 +76,21 @@ export default function EditorialSection({ currentTheme, onFindMore }: Editorial
         </button>
 
         {/* STRATEGIC PARTNERS BADGE MATRIX */}
-        <div id="partners" className="mt-28 border-t border-gold/20 pt-16 text-left">
-          <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-gold-light/80 block mb-8 text-center sm:text-left font-black">
-            Our Strategic Partners
-          </span>
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center sm:justify-start gap-12 sm:gap-24 opacity-85 hover:opacity-100 transition-opacity duration-300">
+        <div id="partners" className="mt-28 border-t border-gold/20 pt-16">
+          <div className="flex flex-row flex-wrap items-center justify-center gap-14 sm:gap-24 opacity-90 hover:opacity-100 transition-opacity duration-300">
             {PARTNERS.map((partner, pid) => (
               <div 
                 key={pid}
-                className="flex items-center gap-3 group relative cursor-help"
+                className="group relative cursor-help flex flex-col items-center"
                 title={`${partner.name}: ${partner.description}`}
               >
-                {renderShape(partner.shape)}
-                <span className="font-serif text-xl font-bold tracking-wide transition-colors duration-300 text-stone-100 group-hover:text-gold-light">
+                <span className="font-serif text-2xl font-extrabold tracking-wide transition-colors duration-300 text-stone-100 group-hover:text-gold-light border-b border-gold/10 pb-1 px-4">
                   {partner.name}
                 </span>
 
-                {/* Micro tooltip detail helper */}
-                <div className="absolute top-full left-0 mt-2 p-3 text-[11px] rounded border w-48 shadow-lg max-h-0 opacity-0 overflow-hidden group-hover:max-h-28 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30 font-sans leading-relaxed bg-[#052112] border-gold/30 text-stone-200">
+                {/* Micro tooltip detail helper centered beneath name */}
+                <div className="absolute top-[80%] left-1/2 -translate-x-1/2 mt-3 p-3 text-[11px] rounded border w-56 text-center shadow-xl opacity-0 pointer-events-none z-30 font-sans leading-relaxed bg-[#052112]/95 border-gold/40 text-stone-200 transition-all duration-300 group-hover:opacity-100 group-hover:top-[90%]">
+                  <strong className="text-gold-light font-mono uppercase tracking-wider block mb-1">{partner.name}</strong>
                   {partner.description}
                 </div>
               </div>

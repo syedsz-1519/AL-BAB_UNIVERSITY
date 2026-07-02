@@ -454,10 +454,10 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
       </div>
 
       {/* CENTRALIZED EARTH GLOBE ORBIT DISPLAY */}
-      <div className="relative w-full max-w-5xl h-[280px] xs:h-[340px] sm:h-[450px] md:h-[650px] flex justify-center items-center select-none">
+      <div className="relative w-full max-w-5xl h-[320px] xs:h-[380px] sm:h-[480px] md:h-[650px] flex justify-center items-center select-none">
         
-        {/* Concentric Orbit Rings (Desktop only) */}
-        <div className="absolute inset-0 pointer-events-none hidden md:block">
+        {/* Concentric Orbit Rings (Now beautifully responsive across all screen sizes!) */}
+        <div className="absolute inset-0 pointer-events-none">
           <AnimatePresence mode="popLayout">
             <motion.div
               key={selectedCourseId}
@@ -467,18 +467,18 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
               transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0 pointer-events-none"
             >
-              {/* Ring 1 - Outer */}
-              <div className="absolute top-1/2 left-1/2 w-[420px] h-[420px] rounded-full border border-gold/15 animate-wobble-orbit-1" style={{ transformStyle: 'preserve-3d' }}>
-                <div className="absolute top-0 left-1/2 -ml-1 w-2.5 h-2.5 rounded-full bg-gold/80 animate-pulse duration-700" />
+              {/* Ring 1 - Inner */}
+              <div className="absolute top-1/2 left-1/2 w-[190px] h-[190px] xs:w-[240px] xs:h-[240px] sm:w-[330px] sm:h-[330px] md:w-[420px] md:h-[420px] rounded-full border border-gold/15 animate-wobble-orbit-1" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="absolute top-0 left-1/2 -ml-1 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-gold/80 animate-pulse duration-700" />
               </div>
               
               {/* Ring 2 with Crescent Moon traveling */}
-              <div className="absolute top-1/2 left-1/2 w-[540px] h-[540px] rounded-full border border-gold/25 animate-wobble-orbit-2" style={{ animationDirection: 'reverse', transformStyle: 'preserve-3d' }}>
-                <div className="absolute -top-1.5 left-1/2 -ml-2 text-gold font-sans text-xs select-none">🌙</div>
+              <div className="absolute top-1/2 left-1/2 w-[240px] h-[240px] xs:w-[300px] xs:h-[300px] sm:w-[420px] sm:h-[420px] md:w-[540px] md:h-[540px] rounded-full border border-gold/25 animate-wobble-orbit-2" style={{ animationDirection: 'reverse', transformStyle: 'preserve-3d' }}>
+                <div className="absolute -top-1.5 left-1/2 -ml-2 text-gold font-sans text-[10px] sm:text-xs select-none">🌙</div>
               </div>
 
               {/* Ring 3 */}
-              <div className="absolute top-1/2 left-1/2 w-[660px] h-[660px] rounded-full border border-crimson/10 animate-wobble-orbit-3" style={{ transformStyle: 'preserve-3d' }} />
+              <div className="absolute top-1/2 left-1/2 w-[280px] h-[280px] xs:w-[360px] xs:h-[360px] sm:w-[500px] sm:h-[500px] md:w-[660px] md:h-[660px] rounded-full border border-crimson/10 animate-wobble-orbit-3" style={{ transformStyle: 'preserve-3d' }} />
             </motion.div>
           </AnimatePresence>
         </div>
@@ -487,7 +487,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
         <div 
           onMouseMove={handleGlobeMouseMove}
           onMouseLeave={handleGlobeMouseLeave}
-          className="relative w-36 h-36 xs:w-48 xs:h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 z-20"
+          className="relative w-44 h-44 xs:w-52 xs:h-52 sm:w-68 sm:h-68 md:w-80 md:h-80 z-20"
           style={{
             transform: `translateY(${parallaxOffset}px)`,
             willChange: 'transform'
