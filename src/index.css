@@ -13,7 +13,7 @@
   --color-gold-light: #E8B86D;
   --color-crimson: #0B4628;
   --color-crimson-light: #105C35;
-  --color-space: #010305;
+  --color-space: #020509;
   --color-charcoal: #151516;
 }
 
@@ -274,13 +274,10 @@
 
 /* Arabesque backgrounds */
 .arabesque-grid {
-  background-size: 80px 80px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23C4A35A' stroke-width='0.5' stroke-opacity='0.18'%3E%3Cpath d='M40 0 L40 80 M0 40 L80 40' /%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)' /%3E%3Crect x='20' y='20' width='40' height='40' /%3E%3Ccircle cx='40' cy='40' r='8' /%3E%3Ccircle cx='40' cy='40' r='24' stroke-dasharray='2 2' /%3E%3Cpolygon points='40,12 49,25 68,40 49,55 40,68 31,55 12,40 31,25' /%3E%3Cpath d='M0 0 L15 15 M80 0 L65 15 M0 80 L15 65 M80 80 L65 65' /%3E%3Ccircle cx='0' cy='0' r='4' /%3E%3Ccircle cx='80' cy='0' r='4' /%3E%3Ccircle cx='0' cy='80' r='4' /%3E%3Ccircle cx='80' cy='80' r='4' /%3E%3C/g%3E%3C/svg%3E");
-}
-
-.calligraphy-grid {
-  background-size: 180px 180px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23C4A35A' stroke-width='0.75' stroke-opacity='0.18'%3E%3C!-- Beautiful masterly Arabic calligraphy curves & strokes in Thuluth-style configuration --%3E%3Cpath d='M40,25 L40,115 C40,123 35,130 25,133' /%3E%3Cpath d='M65,20 L65,110 C65,118 60,125 50,128' /%3E%3Cpath d='M25,85 Q45,145 90,145 T160,105' /%3E%3Cpath d='M98,90 C98,75 118,75 118,90 C118,105 88,135 53,145' /%3E%3Cpath d='M110,35 Q135,15 150,45 T120,80' /%3E%3C!-- Traditional calligraphic diacritical marks %26 accents --%3E%3C!-- Shadda --%3E%3Cpath d='M75,45 Q78,37 81,40 Q84,37 87,45' /%3E%3C!-- Fatha --%3E%3Cpath d='M48,22 L58,17' /%3E%3Cpath d='M125,25 L135,20' /%3E%3C!-- Damma --%3E%3Cpath d='M105,48 Q113,38 107,32 T100,40' /%3E%3C!-- Elegant Islamic floral and ornamental dots --%3E%3Cpath d='M30,100 L35,95 L40,100 L35,105 Z' fill='%23C4A35A' fill-opacity='0.15' /%3E%3Cpath d='M58,105 L63,100 L68,105 L63,110 Z' fill='%23C4A35A' fill-opacity='0.15' /%3E%3Cpath d='M140,55 L145,50 L150,55 L145,60 Z' fill='%23C4A35A' fill-opacity='0.15' /%3E%3Cpath d='M146,65 L151,60 L156,65 L151,70 Z' fill='%23C4A35A' fill-opacity='0.15' /%3E%3C/g%3E%3C/svg%3E");
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(201, 147, 58, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(201, 147, 58, 0.04) 1px, transparent 1px);
 }
 
 .arabesque-star {
@@ -509,22 +506,22 @@ footer a:hover,
 
 /* FUTURISTIC ISLAMIC GRID & VECTOR NEBULA BACKGROUNDS */
 .futuristic-islamic-grid-space {
-  background-color: #010305;
+  background-color: #020509;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 10% 80%, rgba(196, 163, 90, 0.15) 0%, transparent 40%),
-    linear-gradient(to right, rgba(196, 163, 90, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(196, 163, 90, 0.05) 1px, transparent 1px);
+    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 10% 80%, rgba(196, 163, 90, 0.1) 0%, transparent 40%),
+    linear-gradient(to right, rgba(196, 163, 90, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(196, 163, 90, 0.03) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
 }
 
 .futuristic-islamic-grid-parchment {
-  background-color: #F3EDDF;
+  background-color: #FAF6EF;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 90% 90%, rgba(196, 163, 90, 0.06) 0%, transparent 40%),
-    linear-gradient(to right, rgba(11, 70, 40, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(11, 70, 40, 0.035) 1px, transparent 1px);
+    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.06) 0%, transparent 60%),
+    radial-gradient(circle at 90% 90%, rgba(196, 163, 90, 0.04) 0%, transparent 40%),
+    linear-gradient(to right, rgba(11, 70, 40, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11, 70, 40, 0.02) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
 }
 
@@ -535,37 +532,6 @@ footer a:hover,
     inset 0 4px 10px rgba(0, 0, 0, 0.2),
     0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
-
-/* EXPLICIT CONTRAST OVERRIDES FOR THE DARK GREEN ISLAMIC ART SECTIONS */
-.islamic-dark-green-section p,
-.islamic-dark-green-section h2,
-.islamic-dark-green-section h3,
-.islamic-dark-green-section h4,
-.islamic-dark-green-section span,
-.islamic-dark-green-section li {
-  color: #ffffff !important;
-}
-
-.islamic-dark-green-section .text-stone-100,
-.islamic-dark-green-section .text-stone-150,
-.islamic-dark-green-section p.text-stone-200,
-.islamic-dark-green-section p.text-stone-100 {
-  color: #f5f5f4 !important; /* pristine stone light */
-}
-
-.islamic-dark-green-section .text-stone-200,
-.islamic-dark-green-section .text-stone-300 {
-  color: #e7e5e4 !important; /* very readable light grey */
-}
-
-.islamic-dark-green-section .text-gold-light {
-  color: #E8B86D !important; /* gorgeous light gold */
-}
-
-.islamic-dark-green-section .text-gold {
-  color: #C4A35A !important; /* authentic Islamic gold */
-}
-
 
 
 
