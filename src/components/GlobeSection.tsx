@@ -3,6 +3,7 @@ import * as LucideIcons from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { COURSES, HADITHS } from '../data';
 import { Course } from '../types';
+import AlbabLogo, { ALBAB_LOGO_512 } from './AlbabLogo';
 
 interface GlobeSectionProps {
   currentTheme: 'parchment' | 'space';
@@ -276,9 +277,9 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
 
   const activeHadith = HADITHS[hadithIndex];
 
-  // Filter courses for Celestial Globe Section: QUR'AN, HADITH, FIQH, ISLAMIC STUDIES, LOGIC
+  // Filter courses for Celestial Globe Section: QUR'AN, HADITH, LOGIC, FIQH
   const globeCourses = useMemo(() => {
-    const ids = ['quran', 'hadith', 'fiqh', 'islamic-studies', 'logic'];
+    const ids = ['quran', 'hadith', 'logic', 'fiqh'];
     return ids.map(id => COURSES.find(c => c.id === id)).filter(Boolean) as Course[];
   }, []);
 
@@ -366,7 +367,11 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
   };
 
   // Helper to map string to Lucid Icon
-  const getIcon = (iconName: string) => {
+  const getIcon = (iconName: string, id: string) => {
+    if (id === 'quran') return <LucideIcons.Globe className="h-5 w-5" />;
+    if (id === 'hadith') return <LucideIcons.MessageSquareText className="h-5 w-5" />;
+    if (id === 'logic') return <LucideIcons.Binary className="h-5 w-5" />;
+    if (id === 'fiqh') return <LucideIcons.Scale className="h-5 w-5" />;
     const IconComponent = (LucideIcons as any)[iconName];
     if (IconComponent) {
       return <IconComponent className="h-5 w-5" />;
@@ -374,17 +379,19 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
     return <LucideIcons.BookOpen className="h-5 w-5" />;
   };
 
-  // Symmetrically position elements in an ellipse around the central globe
-  const computeCardPosition = (index: number, total: number) => {
-    const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
-    const rx = 41; // horizontal radius in %
-    const ry = 43; // vertical radius in %
-    const left = 50 + Math.cos(angle) * rx;
-    const top = 50 + Math.sin(angle) * ry;
-    return {
-      left: `${left.toFixed(2)}%`,
-      top: `${top.toFixed(2)}%`
-    };
+  const getCardPosition = (id: string) => {
+    switch (id) {
+      case 'quran':
+        return { left: '15%', top: '25%' };
+      case 'hadith':
+        return { left: '85%', top: '25%' };
+      case 'logic':
+        return { left: '15%', top: '75%' };
+      case 'fiqh':
+        return { left: '85%', top: '75%' };
+      default:
+        return { left: '50%', top: '50%' };
+    }
   };
 
   return (
@@ -400,6 +407,22 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
         background: isSpace ? 'radial-gradient(ellipse at center, #060D1F 0%, #020509 80%, #000000 100%)' : undefined
       }}
     >
+      {/* Premium Repeating Arabesque Pattern Background */}
+      <div className="absolute inset-0 opacity-[0.06] dark:opacity-[0.02] pointer-events-none mix-blend-multiply dark:mix-blend-overlay">
+        <svg width="100%" height="100%">
+          <pattern id="arabesque-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+            <path 
+              d="M 40 0 L 80 40 L 40 80 L 0 40 Z M 0 0 L 80 80 M 80 0 L 0 80 M 40 0 L 40 80 M 0 40 L 80 40" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="0.5" 
+            />
+            <circle cx="40" cy="40" r="3" fill="none" stroke="currentColor" strokeWidth="0.5" />
+            <polygon points="40,32 46,40 40,48 34,40" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#arabesque-pattern)" className="text-[#0B4628] dark:text-gold" />
+        </svg>
+      </div>
       {/* 180+ Twinkling Stars (visible in both themes but glows more in space mode) */}
       <div className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${isSpace ? 'opacity-100' : 'opacity-25'}`}>
         {starsList.map((star) => (
@@ -886,23 +909,17 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
               </g>
             </svg>
 
-            {/* Center Arabic Text Watermark */}
-            <div className="absolute z-30 flex flex-col justify-center items-center pointer-events-none text-center p-2 max-w-full">
-              <span 
-                className="font-arabic text-[#C9933A] text-xl sm:text-2xl md:text-3xl group-hover/globe:text-gold-light group-hover/globe:scale-110 transition-all duration-300 select-none font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
-                style={{ fontFamily: "'Amiri', serif" }}
-              >
-                الْبَاب
-              </span>
-              <span 
-                className="text-[8px] sm:text-[9px] md:text-[11px] tracking-[3px] sm:tracking-[6px] text-[#C9933A]/85 font-sans select-none group-hover/globe:text-white transition-all duration-300 uppercase mt-0.5 sm:mt-1 pl-[3px] sm:pl-[6px]"
-                style={{ fontFamily: "'Lato', sans-serif" }}
-              >
-                ALBAB
-              </span>
-              <span className="text-[7px] sm:text-[8px] md:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-[#E8B86D] font-sans opacity-0 group-hover/globe:opacity-100 transition-all duration-300 mt-1.5 sm:mt-2 uppercase bg-black/40 px-1.5 sm:px-2 py-0.5 rounded border border-gold/20 shadow-md">
-                GET HADITH
-              </span>
+            {/* Center Logo Seal */}
+            <div className="absolute z-30 pointer-events-none flex items-center justify-center">
+              <div className="relative group/seal">
+                {/* Glowing ring */}
+                <div className="absolute -inset-1.5 rounded-full bg-gold/25 blur-xs group-hover/seal:bg-gold/45 transition duration-300 animate-pulse" />
+                <img 
+                  src={ALBAB_LOGO_512} 
+                  className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-gold object-contain bg-[#030a16] shadow-2xl" 
+                  alt="Albab Logo Seal" 
+                />
+              </div>
             </div>
           </div>
 
@@ -1007,15 +1024,26 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
           )}
         </div>
 
+        {/* SVG pointer lines connecting cards to the globe */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {/* Qur'an (Top Left) to Globe */}
+          <line x1="22%" y1="25%" x2="42%" y2="42%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
+          {/* Hadith (Top Right) to Globe */}
+          <line x1="78%" y1="25%" x2="58%" y2="42%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
+          {/* Logic (Bottom Left) to Globe */}
+          <line x1="22%" y1="75%" x2="42%" y2="58%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
+          {/* Fiqh (Bottom Right) to Globe */}
+          <line x1="78%" y1="75%" x2="58%" y2="58%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
+        </svg>
+
         {/* DESKTOP: Centered Floating Course Cards */}
         <div className="absolute inset-0 pointer-events-none hidden md:block">
           {globeCourses.map((course, idx) => {
-            const pos = computeCardPosition(idx, globeCourses.length);
+            const pos = getCardPosition(course.id);
             const isSelected = selectedCourseId === course.id;
 
             const handleCardClick = (e: React.MouseEvent) => {
               e.stopPropagation();
-              // For all cards, we select the course and smoothly scroll down to CurriculumInspector detailed view
               onSelectCourse(course);
               if (course.id === 'hadith') {
                 triggerHadithPopup();
@@ -1031,44 +1059,30 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
             return (
               <div 
                 key={course.id}
-                className="absolute cursor-pointer pointer-events-auto transform -translate-x-1/2 -translate-y-1/2 group transition-all duration-300 animate-float-card"
+                className="absolute cursor-pointer pointer-events-auto transform -translate-x-1/2 -translate-y-1/2 group transition-all duration-300 hover:scale-105"
                 style={{ 
                   top: pos.top, 
-                  left: pos.left,
-                  animationDelay: `${idx * 0.45}s`
+                  left: pos.left
                 }}
                 onClick={handleCardClick}
               >
-                <div className={`relative px-4 py-3 rounded border w-44 backdrop-blur-md transition-all duration-300
+                <div className={`relative px-5 py-4 rounded-sm border w-52 backdrop-blur-md transition-all duration-300 flex items-center gap-3.5 shadow-md
                   ${isSpace 
-                    ? 'bg-space/85 border-gold/30 hover:border-gold hover:shadow-[0_0_15px_rgba(201,147,58,0.4)]' 
-                    : 'bg-white/95 border-crimson/25 hover:border-crimson hover:shadow-[0_10px_20px_rgba(139,0,0,0.1)]'
+                    ? 'bg-space/85 border-gold/30 hover:border-gold hover:shadow-[0_0_15px_rgba(201,147,58,0.4)] text-white' 
+                    : 'bg-[#FAF8F5]/95 border-stone-250 hover:border-stone-400 hover:shadow-lg text-charcoal'
                   }
                   ${isSelected ? (isSpace ? 'border-amber-400 bg-amber-950/20 scale-105' : 'border-crimson bg-crimson/5 scale-105') : ''}
                 `}>
-                  {/* Tiny Crimson corner line indicators */}
-                  <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-gold/40 rounded-tl-xs" />
-                  <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-gold/40 rounded-br-xs" />
-
-                  <div className="flex items-center gap-2">
-                    <span className={isSpace ? 'text-gold' : 'text-crimson'}>
-                      {getIcon(course.icon)}
-                    </span>
-                    <div>
-                      <h4 className="font-serif font-black text-sm tracking-wide leading-none">{course.name}</h4>
-                      <span className="text-[9px] text-stone-400 dark:text-stone-500 font-mono tracking-wider">{course.count}</span>
-                    </div>
+                  {/* Icon Left */}
+                  <div className={`p-2 rounded-xs border flex items-center justify-center shrink-0
+                    ${isSpace ? 'border-gold/30 bg-gold/5 text-gold' : 'border-crimson/15 bg-crimson/5 text-crimson'}
+                  `}>
+                    {getIcon(course.icon, course.id)}
                   </div>
-
-                  {/* Smooth sliding sub-branches listed on hover */}
-                  <div className="max-h-0 overflow-hidden group-hover:max-h-24 group-hover:mt-2 transition-all duration-500 ease-in-out">
-                    <div className="border-t border-stone-200/20 pt-1.5 flex flex-col gap-0.5 select-none pointer-events-none">
-                      {course.branches.slice(0, 3).map((branch, bid) => (
-                        <span key={bid} className="text-[10px] text-stone-500 italic block font-serif leading-none truncate font-semibold">
-                          ✦ {branch}
-                        </span>
-                      ))}
-                    </div>
+                  {/* Text Right */}
+                  <div className="leading-tight">
+                    <h4 className="font-serif font-black text-sm sm:text-base tracking-wide leading-none">{course.name}</h4>
+                    <span className="text-[10px] text-stone-500 dark:text-stone-400 font-mono tracking-wider block mt-1">{course.count}</span>
                   </div>
                 </div>
               </div>
@@ -1111,7 +1125,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 `}
               >
                 <span className={isSpace ? 'text-gold' : 'text-crimson'}>
-                  {getIcon(course.icon)}
+                  {getIcon(course.icon, course.id)}
                 </span>
                 <div className="leading-none">
                   <h4 className="font-serif font-black text-sm tracking-wide">{course.name}</h4>
