@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck, Calendar, Globe } from 'lucide-react';
 import { Language, LIST_TRANSLATIONS } from '../i18n';
 import AlbabLogo from './AlbabLogo';
+import AmbientSoundController from './AmbientSoundController';
 
 // Helper to calculate and format Hijri date based on current Gregorian date
 const getHijriDateString = (lang: Language): string => {
@@ -202,6 +203,9 @@ export default function Header({
               </span>
             </div>
           </div>
+
+          {/* AMBIENT SOUNDS */}
+          <AmbientSoundController currentTheme={currentTheme} />
 
           {/* THEME TOGGLE */}
           <button 

@@ -10,13 +10,6 @@ export default function FloatingContacts({ currentTheme }: FloatingContactsProps
   const [isOpen, setIsOpen] = useState(false); // Instagram options toggle
   const isSpace = currentTheme === 'space';
 
-  const scrollToDhikr = () => {
-    const el = document.getElementById('dhikr-section');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   // Customized, highly professional & respectful dual-language-vibe message
   const whatsappNumber = '917051913270';
   const rawMessage = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu Adnan Bhai,
@@ -106,54 +99,6 @@ JazakAllah khair!`;
       {/* FLOATING ACTION ICON BUBBLES BLOCK */}
       <div className="pointer-events-auto flex flex-col gap-2.5 sm:gap-3 items-center">
         
-        {/* 1 MINUTE DHIKR TRIGGER BUTTON - ALWAYS VISIBLE, BIG AND BEAUTIFUL, DRAGGABLE */}
-        <motion.button
-          drag
-          dragMomentum={false}
-          whileDrag={{ scale: 1.15, cursor: 'grabbing', zIndex: 100 }}
-          onClick={scrollToDhikr}
-          className={`group flex sm:h-14 sm:w-14 h-12 w-12 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-300 relative cursor-grab active:cursor-grabbing select-none touch-none
-            ${isSpace 
-              ? 'bg-gradient-to-tr from-[#9a3412]/30 to-[#C9933A]/20 border-gold/50 text-gold-light hover:border-gold hover:shadow-[0_0_18px_rgba(201,147,58,0.6)]' 
-              : 'bg-[#0B4628] text-white border-transparent hover:bg-black hover:shadow-[0_4px_16px_rgba(11,70,40,0.35)]'
-            }
-            hover:scale-110
-          `}
-          title="Go to 1 Minute Dhikr (Drag to reposition!)"
-        >
-          {/* Pulsing devotional aura */}
-          <span className={`absolute -inset-1.5 rounded-full border opacity-30 group-hover:opacity-60 animate-ping duration-[2000ms] select-none pointer-events-none
-            ${isSpace ? 'border-gold' : 'border-[#0B4628]'}
-          `} />
-          <motion.div 
-            className="relative flex items-center justify-center"
-            animate={{
-              scale: [1, 1.15, 1, 1.15, 1]
-            }}
-            transition={{
-              duration: 1.8,
-              repeat: Infinity,
-              repeatType: "loop",
-              ease: "easeInOut",
-              times: [0, 0.12, 0.24, 0.38, 1]
-            }}
-          >
-            {/* Heart + Sparkle combined representation */}
-            <LucideIcons.Heart className="sm:h-6 sm:w-6 h-5.5 w-5.5 fill-current text-rose-400 group-hover:scale-110 transition-transform duration-300" />
-            <LucideIcons.Sparkles className="absolute -top-1.5 -right-1.5 h-3.5 w-3.5 text-amber-300 animate-spin-slow" />
-          </motion.div>
-
-          {/* Desktop tooltip */}
-          <span className={`absolute right-16 whitespace-nowrap px-3 py-1 text-[10px] font-mono leading-none tracking-widest rounded shadow-md border pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 hidden sm:block
-            ${isSpace 
-              ? 'bg-space border-gold/30 text-gold-light' 
-              : 'bg-[#FCFAF7] border-stone-200 text-[#0B4628] font-bold shadow-sm'
-            }
-          `}>
-            1 Minute Dhikr (Drag me!)
-          </span>
-        </motion.button>
-
         {/* INSTAGRAM HUB TRIGGER BUTTON - VISIBLE ON MOBILE & DESKTOP */}
         <button
           onClick={() => setIsOpen(!isOpen)}

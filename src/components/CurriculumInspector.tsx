@@ -23,11 +23,53 @@ const CATEGORIES = [
   { id: 'humanities', name: 'Humanities & Soul', icon: 'Heart', desc: 'Psychology, history, politics & poetry', courseIds: ['psychology', 'history', 'politics', 'poetry'] }
 ];
 
+const TOGGLEABLE_SUBJECTS = [
+  { id: 'fiqh', name: 'Fiqh', courseIds: ['fiqh', 'economic-studies'], icon: 'Scale' },
+  { id: 'aqeedah', name: 'Aqeedah', courseIds: ['islamic-studies'], icon: 'BookType' },
+  { id: 'hadith', name: 'Hadith', courseIds: ['hadith'], icon: 'MessageSquareText' },
+  { id: 'logic', name: 'Logic', courseIds: ['logic'], icon: 'Binary' },
+  { id: 'quran', name: "Qur'an", courseIds: ['quran'], icon: 'BookOpen' },
+  { id: 'philosophy', name: 'Philosophy', courseIds: ['philosophy'], icon: 'Compass' },
+  { id: 'humanities', name: 'Humanities & Soul', courseIds: ['psychology', 'history', 'politics', 'poetry', 'challenges', 'modernity'], icon: 'Heart' },
+];
+
 export default function CurriculumInspector({ currentTheme, selectedCourseId, onSelectCourse, searchText }: CurriculumInspectorProps) {
   const isSpace = currentTheme === 'space';
   const [internalSearch, setInternalSearch] = useState('');
   const [allCourses, setAllCourses] = useState<Course[]>(COURSES);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [enabledSubjects, setEnabledSubjects] = useState<string[]>(['fiqh', 'aqeedah', 'hadith', 'logic', 'quran', 'philosophy', 'humanities']);
+
+  // Local Storage Persistence for Completed & Interested status
+  const [completedCourses, setCompletedCourses] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('completedCourses');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [interestedCourses, setInterestedCourses] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('interestedCourses');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [showCompletedOnly, setShowCompletedOnly] = useState(false);
+  const [showInterestedOnly, setShowInterestedOnly] = useState(false);
+
+  // Sync back to local storage
+  useEffect(() => {
+    localStorage.setItem('completedCourses', JSON.stringify(completedCourses));
+  }, [completedCourses]);
+
+  useEffect(() => {
+    localStorage.setItem('interestedCourses', JSON.stringify(interestedCourses));
+  }, [interestedCourses]);
   
   // Combine props search and component's internal index search
   const activeSearch = searchText || internalSearch;
@@ -97,7 +139,21 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
     return <LucideIcons.BookOpen className={`${sizeCls} ${colorCls}`} />;
   };
 
-  // Find course matching searched branch/topic AND selected category
+  // Helper to map subject icons in workspace filters
+  const getSubjectIconInline = (iconName: string, active: boolean) => {
+    const IconComponent = (LucideIcons as any)[iconName];
+    const sizeCls = "h-3.5 w-3.5";
+    const colorCls = active 
+      ? (isSpace ? 'text-gold' : 'text-crimson') 
+      : 'text-stone-400';
+    
+    if (IconComponent) {
+      return <IconComponent className={`${sizeCls} ${colorCls}`} />;
+    }
+    return <LucideIcons.BookOpen className={`${sizeCls} ${colorCls}`} />;
+  };
+
+  // Find course matching searched branch/topic AND selected category and subject toggles
   const filteredCourses = useMemo(() => {
     return allCourses.filter((course) => {
       // 1. Category Filter
@@ -123,7 +179,34 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
         }
       }
 
-      // 2. Search Text Filter
+      // 2. Subject Toggle Filter
+      const matchedSubject = TOGGLEABLE_SUBJECTS.find((sub) => {
+        const isStatic = COURSES.some(c => c.id === course.id);
+        if (!isStatic) {
+          if (course.icon === 'Sparkles' || course.icon === 'Brain') {
+            return sub.id === 'aqeedah';
+          }
+          if (course.icon === 'Scale') {
+            return sub.id === 'fiqh';
+          }
+          return sub.id === 'humanities';
+        }
+        return sub.courseIds.includes(course.id);
+      });
+
+      if (matchedSubject && !enabledSubjects.includes(matchedSubject.id)) {
+        return false;
+      }
+
+      // 3. Tracking Status Filters
+      if (showCompletedOnly && !completedCourses.includes(course.id)) {
+        return false;
+      }
+      if (showInterestedOnly && !interestedCourses.includes(course.id)) {
+        return false;
+      }
+
+      // 4. Search Text Filter
       if (!activeSearch) return true;
       const cleanSearch = activeSearch.toLowerCase();
       const matchesName = course.name.toLowerCase().includes(cleanSearch);
@@ -131,7 +214,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
       const matchesDesc = course.description.toLowerCase().includes(cleanSearch);
       return matchesName || matchesBranches || matchesDesc;
     });
-  }, [allCourses, selectedCategory, activeSearch]);
+  }, [allCourses, selectedCategory, activeSearch, enabledSubjects, completedCourses, interestedCourses, showCompletedOnly, showInterestedOnly]);
 
   const selectedCourse = allCourses.find(c => c.id === selectedCourseId) || allCourses[0];
 
@@ -360,6 +443,127 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
           
           {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-5) */}
           <div className="lg:col-span-5">
+            {/* SUBJECT WORKSPACE FILTER BAR */}
+            <div className={`mb-6 p-4 border rounded-sm transition-all duration-300
+              ${isSpace 
+                ? 'bg-[#0a0f1d] border-gold/15 text-white shadow-[0_4px_15px_rgba(0,0,0,0.3)]' 
+                : 'bg-[#FFFDF9] border-stone-200 text-[#0B4628] shadow-sm'
+              }
+            `}>
+              <div className="flex justify-between items-center mb-3">
+                <div className="flex items-center gap-1.5">
+                  <LucideIcons.SlidersHorizontal className={`h-4 w-4 ${isSpace ? 'text-gold' : 'text-crimson'}`} />
+                  <span className="text-[11px] font-mono tracking-wider uppercase font-black opacity-80">
+                    Subject Workspace Filters ({enabledSubjects.length}/{TOGGLEABLE_SUBJECTS.length})
+                  </span>
+                </div>
+                {enabledSubjects.length < TOGGLEABLE_SUBJECTS.length ? (
+                  <button 
+                    onClick={() => setEnabledSubjects(TOGGLEABLE_SUBJECTS.map(s => s.id))}
+                    className={`text-[10px] font-mono tracking-wider uppercase border-b pb-0.5 hover:scale-105 transition-all
+                      ${isSpace ? 'text-gold hover:text-white border-gold/20 hover:border-white' : 'text-crimson hover:text-stone-700 border-crimson/20 hover:border-stone-700'}
+                    `}
+                  >
+                    Reset Filters
+                  </button>
+                ) : (
+                  <span className="text-[10px] font-mono opacity-50">All Enabled</span>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {TOGGLEABLE_SUBJECTS.map((sub) => {
+                  const isActive = enabledSubjects.includes(sub.id);
+                  return (
+                    <button
+                      key={sub.id}
+                      onClick={() => {
+                        setEnabledSubjects(prev => {
+                          if (prev.includes(sub.id)) {
+                            return prev.filter(id => id !== sub.id);
+                          } else {
+                            return [...prev, sub.id];
+                          }
+                        });
+                      }}
+                      className={`flex items-center gap-2 px-3 py-1.5 border rounded-sm transition-all duration-200 text-xs font-serif font-black cursor-pointer select-none
+                        ${isActive
+                          ? isSpace
+                            ? 'bg-space border-gold/60 text-white shadow-[0_0_8px_rgba(201,147,58,0.25)]'
+                            : 'bg-white border-crimson/60 text-crimson shadow-sm font-bold'
+                          : isSpace
+                            ? 'bg-[#030712]/50 border-gold/10 text-stone-500 opacity-60 hover:opacity-100 hover:border-gold/30'
+                            : 'bg-stone-50 border-stone-200 text-stone-400 opacity-60 hover:opacity-100 hover:bg-[#F2ECE0]'
+                        }
+                      `}
+                    >
+                      <span>{getSubjectIconInline(sub.id === 'fiqh' ? 'Scale' : sub.id === 'aqeedah' ? 'BookType' : sub.id === 'hadith' ? 'MessageSquareText' : sub.id === 'logic' ? 'Binary' : sub.id === 'quran' ? 'BookOpen' : sub.id === 'philosophy' ? 'Compass' : 'Heart', isActive)}</span>
+                      <span>{sub.name}</span>
+                      <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300
+                        ${isActive
+                          ? isSpace ? 'bg-gold animate-pulse' : 'bg-crimson animate-pulse'
+                          : 'bg-stone-300 dark:bg-stone-700'
+                        }
+                      `} />
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* PERSONAL TRACKING FILTERS */}
+              {(completedCourses.length > 0 || interestedCourses.length > 0) && (
+                <div className="mt-3.5 pt-3 border-t border-stone-200/10 flex flex-wrap items-center gap-3">
+                  <span className="text-[10px] font-mono tracking-wider uppercase opacity-50">
+                    My Tracking:
+                  </span>
+                  {completedCourses.length > 0 && (
+                    <button
+                      onClick={() => setShowCompletedOnly(!showCompletedOnly)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 border rounded-sm text-[11px] font-serif transition-all duration-200 cursor-pointer select-none
+                        ${showCompletedOnly
+                          ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500 font-bold'
+                          : isSpace
+                            ? 'bg-transparent border-gold/10 text-stone-400 hover:text-white'
+                            : 'bg-transparent border-stone-200 text-stone-600 hover:bg-stone-50'
+                        }
+                      `}
+                    >
+                      <LucideIcons.CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                      <span>Completed ({completedCourses.length})</span>
+                    </button>
+                  )}
+                  {interestedCourses.length > 0 && (
+                    <button
+                      onClick={() => setShowInterestedOnly(!showInterestedOnly)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 border rounded-sm text-[11px] font-serif transition-all duration-200 cursor-pointer select-none
+                        ${showInterestedOnly
+                          ? 'bg-amber-500/10 border-amber-500 text-amber-500 font-bold'
+                          : isSpace
+                            ? 'bg-transparent border-gold/10 text-stone-400 hover:text-white'
+                            : 'bg-transparent border-stone-200 text-stone-600 hover:bg-stone-50'
+                        }
+                      `}
+                    >
+                      <LucideIcons.Bookmark className="h-3 w-3 text-amber-500 fill-amber-500/10" />
+                      <span>Interested ({interestedCourses.length})</span>
+                    </button>
+                  )}
+                  {(showCompletedOnly || showInterestedOnly) && (
+                    <button
+                      onClick={() => {
+                        setShowCompletedOnly(false);
+                        setShowInterestedOnly(false);
+                      }}
+                      className={`text-[10px] font-mono tracking-wider uppercase border-b pb-0.5 hover:scale-105 transition-all ml-auto
+                        ${isSpace ? 'text-gold hover:text-white border-gold/20 hover:border-white' : 'text-crimson hover:text-stone-700 border-crimson/20 hover:border-stone-700'}
+                      `}
+                    >
+                      Reset Tracking Filter
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
             {filteredCourses.length === 0 ? (
               <div className={`p-8 text-center border border-dashed rounded-sm flex flex-col items-center justify-center min-h-[300px]
                 ${isSpace ? 'border-gold/10 text-stone-400 bg-space/20' : 'border-stone-200 text-stone-500 bg-stone-50/50'}
@@ -435,9 +639,23 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                           `}>
                             {getIcon(course.icon)}
                           </span>
-                          <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
-                            {course.count}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            {completedCourses.includes(course.id) && (
+                              <LucideIcons.CheckCircle2 
+                                className="h-3.5 w-3.5 text-emerald-500 animate-fade-in" 
+                                title="Completed Study"
+                              />
+                            )}
+                            {interestedCourses.includes(course.id) && (
+                              <LucideIcons.Bookmark 
+                                className="h-3.5 w-3.5 text-amber-500 fill-amber-500/15 animate-fade-in" 
+                                title="Interested Study"
+                              />
+                            )}
+                            <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
+                              {course.count}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="mt-3">
@@ -508,6 +726,67 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
               <p className="text-sm leading-relaxed text-stone-500 dark:text-stone-400 mb-8 font-serif italic select-all border-l-2 pl-4 border-stone-600/20">
                 {selectedCourse?.description}
               </p>
+
+              {/* Progress & Interest Persistence Controls */}
+              {selectedCourse && (
+                <div className={`mb-8 p-4 border rounded-sm transition-all duration-300
+                  ${isSpace 
+                    ? 'bg-space/40 border-gold/15 shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]' 
+                    : 'bg-stone-50 border-stone-150 shadow-inner'
+                  }
+                `}>
+                  <h4 className={`text-[10px] uppercase font-mono tracking-[0.25em] font-bold mb-3
+                    ${isSpace ? 'text-gold-light' : 'text-crimson'}
+                  `}>
+                    YOUR TRACKING & ARCHIVE
+                  </h4>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        const courseId = selectedCourse.id;
+                        setCompletedCourses(prev => 
+                          prev.includes(courseId) ? prev.filter(id => id !== courseId) : [...prev, courseId]
+                        );
+                      }}
+                      className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 border rounded-sm text-xs font-serif font-black transition-all duration-200 cursor-pointer select-none
+                        ${completedCourses.includes(selectedCourse.id)
+                          ? isSpace
+                            ? 'bg-emerald-950/40 border-emerald-500/60 text-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.15)]'
+                            : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                          : isSpace
+                            ? 'bg-transparent border-gold/10 text-stone-400 hover:border-gold/30 hover:text-white'
+                            : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-100 hover:text-charcoal'
+                        }
+                      `}
+                    >
+                      <LucideIcons.CheckCircle2 className={`h-4 w-4 ${completedCourses.includes(selectedCourse.id) ? 'text-emerald-500' : 'opacity-65'}`} />
+                      <span>{completedCourses.includes(selectedCourse.id) ? 'Completed' : 'Mark Completed'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const courseId = selectedCourse.id;
+                        setInterestedCourses(prev => 
+                          prev.includes(courseId) ? prev.filter(id => id !== courseId) : [...prev, courseId]
+                        );
+                      }}
+                      className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 border rounded-sm text-xs font-serif font-black transition-all duration-200 cursor-pointer select-none
+                        ${interestedCourses.includes(selectedCourse.id)
+                          ? isSpace
+                            ? 'bg-amber-950/40 border-amber-500/60 text-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.15)]'
+                            : 'bg-amber-50 border-amber-200 text-amber-800'
+                          : isSpace
+                            ? 'bg-transparent border-gold/10 text-stone-400 hover:border-gold/30 hover:text-white'
+                            : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-100 hover:text-charcoal'
+                        }
+                      `}
+                    >
+                      <LucideIcons.Bookmark className={`h-4 w-4 ${interestedCourses.includes(selectedCourse.id) ? 'text-amber-500 fill-amber-500/20' : 'opacity-65'}`} />
+                      <span>{interestedCourses.includes(selectedCourse.id) ? 'Interested' : 'Interested'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Branches breakdown ledger */}
               <div>
