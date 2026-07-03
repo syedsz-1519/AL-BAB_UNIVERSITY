@@ -28,7 +28,6 @@ import FivePillarsSection from './components/FivePillarsSection';
 import DhikrSection from './components/DhikrSection';
 import MobileQuickNav from './components/MobileQuickNav';
 import ScrollSpyIndicator from './components/ScrollSpyIndicator';
-import CelestialTransition from './components/CelestialTransition';
 import DivineDust from './components/DivineDust';
 import { Language } from './i18n';
 import { Course } from './types';
@@ -36,9 +35,27 @@ import { COURSES } from './data';
 import ScholasticQuiz from './components/ScholasticQuiz';
 
 export default function App() {
-  const [currentTheme, setCurrentTheme] = useState<'parchment' | 'space'>('parchment');
-  const [isThemeTransitioning, setIsThemeTransitioning] = useState<boolean>(false);
-  const [previousTheme, setPreviousTheme] = useState<'parchment' | 'space' | null>(null);
+  const [isAutoCelestial, setIsAutoCelestial] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('isAutoCelestial');
+      return saved ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
+  });
+
+  const [currentTheme, setCurrentTheme] = useState<'parchment' | 'space'>(() => {
+    try {
+      const savedAuto = localStorage.getItem('isAutoCelestial');
+      const isAuto = savedAuto ? JSON.parse(savedAuto) : false;
+      if (isAuto) {
+        const hour = new Date().getHours();
+        return (hour >= 6 && hour < 18) ? 'parchment' : 'space';
+      }
+    } catch (e) {}
+    return 'parchment';
+  });
+
   const [selectedCourseId, setSelectedCourseId] = useState<string>('quran');
   const [searchText, setSearchText] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>('landing');
@@ -225,9 +242,41 @@ export default function App() {
     }
   }, [currentTheme]);
 
+  // Save isAutoCelestial state changes
+  useEffect(() => {
+    localStorage.setItem('isAutoCelestial', JSON.stringify(isAutoCelestial));
+  }, [isAutoCelestial]);
+
+  // Sync theme with local day/night hours when Auto-Celestial mode is active
+  useEffect(() => {
+    if (!isAutoCelestial) return;
+
+    const getThemeByLocalTime = (): 'parchment' | 'space' => {
+      const hour = new Date().getHours();
+      return (hour >= 6 && hour < 18) ? 'parchment' : 'space';
+    };
+
+    // Immediate check
+    const correctTheme = getThemeByLocalTime();
+    if (currentTheme !== correctTheme) {
+      setCurrentTheme(correctTheme);
+    }
+
+    // Interval check every 15 seconds to catch transitions smoothly
+    const interval = setInterval(() => {
+      const correctThemeNow = getThemeByLocalTime();
+      if (currentTheme !== correctThemeNow) {
+        setCurrentTheme(correctThemeNow);
+      }
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [isAutoCelestial, currentTheme]);
+
   const handleToggleTheme = () => {
-    setPreviousTheme(currentTheme);
-    setIsThemeTransitioning(true);
+    if (isAutoCelestial) {
+      setIsAutoCelestial(false);
+    }
     setCurrentTheme(prev => (prev === 'parchment' ? 'space' : 'parchment'));
   };
 
@@ -337,20 +386,6 @@ export default function App() {
         }}
       />
       
-      {/* CELESTIAL STAR-FIELD JOURNEY THEME TRANSITION OVERLAY */}
-      <AnimatePresence>
-        {isThemeTransitioning && previousTheme && (
-          <CelestialTransition
-            previousTheme={previousTheme}
-            currentTheme={currentTheme}
-            onComplete={() => {
-              setIsThemeTransitioning(false);
-              setPreviousTheme(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
-
       {/* DYNAMIC HIGH-END CONTEXTUAL GREETING SPLASH SCREEN OVERLAY */}
       <AnimatePresence>
         {showSplash && (
@@ -516,6 +551,8 @@ export default function App() {
         onLanguageChange={setLanguage}
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
+        isAutoCelestial={isAutoCelestial}
+        onToggleAutoCelestial={() => setIsAutoCelestial(prev => !prev)}
       />
 
       {currentSection === 'academic-world' && (

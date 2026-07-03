@@ -357,7 +357,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                         </span>
                         <div className="flex flex-col min-w-0">
                           <span className="text-xs font-serif font-black tracking-wide truncate">
-                            {cat.name}
+                            {cat.name} ({countInCat})
                           </span>
                           <span className={`text-[9px] font-sans truncate font-medium opacity-70
                             ${isCatSelected 
@@ -369,15 +369,6 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                           </span>
                         </div>
                       </div>
-                      
-                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ml-2 font-bold flex-shrink-0
-                        ${isCatSelected
-                          ? isSpace ? 'bg-black/15 text-black' : 'bg-white/20 text-white'
-                          : isSpace ? 'bg-white/5 text-gold-light' : 'bg-black/5 text-stone-500'
-                        }
-                      `}>
-                        {countInCat}
-                      </span>
                     </button>
                   );
                 })}
@@ -425,15 +416,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                       `}
                     >
                       <span>{getCategoryIcon(cat.icon, isCatSelected)}</span>
-                      <span>{cat.name}</span>
-                      <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold
-                        ${isCatSelected
-                          ? isSpace ? 'bg-black/15 text-black' : 'bg-white/20 text-white'
-                          : isSpace ? 'bg-white/5 text-gold-light' : 'bg-black/5 text-stone-500'
-                        }
-                      `}>
-                        {countInCat}
-                      </span>
+                      <span>{cat.name} ({countInCat})</span>
                     </button>
                   );
                 })}
@@ -473,6 +456,20 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
               <div className="flex flex-wrap gap-2">
                 {TOGGLEABLE_SUBJECTS.map((sub) => {
                   const isActive = enabledSubjects.includes(sub.id);
+                  const countInSub = allCourses.filter((course) => {
+                    const isStatic = COURSES.some(c => c.id === course.id);
+                    if (!isStatic) {
+                      if (course.icon === 'Sparkles' || course.icon === 'Brain') {
+                        return sub.id === 'aqeedah';
+                      }
+                      if (course.icon === 'Scale') {
+                        return sub.id === 'fiqh';
+                      }
+                      return sub.id === 'humanities';
+                    }
+                    return sub.courseIds.includes(course.id);
+                  }).length;
+
                   return (
                     <button
                       key={sub.id}
@@ -497,7 +494,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                       `}
                     >
                       <span>{getSubjectIconInline(sub.id === 'fiqh' ? 'Scale' : sub.id === 'aqeedah' ? 'BookType' : sub.id === 'hadith' ? 'MessageSquareText' : sub.id === 'logic' ? 'Binary' : sub.id === 'quran' ? 'BookOpen' : sub.id === 'philosophy' ? 'Compass' : 'Heart', isActive)}</span>
-                      <span>{sub.name}</span>
+                      <span>{sub.name} ({countInSub})</span>
                       <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300
                         ${isActive
                           ? isSpace ? 'bg-gold animate-pulse' : 'bg-crimson animate-pulse'
@@ -603,7 +600,34 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                           damping: 30,
                           opacity: { duration: 0.2 }
                         }}
-                        whileHover={{ y: -2, transition: { duration: 0.15 } }}
+                        whileHover={{ 
+                          y: -2,
+                          scale: isSelected ? [1.02, 1.04, 1.02] : [1.00, 1.02, 1.00],
+                          boxShadow: isSpace
+                            ? [
+                                "0 0 12px rgba(165, 243, 252, 0.2)",
+                                "0 0 25px rgba(165, 243, 252, 0.55)",
+                                "0 0 12px rgba(165, 243, 252, 0.2)"
+                              ]
+                            : [
+                                "0 0 12px rgba(201, 147, 58, 0.25)",
+                                "0 0 25px rgba(201, 147, 58, 0.5)",
+                                "0 0 12px rgba(201, 147, 58, 0.25)"
+                              ],
+                          transition: {
+                            y: { duration: 0.15 },
+                            scale: {
+                              repeat: Infinity,
+                              duration: 2.2,
+                              ease: "easeInOut"
+                            },
+                            boxShadow: {
+                              repeat: Infinity,
+                              duration: 2.2,
+                              ease: "easeInOut"
+                            }
+                          }
+                        }}
                         whileTap={{ scale: 0.98 }}
                         key={course.id}
                         onClick={() => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MessageSquareQuote, RotateCw } from 'lucide-react';
 import { HADITHS } from '../data';
 import { motion, AnimatePresence } from 'motion/react';
+import AlbabLogo from './AlbabLogo';
 
 interface PropheticHadithsProps {
   currentTheme: 'parchment' | 'space';
@@ -37,13 +38,11 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
         
         {/* SECTION HEADER BLOCK */}
         <div className="mb-10 flex flex-col items-center">
-          <div className={`p-3 rounded-md mb-4 border
-            ${isSpace 
-              ? 'bg-gold/10 border-gold/25 text-gold' 
-              : 'bg-crimson/5 border-[#0B4628]/15 text-[#0B4628]'
-            }
-          `}>
-            <MessageSquareQuote className="h-6 w-6" />
+          <div className="relative group mb-4 cursor-pointer">
+            <div className={`absolute -inset-1.5 blur-md rounded-full opacity-35 group-hover:opacity-80 transition duration-300
+              ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}
+            `}></div>
+            <AlbabLogo className="relative h-14 w-14 sm:h-16 sm:w-16 transform group-hover:scale-110 transition-transform duration-300" />
           </div>
 
           <h2 className={`font-eb font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-2

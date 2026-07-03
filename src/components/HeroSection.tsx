@@ -13,6 +13,7 @@ export default function HeroSection({ currentTheme, onApplyNow, mouseCoords = { 
 
   // Destructure with default fallbacks
   const { x, y } = mouseCoords;
+  const distance = Math.sqrt(x * x + y * y);
 
   return (
     <section 
@@ -137,13 +138,198 @@ export default function HeroSection({ currentTheme, onApplyNow, mouseCoords = { 
         </svg>
       </motion.div>
 
-      {/* Decorative Traditional Archway Silhouette (Mihrab gateway) */}
-      <div className={`absolute inset-x-6 sm:inset-x-12 top-20 bottom-8 border-t-2 border-x-2 rounded-t-[140px] pointer-events-none opacity-[0.06] transition-colors duration-700
-        ${isSpace ? 'border-gold-light' : 'border-[#0B4628]'}
-      `} />
-      <div className={`absolute inset-x-9 sm:inset-x-16 top-24 bottom-8 border-t border-x rounded-t-[125px] pointer-events-none opacity-[0.04] transition-colors duration-700
-        ${isSpace ? 'border-gold' : 'border-[#0B4628]'}
-      `} />
+      {/* AL BAB (THE GATE OF KNOWLEDGE) 3D ANIMATED BACKGROUND EXPERIENCE */}
+      <div 
+        style={{ perspective: '2000px' }} 
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
+      >
+        {/* Glow of Sacred Knowledge (Positioned directly behind the doors - with dynamic depth of field blur) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ 
+            opacity: isSpace ? [0.35, 0.7, 0.35] : [0.25, 0.55, 0.25],
+            scale: [0.95, 1.05, 0.95],
+          }}
+          style={{
+            x: x * -55, // Parallax depth effect
+            y: y * -55,
+            filter: `blur(${40 + distance * 45}px)`, // Depth-of-field shift based on mouse distance
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className={`absolute w-[320px] sm:w-[480px] h-[320px] sm:h-[480px] rounded-full mix-blend-screen pointer-events-none
+            ${isSpace ? 'bg-gradient-to-r from-gold/45 via-[#0B4628]/50 to-gold/45' : 'bg-gradient-to-r from-gold/30 via-[#1b6b3e]/35 to-gold/30'}
+          `}
+        />
+
+        {/* Light Beam Shaft projecting outwards */}
+        <motion.div 
+          initial={{ opacity: 0, scaleY: 0 }}
+          animate={{ opacity: 0.12, scaleY: 1 }}
+          style={{
+            x: x * -35,
+            y: y * -35,
+            filter: `blur(${20 + distance * 15}px)`,
+          }}
+          transition={{ delay: 1.2, duration: 2 }}
+          className="absolute w-[240px] sm:w-[360px] h-[600px] bg-gradient-to-b from-gold/30 to-transparent blur-xl origin-top rounded-b-full pointer-events-none"
+        />
+
+        {/* Floating knowledge glyphs/sparkles from the Gate */}
+        <motion.div 
+          style={{
+            x: x * -20,
+            y: y * -20,
+          }}
+          className="absolute w-[280px] sm:w-[400px] h-[400px] overflow-hidden pointer-events-none"
+        >
+          {Array.from({ length: 12 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className={`absolute w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${isSpace ? 'bg-gold-light' : 'bg-[#0B4628]'}`}
+              initial={{ 
+                x: '50%', 
+                y: '60%', 
+                opacity: 0,
+                scale: 0.2
+              }}
+              animate={{ 
+                x: `${30 + Math.random() * 40}%`, 
+                y: `${10 + Math.random() * 40}%`, 
+                opacity: [0, 0.8, 0],
+                scale: [0.2, 1.2, 0.2]
+              }}
+              transition={{
+                duration: 4 + Math.random() * 5,
+                repeat: Infinity,
+                delay: i * 0.4,
+                ease: "easeOut"
+              }}
+              style={{
+                left: '0px',
+                top: '0px',
+              }}
+            />
+          ))}
+        </motion.div>
+
+        {/* THE GRAND GATE FRAME & 3D DOUBLE-PANEL DOORS (Responds to 3D perspective shift) */}
+        <motion.div 
+          style={{ 
+            transformStyle: 'preserve-3d',
+            rotateY: x * 20, // Real-time 3D rotation on Y axis based on mouse
+            rotateX: y * -20, // Real-time 3D rotation on X axis based on mouse
+            x: x * 30, // Horizontal parallax position
+            y: y * 30, // Vertical parallax position
+            filter: `drop-shadow(${x * -12}px ${y * -12}px 25px rgba(0,0,0,0.45))`,
+          }}
+          className="relative w-[280px] sm:w-[400px] h-[380px] sm:h-[500px] flex items-center justify-center transition-all duration-300 ease-out"
+        >
+          
+          {/* Backside: Revealed Sacred Archway Contour (Seen when doors open) */}
+          <div className={`absolute inset-0 border-2 border-dashed rounded-t-[140px] opacity-20 pointer-events-none
+            ${isSpace ? 'border-gold-light' : 'border-[#0B4628]'}
+          `} />
+
+          {/* Left Door Panel */}
+          <motion.div 
+            style={{ 
+              originX: 0,
+              transformStyle: 'preserve-3d',
+              backfaceVisibility: 'hidden'
+            }}
+            initial={{ rotateY: 0 }}
+            animate={{ rotateY: -105 + (x * 8) }} // Dynamically sway the opening slightly with mouse position
+            transition={{ 
+              duration: 3, 
+              ease: [0.16, 1, 0.3, 1], // super smooth cinematic ease
+              delay: 0.8 
+            }}
+            className={`absolute left-0 top-0 w-1/2 h-full border-y-2 border-l-2 rounded-tl-[140px] shadow-[inset_-5px_0_15px_rgba(0,0,0,0.5)] flex flex-col justify-between p-4 overflow-hidden
+              ${isSpace 
+                ? 'bg-gradient-to-br from-[#021008] via-[#051C10] to-black border-gold/40' 
+                : 'bg-gradient-to-br from-[#FAF8F5] via-[#E6F0E9] to-[#D5E6DC] border-[#0B4628]/40'
+              }
+            `}
+          >
+            {/* Elegant wood grain/texture overlay */}
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-repeat arabesque-grid" />
+            
+            {/* Intricate Geometric Filigree inside door (Left half of arch/mandala) */}
+            <div className="w-full h-full flex flex-col justify-between py-6 relative z-10">
+              <div className="flex-1 flex items-center justify-center opacity-40">
+                <svg viewBox="0 0 100 200" className={`w-full h-full ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} fill="none" stroke="currentColor" strokeWidth="0.75">
+                  <path d="M100,20 C70,20 40,40 20,80 C10,100 10,140 10,180" />
+                  <path d="M100,50 C80,50 60,70 40,110 C30,130 30,160 30,180" strokeDasharray="2 2" />
+                  <circle cx="100" cy="110" r="25" />
+                  <circle cx="100" cy="110" r="10" />
+                  <line x1="100" y1="20" x2="100" y2="180" />
+                </svg>
+              </div>
+              
+              {/* Left Door Brass Ring Handle */}
+              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center">
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-end shadow-md
+                  ${isSpace ? 'border-gold bg-[#021008]' : 'border-[#0B4628] bg-[#FAF8F5]'}
+                `}>
+                  <div className={`w-2.5 h-2.5 rounded-full mr-0.5 ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}`} />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Door Panel */}
+          <motion.div 
+            style={{ 
+              originX: 1,
+              transformStyle: 'preserve-3d',
+              backfaceVisibility: 'hidden'
+            }}
+            initial={{ rotateY: 0 }}
+            animate={{ rotateY: 105 + (x * 8) }} // Dynamically sway the opening slightly with mouse position
+            transition={{ 
+              duration: 3, 
+              ease: [0.16, 1, 0.3, 1], // super smooth cinematic ease
+              delay: 0.8 
+            }}
+            className={`absolute right-0 top-0 w-1/2 h-full border-y-2 border-r-2 rounded-tr-[140px] shadow-[inset_5px_0_15px_rgba(0,0,0,0.5)] flex flex-col justify-between p-4 overflow-hidden
+              ${isSpace 
+                ? 'bg-gradient-to-bl from-[#021008] via-[#051C10] to-black border-gold/40' 
+                : 'bg-gradient-to-bl from-[#FAF8F5] via-[#E6F0E9] to-[#D5E6DC] border-[#0B4628]/40'
+              }
+            `}
+          >
+            {/* Elegant wood grain/texture overlay */}
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-repeat arabesque-grid" />
+
+            {/* Intricate Geometric Filigree inside door (Right half of arch/mandala) */}
+            <div className="w-full h-full flex flex-col justify-between py-6 relative z-10">
+              <div className="flex-1 flex items-center justify-center opacity-40">
+                <svg viewBox="0 0 100 200" className={`w-full h-full ${isSpace ? 'text-gold' : 'text-[#0B4628]'}`} fill="none" stroke="currentColor" strokeWidth="0.75">
+                  <path d="M0,20 C30,20 60,40 80,80 C90,100 90,140 90,180" />
+                  <path d="M0,50 C20,50 40,70 60,110 C70,130 70,160 70,180" strokeDasharray="2 2" />
+                  <circle cx="0" cy="110" r="25" />
+                  <circle cx="0" cy="110" r="10" />
+                  <line x1="0" y1="20" x2="0" y2="180" />
+                </svg>
+              </div>
+
+              {/* Right Door Brass Ring Handle */}
+              <div className="absolute left-1 top-1/2 -translate-y-1/2 flex items-center">
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-start shadow-md
+                  ${isSpace ? 'border-gold bg-[#021008]' : 'border-[#0B4628] bg-[#FAF8F5]'}
+                `}>
+                  <div className={`w-2.5 h-2.5 rounded-full ml-0.5 ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}`} />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+        </motion.div>
+      </div>
 
       {/* Decorative Top-Bottom Frame Arches for Academic Majesty */}
       <div className="absolute top-0 inset-x-0 h-4 bg-gradient-to-r from-gold via-[#0B4628] to-gold opacity-40" />

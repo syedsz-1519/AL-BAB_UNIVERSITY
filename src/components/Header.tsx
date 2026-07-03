@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck, Calendar, Globe } from 'lucide-react';
+import { Sun, Moon, Search, Menu, X, BookOpen, Sparkles, GraduationCap, Languages, HelpCircle, Brain, Heart, Compass, ShieldAlert, Scale, ShieldCheck, Calendar, Globe, Clock } from 'lucide-react';
 import { Language, LIST_TRANSLATIONS } from '../i18n';
 import AlbabLogo from './AlbabLogo';
 import AmbientSoundController from './AmbientSoundController';
@@ -70,6 +70,10 @@ interface HeaderProps {
   // Lifted mobile menu props for merged quick nav
   mobileMenuOpen?: boolean;
   setMobileMenuOpen?: (open: boolean) => void;
+
+  // Auto-Celestial mode
+  isAutoCelestial: boolean;
+  onToggleAutoCelestial: () => void;
 }
 
 export default function Header({ 
@@ -84,7 +88,9 @@ export default function Header({
   language = 'en',
   onLanguageChange,
   mobileMenuOpen,
-  setMobileMenuOpen
+  setMobileMenuOpen,
+  isAutoCelestial,
+  onToggleAutoCelestial
 }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -179,13 +185,6 @@ export default function Header({
         {/* CONTROLS */}
         <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 shrink-0">
           
-          {/* LANGUAGE PICKER */}
-          <div className="flex items-center gap-0.5 sm:gap-1.5 border border-stone-400 p-0.5 sm:p-1 rounded bg-white/60 dark:bg-space-dark/40 font-mono text-[9px] sm:text-[11px] hover:border-black transition-colors">
-            <LanguageButton lang="en" cur={language} onClick={onLanguageChange} />
-            <LanguageButton lang="ar" cur={language} label="عربي" onClick={onLanguageChange} />
-            <LanguageButton lang="ur" cur={language} label="اردو" onClick={onLanguageChange} />
-          </div>
-
           {/* HIJRI ACADEMIC DATE */}
           <div className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm border font-mono transition-all duration-300
             ${isSpace 
@@ -329,27 +328,4 @@ export default function Header({
   );
 }
 
-interface LanguageBtnProps {
-  lang: Language;
-  cur: Language;
-  label?: string;
-  onClick?: (lang: Language) => void;
-}
 
-function LanguageButton({ lang, cur, label, onClick }: LanguageBtnProps) {
-  const active = cur === lang;
-  return (
-    <button
-      type="button"
-      onClick={() => onClick?.(lang)}
-      className={`px-1.5 py-0.5 rounded text-[10px] font-mono tracking-tighter cursor-pointer transition-all uppercase
-        ${active 
-          ? 'bg-crimson dark:bg-gold text-white dark:text-space font-bold' 
-          : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-300'
-        }
-      `}
-    >
-      {label || lang}
-    </button>
-  );
-}

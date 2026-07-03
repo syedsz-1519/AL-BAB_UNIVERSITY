@@ -132,24 +132,65 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
       <div className="max-w-6xl mx-auto">
         
         {/* Header Block */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-mono tracking-[0.25em] uppercase font-bold
-            ${isSpace 
-              ? 'border-gold/20 bg-gold/5 text-gold' 
-              : 'border-[#0B4628]/15 bg-[#0B4628]/5 text-[#0B4628]'
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-16 space-y-4"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            visible: { 
+              opacity: 1, 
+              y: 0,
+              transition: {
+                duration: 0.8,
+                staggerChildren: 0.12,
+                ease: [0.16, 1, 0.3, 1]
+              }
             }
-          `}>
+          }}
+        >
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-mono tracking-[0.25em] uppercase font-bold
+              ${isSpace 
+                ? 'border-gold/20 bg-gold/5 text-gold' 
+                : 'border-[#0B4628]/15 bg-[#0B4628]/5 text-[#0B4628]'
+              }
+            `}
+          >
             <Sparkles className="h-3 w-3 animate-pulse" />
             Essential Foundations
-          </div>
-          <h2 className="font-serif font-black text-3xl sm:text-4xl tracking-wide">
+          </motion.div>
+          <motion.h2 
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            className="font-serif font-black text-3xl sm:text-4xl tracking-wide"
+          >
             Islamic Five Pillars Foundation
-          </h2>
-          <div className="h-0.5 w-24 mx-auto bg-gradient-to-r from-transparent via-gold to-transparent my-1" />
-          <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-2xl mx-auto leading-relaxed font-serif">
+          </motion.h2>
+          <motion.div 
+            variants={{
+              hidden: { scaleX: 0 },
+              visible: { scaleX: 1, transition: { duration: 0.6 } }
+            }}
+            className="h-0.5 w-24 mx-auto bg-gradient-to-r from-transparent via-gold to-transparent my-1 origin-center" 
+          />
+          <motion.p 
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 max-w-2xl mx-auto leading-relaxed font-serif"
+          >
             The structural framework of Islamic praxis mapped systematically through theological logic, psychological hygiene, and sociological equilibrium. Explore the core covenants of our scholastic faith.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Dynamic Bento-Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
@@ -270,10 +311,27 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
             <AnimatePresence mode="wait">
               <motion.div
                 key={activePillarId}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25 }}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { 
+                    opacity: 1, 
+                    y: 0,
+                    transition: {
+                      duration: 0.5,
+                      staggerChildren: 0.08,
+                      delayChildren: 0.05,
+                      ease: [0.16, 1, 0.3, 1]
+                    }
+                  },
+                  exit: { 
+                    opacity: 0, 
+                    y: -15, 
+                    transition: { duration: 0.2, ease: "easeIn" } 
+                  }
+                }}
                 className={`h-full rounded-sm border p-6 sm:p-8 flex flex-col justify-between shadow-lg relative overflow-hidden
                   ${isSpace 
                     ? 'bg-[#050920] border-gold/20 text-gold-light' 
@@ -286,7 +344,13 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
 
                 <div className="space-y-6">
                   {/* Title Bar */}
-                  <div className="flex justify-between items-start border-b pb-4 border-stone-200/60 dark:border-gold/10">
+                  <motion.div 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                    }}
+                    className="flex justify-between items-start border-b pb-4 border-stone-200/60 dark:border-gold/10"
+                  >
                     <div>
                       <span className="font-mono text-[9px] uppercase tracking-widest text-stone-400 font-bold block">
                         Core Juridical Axiom
@@ -300,36 +364,60 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
                     `}>
                       <ActiveIcon className="h-6 w-6 animate-[pulse_3s_infinite]" />
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Tagline */}
-                  <p className="font-serif italic text-sm sm:text-base leading-relaxed font-semibold dark:text-white text-stone-800">
+                  <motion.p 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                    }}
+                    className="font-serif italic text-sm sm:text-base leading-relaxed font-semibold dark:text-white text-stone-800"
+                  >
                     "{activePillar.tagline}"
-                  </p>
+                  </motion.p>
 
                   {/* Rules and Conditions */}
-                  <div className="space-y-1">
+                  <motion.div 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                    }}
+                    className="space-y-1"
+                  >
                     <span className="font-mono text-[8px] uppercase tracking-widest text-[#C9933A] dark:text-gold block font-bold">
                       The Rules & Conditions:
                     </span>
                     <p className="text-xs sm:text-sm leading-relaxed text-stone-750 dark:text-stone-300 font-sans">
                       {activePillar.rules}
                     </p>
-                  </div>
+                  </motion.div>
 
                   {/* Steps and Practical Application */}
-                  <div className="space-y-1">
+                  <motion.div 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                    }}
+                    className="space-y-1"
+                  >
                     <span className="font-mono text-[8px] uppercase tracking-widest text-[#C9933A] dark:text-gold block font-bold">
                       The Practical Steps:
                     </span>
                     <p className="text-xs sm:text-sm leading-relaxed text-stone-750 dark:text-stone-300 font-sans">
                       {activePillar.steps}
                     </p>
-                  </div>
+                  </motion.div>
 
                   {/* Sacred Timings (Specific to Salah) */}
                   {activePillar.times && (
-                    <div className="space-y-2 p-3.5 rounded-sm border border-stone-200/50 dark:border-gold/10 bg-stone-100/30 dark:bg-stone-900/40">
+                    <motion.div 
+                      variants={{
+                        hidden: { opacity: 0, y: 10 },
+                        visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                      }}
+                      className="space-y-2 p-3.5 rounded-sm border border-stone-200/50 dark:border-gold/10 bg-stone-100/30 dark:bg-stone-900/40"
+                    >
                       <span className="font-mono text-[8px] uppercase tracking-widest text-[#C9933A] dark:text-gold block font-bold">
                         The Five Obligatory Prayer Times:
                       </span>
@@ -341,39 +429,57 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </motion.div>
                   )}
 
                   {/* Spiritual Significance */}
-                  <div className="space-y-1">
+                  <motion.div 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                    }}
+                    className="space-y-1"
+                  >
                     <span className="font-mono text-[8px] uppercase tracking-widest text-[#C9933A] dark:text-gold block font-bold">
                       Spiritual Significance:
                     </span>
                     <p className="text-xs sm:text-sm leading-relaxed text-stone-750 dark:text-stone-300 font-sans">
                       {activePillar.significance}
                     </p>
-                  </div>
+                  </motion.div>
 
                   {/* Academic Reference */}
-                  <div className={`p-4 border-l-2 text-xs font-serif leading-relaxed italic
-                    ${isSpace 
-                      ? 'bg-[#090e2d] border-gold text-gold-light/90' 
-                      : 'bg-[#FAF8F5] border-[#0B4628] text-[#0B4628]/90'
-                    }
-                  `}>
+                  <motion.div 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                    }}
+                    className={`p-4 border-l-2 text-xs font-serif leading-relaxed italic
+                      ${isSpace 
+                        ? 'bg-[#090e2d] border-gold text-gold-light/90' 
+                        : 'bg-[#FAF8F5] border-[#0B4628] text-[#0B4628]/90'
+                      }
+                    `}
+                  >
                     <span className="font-mono text-[8px] uppercase tracking-wider block font-bold not-italic mb-1 text-stone-400">
                       Canonical Scripture Proof:
                     </span>
                     {activePillar.academicRef}
-                  </div>
+                  </motion.div>
 
                   {/* Progress Tracker Controls */}
-                  <div className={`p-4 rounded border mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300
-                    ${isSpace 
-                      ? 'bg-gold/5 border-gold/15 text-gold-light' 
-                      : 'bg-[#FAF8F5] border-stone-200 text-[#0B4628]'
-                    }
-                  `}>
+                  <motion.div 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+                    }}
+                    className={`p-4 rounded border mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300
+                      ${isSpace 
+                        ? 'bg-gold/5 border-gold/15 text-gold-light' 
+                        : 'bg-[#FAF8F5] border-stone-200 text-[#0B4628]'
+                      }
+                    `}
+                  >
                     <div>
                       <span className="font-mono text-[9px] uppercase tracking-widest text-stone-400 font-bold block">Contemplation Status</span>
                       <p className="text-[11px] text-stone-500 dark:text-stone-300 mt-0.5">Record your learning and spiritual contemplation progress.</p>
@@ -415,15 +521,21 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
                         Completed
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
 
                 </div>
 
                 {/* Academic Footnote */}
-                <div className="mt-8 border-t pt-3 border-stone-200/60 dark:border-gold/10 flex justify-between items-center text-[9px] font-mono tracking-widest uppercase text-stone-400 select-none">
+                <motion.div 
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1, transition: { duration: 0.4 } }
+                  }}
+                  className="mt-8 border-t pt-3 border-stone-200/60 dark:border-gold/10 flex justify-between items-center text-[9px] font-mono tracking-widest uppercase text-stone-400 select-none"
+                >
                   <span>Scribe Class II: {activePillar.id}</span>
                   <span>Albab Academic Council</span>
-                </div>
+                </motion.div>
 
               </motion.div>
             </AnimatePresence>
