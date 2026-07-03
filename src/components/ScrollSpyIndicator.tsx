@@ -96,7 +96,7 @@ export default function ScrollSpyIndicator({ currentTheme, currentSection }: Scr
   const strokeDashoffset = circumference - (scrollPercent / 100) * circumference;
 
   return (
-    <div className="fixed right-3 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-6 select-none pointer-events-auto">
+    <div className="fixed right-3 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-center gap-6 select-none pointer-events-auto">
       {/* Master Circular Scroll Progress Widget */}
       <motion.div 
         className={`relative w-12 h-12 rounded-full flex items-center justify-center border shadow-lg cursor-pointer transition-all duration-300 group
@@ -184,7 +184,7 @@ export default function ScrollSpyIndicator({ currentTheme, currentSection }: Scr
 
               {/* Tooltip & Icon slideout */}
               <AnimatePresence>
-                {(isHovered || isActive) && (
+                {isHovered && (
                   <motion.div
                     initial={{ opacity: 0, x: 20, scale: 0.9 }}
                     animate={{ opacity: 1, x: -12, scale: 1 }}
