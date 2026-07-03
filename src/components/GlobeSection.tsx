@@ -914,10 +914,8 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
               <div className="relative group/seal">
                 {/* Glowing ring */}
                 <div className="absolute -inset-1.5 rounded-full bg-gold/25 blur-xs group-hover/seal:bg-gold/45 transition duration-300 animate-pulse" />
-                <img 
-                  src={ALBAB_LOGO_512} 
+                <AlbabLogo 
                   className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-gold object-contain bg-[#030a16] shadow-2xl" 
-                  alt="Albab Logo Seal" 
                 />
               </div>
             </div>
@@ -1024,17 +1022,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
           )}
         </div>
 
-        {/* SVG pointer lines connecting cards to the globe */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block" viewBox="0 0 100 100" preserveAspectRatio="none">
-          {/* Qur'an (Top Left) to Globe */}
-          <line x1="22%" y1="25%" x2="42%" y2="42%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
-          {/* Hadith (Top Right) to Globe */}
-          <line x1="78%" y1="25%" x2="58%" y2="42%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
-          {/* Logic (Bottom Left) to Globe */}
-          <line x1="22%" y1="75%" x2="42%" y2="58%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
-          {/* Fiqh (Bottom Right) to Globe */}
-          <line x1="78%" y1="75%" x2="58%" y2="58%" stroke="rgba(11, 70, 40, 0.25)" strokeWidth="0.8" className="dark:stroke-gold/25" />
-        </svg>
+        {/* Connection lines removed for clean visual animation of revolving Earth */}
 
         {/* DESKTOP: Centered Floating Course Cards */}
         <div className="absolute inset-0 pointer-events-none hidden md:block">
