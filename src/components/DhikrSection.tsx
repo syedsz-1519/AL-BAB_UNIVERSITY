@@ -73,6 +73,24 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
     localStorage.setItem('albab_dhikr_counts_v2', JSON.stringify(counts));
   }, [counts]);
 
+  // Sync state from window event
+  useEffect(() => {
+    const handleSync = () => {
+      const saved = localStorage.getItem('albab_dhikr_counts_v2');
+      if (saved) {
+        try {
+          setCounts(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to parse synchronized counts', e);
+        }
+      }
+    };
+    window.addEventListener('dhikr_sync', handleSync);
+    return () => {
+      window.removeEventListener('dhikr_sync', handleSync);
+    };
+  }, []);
+
   // Handle countdown
   useEffect(() => {
     let interval: any = null;
@@ -96,26 +114,40 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
   };
 
   const incrementCount = (id: string) => {
-    setCounts(prev => ({
-      ...prev,
-      [id]: prev[id] + 1
-    }));
+    setCounts(prev => {
+      const updated = {
+        ...prev,
+        [id]: prev[id] + 1
+      };
+      localStorage.setItem('albab_dhikr_counts_v2', JSON.stringify(updated));
+      return updated;
+    });
+    // Dispatch event to sync FloatingDhikrBubble
+    setTimeout(() => {
+      window.dispatchEvent(new Event('dhikr_sync'));
+    }, 0);
   };
 
   const resetAll = () => {
-    setCounts({
+    const resetCounts = {
       subhanallah: 0,
       alhamdulillah: 0,
       allahuakbar: 0,
       lailahaillallah: 0,
       astaghfirullah: 0
-    });
+    };
+    setCounts(resetCounts);
+    localStorage.setItem('albab_dhikr_counts_v2', JSON.stringify(resetCounts));
+    // Dispatch event to sync FloatingDhikrBubble
+    setTimeout(() => {
+      window.dispatchEvent(new Event('dhikr_sync'));
+    }, 0);
   };
 
   return (
     <section 
       id="dhikr-section" 
-      className={`py-20 px-6 md:px-12 border-t relative overflow-hidden transition-colors duration-300
+      className={`scroll-mt-28 py-20 px-6 md:px-12 border-t relative overflow-hidden transition-colors duration-300
         ${isSpace 
           ? 'bg-[#050920] border-gold/15 text-gold-light' 
           : 'bg-[#FCFAF7] border-stone-200 text-[#0B4628]'
@@ -298,32 +330,33 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
           </div>
         </div>
 
-        {/* Desktop View: Full 5-Dhikr Checklist Grid */}
-        <div className="hidden sm:grid grid-cols-2 lg:grid-cols-5 gap-6 items-stretch">
+        {/* Desktop View: Full 5-Dhikr Checklist Stack (Vertical in line) */}
+        <div className="hidden sm:flex flex-col gap-4 max-w-3xl mx-auto">
           {DHIKR_ITEMS.map((item, index) => {
             const count = counts[item.id] || 0;
             return (
               <motion.div
                 key={item.id}
                 onClick={() => incrementCount(item.id)}
-                whileHover={{ y: -4, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative p-6 rounded-lg flex flex-col items-center justify-between text-center cursor-pointer transition-all duration-300 group overflow-hidden skeuo-active-click
+                whileHover={{ x: 6, scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className={`relative p-5 rounded-xl flex items-center justify-between gap-6 cursor-pointer border transition-all duration-300 overflow-hidden select-none
                   ${isSpace 
-                    ? 'skeuo-card-space hover:border-gold/40' 
-                    : 'skeuo-card-parchment hover:border-[#0B4628]/30'
+                    ? 'skeuo-card-space hover:border-gold/40 hover:bg-gold/5' 
+                    : 'skeuo-card-parchment hover:border-[#0B4628]/30 hover:bg-emerald-50/20'
                   }
                 `}
               >
                 {/* Visual Card Accent Decor */}
                 <div className="absolute top-0 left-0 w-16 h-16 opacity-[0.015] select-none pointer-events-none arabesque-star bg-current" />
 
-                {/* Speech Bubble Heart (Exactly like image!) */}
-                <div className="relative mb-6 flex justify-center">
+                {/* Left side: Pink/Red Heart Bubble */}
+                <div className="flex items-center gap-5 shrink-0">
                   <div className="relative flex items-center justify-center">
                     {/* Pink/Red Heart Bubble */}
-                    <div className="bg-[#EF4444] text-white p-2.5 rounded-2xl relative shadow-md flex items-center justify-center transition-transform group-hover:scale-110 duration-300">
-                      <LucideIcons.Heart className="h-5 w-5 fill-white text-white" />
+                    <div className="bg-[#EF4444] text-white p-3 rounded-2xl relative shadow-md flex items-center justify-center transition-transform duration-300">
+                      <LucideIcons.Heart className="h-5 w-5 fill-white text-white animate-pulse" style={{ animationDuration: '3s' }} />
+                      
                       {/* Count Badge overlay */}
                       {count > 0 && (
                         <span className="absolute -top-2 -right-2 bg-black text-white dark:bg-gold dark:text-space text-[9px] font-mono font-black h-5 w-5 rounded-full flex items-center justify-center border border-white dark:border-[#091035]">
@@ -331,40 +364,46 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
                         </span>
                       )}
                       
-                      {/* Speech bubble arrow */}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#EF4444]" />
+                      {/* Speech bubble arrow to the right */}
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-l-4 border-t-transparent border-b-transparent border-l-[#EF4444]" />
                     </div>
+                  </div>
+                  
+                  {/* Arabic text */}
+                  <div className="min-w-[140px] text-left">
+                    <span className={`font-arabic text-xl sm:text-2xl font-bold tracking-wide transition-colors
+                      ${isSpace ? 'text-white' : 'text-[#0B4628]'}
+                    `}>
+                      {item.arabic}
+                    </span>
                   </div>
                 </div>
 
-                {/* Arabic Script */}
-                <div className="my-2 min-h-[50px] flex items-center justify-center">
-                  <span className={`font-arabic text-xl sm:text-2xl font-bold tracking-wide transition-colors group-hover:text-amber-500 dark:group-hover:text-gold
-                    ${isSpace ? 'text-white' : 'text-[#0B4628]'}
-                  `}>
-                    {item.arabic}
-                  </span>
-                </div>
-
-                {/* Transliteration & Meaning */}
-                <div className="mt-4 space-y-1.5 w-full border-t border-stone-100 dark:border-stone-800/40 pt-4">
-                  <p className="text-xs font-serif font-black tracking-tight leading-none">
+                {/* Center: Transliteration & English Meaning */}
+                <div className="flex-1 px-4 text-left border-l border-r border-stone-200/40 dark:border-stone-800/40">
+                  <p className="text-xs font-serif font-black tracking-tight">
                     {item.translit}
                   </p>
-                  <p className="text-[10.5px] text-stone-500 dark:text-stone-400 leading-tight italic min-h-[32px] flex items-center justify-center">
-                    {item.translation}
+                  <p className="text-[10.5px] text-stone-500 dark:text-stone-400 italic mt-0.5 max-w-sm">
+                    "{item.translation}"
                   </p>
                 </div>
 
-                {/* Plus interaction indicator */}
-                <div className={`mt-4 w-full py-1.5 rounded-sm font-mono text-[9px] uppercase tracking-widest font-bold border transition-all flex items-center justify-center gap-1
-                  ${isSpace 
-                    ? 'border-gold/10 bg-gold/5 text-gold-light group-hover:bg-gold/20' 
-                    : 'border-stone-100 bg-stone-50 text-[#0B4628] group-hover:bg-emerald-50'
-                  }
-                `}>
-                  <LucideIcons.Plus className="h-3 w-3" />
-                  Tap to Count
+                {/* Right side: Progress Bar & Tap target */}
+                <div className="w-40 shrink-0 text-right space-y-1">
+                  <div className="flex justify-between items-center text-[9px] font-mono text-stone-400 font-bold tracking-wider">
+                    <span>PROGRESS</span>
+                    <span>{count} / 33</span>
+                  </div>
+                  <div className={`w-full h-1.5 rounded-full overflow-hidden ${isSpace ? 'bg-zinc-800' : 'bg-stone-200'}`}>
+                    <div 
+                      style={{ width: `${Math.min((count / 33) * 100, 100)}%` }}
+                      className={`h-full rounded-full transition-all duration-300 ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}`}
+                    />
+                  </div>
+                  <p className="text-[8px] font-mono opacity-50 uppercase tracking-widest pt-1">
+                    Click card to count
+                  </p>
                 </div>
               </motion.div>
             );

@@ -906,14 +906,14 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
             </div>
           </div>
 
-          {/* Custom Floating Zoom Controls on the Right side of the globe */}
-          <div className="absolute -right-8 sm:-right-12 md:-right-14 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-30 pointer-events-auto select-none">
+          {/* Custom Floating Zoom Controls on the Right side of the globe - positioned inside the viewport boundaries */}
+          <div className="absolute right-2 sm:right-4 md:right-6 lg:-right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2.5 z-30 pointer-events-auto select-none">
             <button 
               onClick={(e) => {
                 e.stopPropagation();
                 setZoomScale(prev => Math.min(prev + 0.25, 2.5));
               }}
-              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95
+              className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95 cursor-pointer
                 ${isSpace 
                   ? 'bg-space/90 text-gold border-gold/45 hover:border-gold hover:text-white hover:shadow-[0_0_8px_rgba(232,184,109,0.3)]' 
                   : 'bg-white/95 text-crimson border-crimson/30 hover:border-crimson hover:bg-[#FAF8F5] hover:shadow-[0_2px_8px_rgba(139,0,0,0.12)]'
@@ -921,7 +921,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
               `}
               title="Zoom In"
             >
-              <LucideIcons.ZoomIn className="h-4 w-4" />
+              <LucideIcons.ZoomIn className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
             </button>
             
             <button 
@@ -929,7 +929,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 e.stopPropagation();
                 setZoomScale(prev => Math.max(prev - 0.25, 1));
               }}
-              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95
+              className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95 cursor-pointer
                 ${isSpace 
                   ? 'bg-space/90 text-gold border-gold/45 hover:border-gold hover:text-white hover:shadow-[0_0_8px_rgba(232,184,109,0.3)]' 
                   : 'bg-white/95 text-crimson border-crimson/30 hover:border-crimson hover:bg-[#FAF8F5] hover:shadow-[0_2px_8px_rgba(139,0,0,0.12)]'
@@ -937,7 +937,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
               `}
               title="Zoom Out"
             >
-              <LucideIcons.ZoomOut className="h-4 w-4" />
+              <LucideIcons.ZoomOut className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
             </button>
 
             {zoomScale > 1 && (
@@ -946,7 +946,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                   e.stopPropagation();
                   setZoomScale(1);
                 }}
-                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95 animate-fade-in
+                className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-all duration-300 shadow-md hover:scale-110 active:scale-95 animate-fade-in cursor-pointer
                   ${isSpace 
                     ? 'bg-space/90 text-gold border-gold/50 hover:border-gold hover:text-white hover:shadow-[0_0_8px_rgba(232,184,109,0.3)]' 
                     : 'bg-white/95 text-crimson border-crimson/35 hover:border-crimson hover:bg-[#FAF8F5] hover:shadow-[0_2px_8px_rgba(139,0,0,0.12)]'
@@ -954,7 +954,7 @@ export default function GlobeSection({ currentTheme, selectedCourseId, onSelectC
                 `}
                 title="Reset Zoom"
               >
-                <LucideIcons.RefreshCw className="h-3.5 w-3.5" />
+                <LucideIcons.RefreshCw className="h-4 w-4" />
               </button>
             )}
           </div>

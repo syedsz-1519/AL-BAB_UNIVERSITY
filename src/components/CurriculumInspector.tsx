@@ -17,9 +17,10 @@ const CATEGORIES = [
   { id: 'all', name: 'All Disciplines', icon: 'Layers', desc: 'Complete spectrum of learning', courseIds: [] as string[] },
   { id: 'quran', name: 'Quran Studies', icon: 'BookOpen', desc: 'Exegesis & structural miracles', courseIds: ['quran'] },
   { id: 'hadith', name: 'Hadith Sciences', icon: 'MessageSquareText', desc: 'Prophetic traditions & chain validation', courseIds: ['hadith'] },
-  { id: 'fiqh', name: 'Fiqh & Law', icon: 'Scale', desc: 'Jurisprudence, contracts & fatwas', courseIds: ['fiqh'] },
-  { id: 'logic', name: 'Logic & Philosophy', icon: 'Binary', desc: 'Reasoning, epistemology & critique', courseIds: ['logic', 'philosophy'] },
-  { id: 'islamic-studies', name: 'Islamic Studies', icon: 'BookType', desc: 'Theology, seerah & purification', courseIds: ['islamic-studies', 'challenges'] }
+  { id: 'fiqh', name: 'Fiqh & Finance', icon: 'Scale', desc: 'Jurisprudence, contracts & economics', courseIds: ['fiqh', 'economic-studies'] },
+  { id: 'logic', name: 'Logic & Modernity', icon: 'Binary', desc: 'Reasoning, philosophy & modern critique', courseIds: ['logic', 'philosophy', 'modernity', 'challenges'] },
+  { id: 'islamic-studies', name: 'Islamic Theology', icon: 'BookType', desc: 'Theology, seerah & purification', courseIds: ['islamic-studies'] },
+  { id: 'humanities', name: 'Humanities & Soul', icon: 'Heart', desc: 'Psychology, history, politics & poetry', courseIds: ['psychology', 'history', 'politics', 'poetry'] }
 ];
 
 export default function CurriculumInspector({ currentTheme, selectedCourseId, onSelectCourse, searchText }: CurriculumInspectorProps) {
@@ -152,7 +153,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
   return (
     <section 
       id="curriculum"
-      className={`py-24 px-6 md:px-12 select-none transition-colors duration-700
+      className={`scroll-mt-28 py-24 px-6 md:px-12 select-none transition-colors duration-700
         ${isSpace 
           ? 'bg-[#030712] text-white' 
           : 'bg-[#FBF9F6] text-charcoal'
@@ -198,7 +199,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
               placeholder="Search branches... (e.g. AI, Usul, Epistemology)"
               value={internalSearch}
               onChange={(e) => setInternalSearch(e.target.value)}
-              className={`w-full px-5 py-3 pl-11 text-sm rounded sm:rounded-sm border focus:outline-none transition-all font-sans
+              className={`w-full px-5 py-3.5 pl-11 text-sm rounded sm:rounded-sm border focus:outline-none transition-all font-sans min-h-[44px]
                 ${isSpace 
                   ? 'bg-space border-gold/25 text-white placeholder-white/30 focus:border-gold focus:shadow-[0_0_10px_rgba(201,147,58,0.2)]' 
                   : 'bg-white border-crimson/15 text-charcoal placeholder-stone-400 focus:border-crimson focus:shadow-[0_4px_15px_rgba(11, 70, 40,0.05)]'
@@ -329,7 +330,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryChange(cat.id)}
-                      className={`snap-start flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-full transition-all duration-300 text-xs font-serif font-black cursor-pointer
+                      className={`snap-start flex-shrink-0 flex items-center gap-2 px-4 py-2.5 border rounded-full transition-all duration-300 text-xs font-serif font-black cursor-pointer min-h-[44px]
                         ${isCatSelected
                           ? isSpace
                             ? 'bg-gold text-black border-gold shadow-[0_2px_8px_rgba(201,147,58,0.3)]'
@@ -459,7 +460,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
           <div className="lg:col-span-4 relative z-10" id="canonical-inspector-viewport">
             <div 
               key={selectedCourseId}
-              className={`relative p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
+              className={`relative p-6 sm:p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
                 ${isSpace 
                   ? 'bg-[#0a0f1d] border-gold/25 text-white' 
                   : 'bg-white border-stone-200 text-charcoal'

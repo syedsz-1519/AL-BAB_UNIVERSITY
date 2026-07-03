@@ -230,7 +230,9 @@ export default function Header({
           {/* MOBILE MENU TOGGLE */}
           <button 
             onClick={toggleMobileOpen}
-            className="lg:hidden p-1.5 sm:p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer text-black"
+            className={`lg:hidden p-1.5 sm:p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer
+              ${isSpace ? 'text-white' : 'text-charcoal'}
+            `}
           >
             {isMobileOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
           </button>

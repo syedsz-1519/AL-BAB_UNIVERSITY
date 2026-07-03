@@ -27,6 +27,7 @@ import AcademicWorld from './components/AcademicWorld';
 import FivePillarsSection from './components/FivePillarsSection';
 import DhikrSection from './components/DhikrSection';
 import MobileQuickNav from './components/MobileQuickNav';
+import ScrollSpyIndicator from './components/ScrollSpyIndicator';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -809,6 +810,9 @@ export default function App() {
           onClose={() => setAdmissionOpen(false)}
         />
       )}
+
+      {/* SCROLL SPY ACTIVE SECTION INDICATOR */}
+      <ScrollSpyIndicator currentTheme={currentTheme} currentSection={currentSection} />
 
       {/* FLOATING SOCIAL & DIRECT ADMISSIONS CHANNELS */}
       <FloatingContacts currentTheme={currentTheme} />

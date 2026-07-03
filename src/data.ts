@@ -47,6 +47,15 @@ const COURSES_BASE: Course[] = [
     accentColor: 'purple-500'
   },
   {
+    id: 'psychology',
+    name: 'Psychology',
+    count: '5 Branches',
+    icon: 'Brain',
+    branches: ['Cognitive Psychology', 'Behavioral Psychology', 'Clinical Psychology', 'Social Psychology', 'Neuropsychology'],
+    description: 'Theories of the Soul (Nafs) integrated with modern cognitive neuroscience and ACT models.',
+    accentColor: 'rose-500'
+  },
+  {
     id: 'challenges',
     name: 'Challenges',
     count: '5 Branches',
@@ -54,6 +63,51 @@ const COURSES_BASE: Course[] = [
     branches: ['Atheism', 'Liberalism', 'Feminism', 'Materialism', 'Secularism'],
     description: 'Scholarly critique of contemporary ideologies. Undertake a rigorous, respectful academic breakdown of current sociopolitical and theological challenges.',
     accentColor: 'emerald-600'
+  },
+  {
+    id: 'history',
+    name: 'History',
+    count: '5 Branches',
+    icon: 'History',
+    branches: ['Islamic History', 'World History', 'Ancient Civilizations', 'Historiography', 'Political History'],
+    description: 'Annalling historic cycles, political shifts, and global socio-religious evolutions.',
+    accentColor: 'amber-600'
+  },
+  {
+    id: 'politics',
+    name: 'Politics',
+    count: '5 Branches',
+    icon: 'Landmark',
+    branches: ['Political Theory', 'Islamic Governance', 'International Relations', 'Geopolitics', 'Public Administration'],
+    description: 'Diplomatic systems, classical treaties, model sovereignty, and global modern affairs.',
+    accentColor: 'indigo-600'
+  },
+  {
+    id: 'poetry',
+    name: 'Poetry',
+    count: '5 Branches',
+    icon: 'Feather',
+    branches: ['Arabic Poetry', 'Urdu Poetry', 'Persian Poetry', 'Literary Criticism', 'Spiritual Poetry'],
+    description: 'Soul of classical rhetoric, structural metrics, mystical couplets, and linguistic prose development.',
+    accentColor: 'pink-600'
+  },
+  {
+    id: 'economic-studies',
+    name: 'Economic Studies',
+    count: '5 Branches',
+    icon: 'Coins',
+    branches: ['Islamic Economics', 'Microeconomics', 'Macroeconomics', 'Behavioral Economics', 'Finance & Trade'],
+    description: 'Wealth distribution ethics, behavioral incentives, interest-free finance, and trade models.',
+    accentColor: 'emerald-600'
+  },
+  {
+    id: 'modernity',
+    name: 'Modernity',
+    count: '5 Branches',
+    icon: 'Cpu',
+    branches: ['Postmodernism Critique', 'Sovereignty & State', 'Secularization Thesis', 'Technological Ethics', 'Cultural Hegemony'],
+    description: 'Deconstruct the historical, philosophical, and social architectures of the modern epoch. Investigate secularization, post-structural models, and deep ethics of technology.',
+    accentColor: 'indigo-500'
   }
 ];
 

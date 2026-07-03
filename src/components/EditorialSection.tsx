@@ -12,7 +12,7 @@ export default function EditorialSection({ currentTheme, onFindMore }: Editorial
 
   return (
     <section 
-      id="scholarly"
+      id="editorial-mission"
       className="py-24 px-6 md:px-12 select-none border-b border-gold/25 relative overflow-hidden transition-all duration-700 bg-gradient-to-br from-[#052112] via-[#0B4628] to-[#031c0e] text-white shadow-[inset_0_4px_30px_rgba(0,0,0,0.5)] islamic-dark-green-section"
     >
       {/* Background Islamic Star pattern specifically for this green section */}

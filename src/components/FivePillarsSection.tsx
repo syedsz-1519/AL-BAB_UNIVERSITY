@@ -118,7 +118,7 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
   return (
     <section 
       id="islamic-pillars"
-      className={`py-20 px-6 md:px-12 border-t relative overflow-hidden transition-colors duration-300
+      className={`scroll-mt-28 py-20 px-6 md:px-12 border-t relative overflow-hidden transition-colors duration-300
         ${isSpace 
           ? 'bg-[#030613] border-gold/15 text-gold-light' 
           : 'bg-[#FCFAF7] border-stone-200/80 text-stone-900'
