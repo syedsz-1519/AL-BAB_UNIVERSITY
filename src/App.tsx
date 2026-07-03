@@ -28,6 +28,8 @@ import FivePillarsSection from './components/FivePillarsSection';
 import DhikrSection from './components/DhikrSection';
 import MobileQuickNav from './components/MobileQuickNav';
 import ScrollSpyIndicator from './components/ScrollSpyIndicator';
+import CelestialTransition from './components/CelestialTransition';
+import DivineDust from './components/DivineDust';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -335,22 +337,16 @@ export default function App() {
         }}
       />
       
-      {/* FULL-SCREEN OVERLAY FOR CHROMATIC THEMATIC CROSS-FADE TRANSITION */}
+      {/* CELESTIAL STAR-FIELD JOURNEY THEME TRANSITION OVERLAY */}
       <AnimatePresence>
         {isThemeTransitioning && previousTheme && (
-          <motion.div
-            key={`theme-transition-${previousTheme}`}
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            onAnimationComplete={() => {
+          <CelestialTransition
+            previousTheme={previousTheme}
+            currentTheme={currentTheme}
+            onComplete={() => {
               setIsThemeTransitioning(false);
               setPreviousTheme(null);
             }}
-            className={`fixed inset-0 z-[9999] pointer-events-none transition-colors duration-200 ${
-              previousTheme === 'space' ? 'bg-[#020509]' : 'bg-[#FAF6EF]'
-            }`}
           />
         )}
       </AnimatePresence>
@@ -813,6 +809,9 @@ export default function App() {
 
       {/* SCROLL SPY ACTIVE SECTION INDICATOR */}
       <ScrollSpyIndicator currentTheme={currentTheme} currentSection={currentSection} />
+
+      {/* DIVINE DUST CELESTIAL PARTICLES */}
+      <DivineDust currentTheme={currentTheme} />
 
       {/* FLOATING SOCIAL & DIRECT ADMISSIONS CHANNELS */}
       <FloatingContacts currentTheme={currentTheme} />
