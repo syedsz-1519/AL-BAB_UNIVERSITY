@@ -17,6 +17,18 @@ interface Star {
   size: number;
 }
 
+interface Spark {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  color: string;
+  alpha: number;
+  decay: number;
+}
+
 export default function CelestialTransition({ previousTheme, currentTheme, onComplete }: CelestialTransitionProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -40,15 +52,21 @@ export default function CelestialTransition({ previousTheme, currentTheme, onCom
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Origin of the circular screen wipe (near the top-right theme toggle button)
+    const x0 = width * 0.9;
+    const y0 = 50;
+    const maxRadius = Math.sqrt(Math.pow(x0, 2) + Math.pow(height - y0, 2)) * 1.1;
+
     // Initialize 3D Stars
-    const starCount = window.innerWidth < 640 ? 120 : 250;
+    const starCount = width < 640 ? 100 : 220;
     const stars: Star[] = [];
     const isToSpace = currentTheme === 'space';
 
     const starColors = isToSpace
-      // Transitioning to space: start gold/amber (parchment) and morph to cyan/blue/white (space)
       ? ['#F5E6CA', '#E8B86D', '#C4A35A', '#E2E8F0', '#93C5FD', '#A5F3FC', '#FFFFFF']
-      // Transitioning to parchment: start cool whites/blues/purples and morph to warm embers
       : ['#A5F3FC', '#93C5FD', '#C084FC', '#F5E6CA', '#E8B86D', '#FDBA74', '#FAF8F5'];
 
     for (let i = 0; i < starCount; i++) {
@@ -63,59 +81,136 @@ export default function CelestialTransition({ previousTheme, currentTheme, onCom
       });
     }
 
+    // Boundary Sparks for the screen wipe
+    const sparks: Spark[] = [];
+    let sparkId = 0;
+    const sparkColors = isToSpace 
+      ? ['#E8B86D', '#C4A35A', '#A5F3FC', '#38BDF8', '#FFFFFF']
+      : ['#0B4628', '#C9933A', '#9B1C1C', '#E8B86D', '#F5E6CA'];
+
     let animationFrameId: number;
     const startTime = Date.now();
-    const duration = 1600; // 1.6s total transition time
+    const duration = 1800; // 1.8 seconds for an immersive journey
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
 
-      // Clear with progressive tail/vignette fade
-      // Ramping up opacity of background from previous theme color to current theme color
-      const fromBg = previousTheme === 'space' ? { r: 2, g: 5, b: 9 } : { r: 250, g: 246, b: 239 };
-      const toBg = currentTheme === 'space' ? { r: 2, g: 5, b: 9 } : { r: 250, g: 246, b: 239 };
+      // Theme Colors
+      const spaceBg = { r: 2, g: 5, b: 9 };
+      const parchmentBg = { r: 250, g: 246, b: 239 };
 
-      const r = Math.round(fromBg.r + (toBg.r - fromBg.r) * progress);
-      const g = Math.round(fromBg.g + (toBg.g - fromBg.g) * progress);
-      const b = Math.round(fromBg.b + (toBg.b - fromBg.b) * progress);
+      const fromBg = previousTheme === 'space' ? spaceBg : parchmentBg;
+      const toBg = currentTheme === 'space' ? spaceBg : parchmentBg;
 
-      // Create a gorgeous trailing alpha depending on speed (faster = lower alpha = longer streaks)
-      // Speed ramp: starts moderate, warps to maximum around 40-70% of the transition, then decelerates
-      let speedFactor = 1;
-      if (progress < 0.4) {
-        // Accelerating warp speed: easeInQuadratic
-        const t = progress / 0.4;
-        speedFactor = 2 + t * t * 45; 
-      } else if (progress < 0.8) {
-        // High speed cruise / peak celestial journey
-        const t = (progress - 0.4) / 0.4;
-        speedFactor = 47 - t * 35; // gradually decelerate from peak
-      } else {
-        // Slowing down to enter the destination theme
-        const t = (progress - 0.8) / 0.2;
-        speedFactor = 12 - t * 10;
+      // Clear with previous theme background first
+      ctx.fillStyle = `rgb(${fromBg.r}, ${fromBg.g}, ${fromBg.b})`;
+      ctx.fillRect(0, 0, w, h);
+
+      // --- CIRCULAR SCREEN WIPE ---
+      // Wipe expands over the first 65% of the animation
+      const wipeProgress = Math.min(progress / 0.65, 1);
+      const radius = wipeProgress * maxRadius;
+
+      if (radius > 0) {
+        ctx.save();
+        
+        // Create clipping region of the expanding circle
+        ctx.beginPath();
+        ctx.arc(x0, y0, radius, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Draw new theme background inside the clipped circle
+        ctx.fillStyle = `rgb(${toBg.r}, ${toBg.g}, ${toBg.b})`;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.restore();
       }
 
-      // Trail opacity: at peak speed, we want more trails, so we use low background opacity
-      const trailAlpha = Math.max(0.08, 0.35 - (speedFactor / 55) * 0.25);
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${trailAlpha})`;
-      ctx.fillRect(0, 0, width, height);
+      // --- SPAWN SPARK PARTICLES AT THE WIPE BOUNDARY ---
+      if (wipeProgress > 0 && wipeProgress < 1) {
+        // Spawn sparks along the circle edge
+        const spawnCount = w < 640 ? 4 : 8;
+        for (let s = 0; s < spawnCount; s++) {
+          // Angle centered towards the screen direction from top-right
+          const angle = Math.PI * 0.5 + (Math.random() - 0.5) * Math.PI * 1.1;
+          const sx = x0 + radius * Math.cos(angle);
+          const sy = y0 + radius * Math.sin(angle);
 
-      // Render & update stars
+          // Only spawn if within viewport plus bounds
+          if (sx >= -50 && sx <= w + 50 && sy >= -50 && sy <= h + 50) {
+            // Push outwards
+            const speed = Math.random() * 4 + 2;
+            const vx = Math.cos(angle) * speed + (Math.random() - 0.5) * 1.5;
+            const vy = Math.sin(angle) * speed + (Math.random() - 0.5) * 1.5;
+
+            sparks.push({
+              id: sparkId++,
+              x: sx,
+              y: sy,
+              vx,
+              vy,
+              size: Math.random() * 4 + 2,
+              color: sparkColors[Math.floor(Math.random() * sparkColors.length)],
+              alpha: 1.0,
+              decay: Math.random() * 0.03 + 0.015,
+            });
+          }
+        }
+      }
+
+      // --- UPDATE & RENDER SPARKS ---
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const spark = sparks[i];
+        spark.x += spark.vx;
+        spark.y += spark.vy;
+        spark.alpha -= spark.decay;
+        spark.size *= 0.96;
+
+        if (spark.alpha <= 0 || spark.size < 0.5) {
+          sparks.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(spark.x, spark.y, spark.size, 0, Math.PI * 2);
+        ctx.fillStyle = spark.color;
+        ctx.globalAlpha = spark.alpha;
+        
+        // Add subtle bloom
+        ctx.shadowBlur = spark.size * 2;
+        ctx.shadowColor = spark.color;
+        
+        ctx.fill();
+        ctx.shadowBlur = 0; // reset
+      }
+      ctx.globalAlpha = 1.0;
+
+      // --- DYNAMIC STARS HYPERDRIVE (CELESTIAL JOURNEY) ---
+      // Speed ramp: accelerates to warp during 30% - 75% then slows down
+      let speedFactor = 1;
+      if (progress < 0.3) {
+        const t = progress / 0.3;
+        speedFactor = 1 + t * t * 35;
+      } else if (progress < 0.75) {
+        const t = (progress - 0.3) / 0.45;
+        speedFactor = 36 - t * t * 26;
+      } else {
+        const t = (progress - 0.75) / 0.25;
+        speedFactor = 10 - t * 9;
+      }
+
+      // Render 3D Stars
       stars.forEach((star) => {
-        // Save previous projected coordinates for drawing the hyperdrive lines
         const k = 128.0 / star.z;
-        const prevPx = (star.x * k) + width / 2;
-        const prevPy = (star.y * k) + height / 2;
+        const prevPx = (star.x * k) + w / 2;
+        const prevPy = (star.y * k) + h / 2;
 
-        // Move star closer to observer (decreasing Z)
         star.z -= speedFactor;
 
-        // Recycle star to back of field if it flies past the camera viewport
         if (star.z <= 0) {
           star.z = 1000;
           star.x = (Math.random() - 0.5) * 2000;
@@ -123,55 +218,64 @@ export default function CelestialTransition({ previousTheme, currentTheme, onCom
           return;
         }
 
-        // Compute new projected coordinates
         const newK = 128.0 / star.z;
-        const currPx = (star.x * newK) + width / 2;
-        const currPy = (star.y * newK) + height / 2;
+        const currPx = (star.x * newK) + w / 2;
+        const currPy = (star.y * newK) + h / 2;
 
         star.px = currPx;
         star.py = currPy;
 
-        // Only draw if within reasonable bounds
-        if (currPx >= 0 && currPx <= width && currPy >= 0 && currPy <= height && star.z < 1000) {
-          // Compute brightness based on distance Z (nearer is brighter and larger)
-          const alpha = Math.min(1, (1000 - star.z) / 300);
+        if (currPx >= 0 && currPx <= w && currPy >= 0 && currPy <= h && star.z < 1000) {
+          const alpha = Math.min(1, (1000 - star.z) / 400) * (1 - Math.pow(Math.abs(progress - 0.5) * 2, 4));
           
-          // Draw star/streak line
-          ctx.beginPath();
-          
-          if (speedFactor > 15) {
-            // Draw stunning streak lines
-            ctx.strokeStyle = star.color;
-            ctx.lineWidth = star.size * (speedFactor / 25) * (1.5 - star.z / 1000);
-            ctx.globalAlpha = alpha * 0.8;
-            ctx.moveTo(prevPx, prevPy);
-            ctx.lineTo(currPx, currPy);
-            ctx.stroke();
-          } else {
-            // Draw glowing circles
-            ctx.fillStyle = star.color;
-            ctx.globalAlpha = alpha;
-            ctx.arc(currPx, currPy, star.size * (1.5 - star.z / 1000) * 1.5, 0, Math.PI * 2);
-            ctx.fill();
+          if (alpha > 0.05) {
+            ctx.beginPath();
+            if (speedFactor > 12) {
+              // Streak trails during warp speed
+              ctx.strokeStyle = star.color;
+              ctx.lineWidth = star.size * (speedFactor / 20) * (1.5 - star.z / 1000);
+              ctx.globalAlpha = alpha * 0.85;
+              ctx.moveTo(prevPx, prevPy);
+              ctx.lineTo(currPx, currPy);
+              ctx.stroke();
+            } else {
+              // Normal twinkling stardust
+              ctx.fillStyle = star.color;
+              ctx.globalAlpha = alpha;
+              ctx.arc(currPx, currPy, star.size * (1.5 - star.z / 1000) * 1.5, 0, Math.PI * 2);
+              ctx.fill();
+            }
           }
         }
       });
+      ctx.globalAlpha = 1.0;
 
-      ctx.globalAlpha = 1.0; // Reset alpha for other draws
-
-      // Draw celestial portal gateway vignette
-      const grad = ctx.createRadialGradient(width / 2, height / 2, width * 0.1, width / 2, height / 2, width * 0.8);
-      grad.addColorStop(0, 'rgba(0,0,0,0)');
-      
-      if (isToSpace) {
-        // Fading to cosmic space
-        grad.addColorStop(1, `rgba(2, 5, 9, ${Math.min(0.8, progress * 1.2)})`);
-      } else {
-        // Fading to celestial parchment
-        grad.addColorStop(1, `rgba(250, 246, 239, ${Math.min(0.8, progress * 1.2)})`);
+      // --- SCREEN SHINE / WIPING HIGHLIGHT LINE ---
+      // Draw a gold/white shimmering ring at the wipe boundary for high-end aesthetic
+      if (wipeProgress > 0 && wipeProgress < 1) {
+        ctx.beginPath();
+        ctx.arc(x0, y0, radius, 0, Math.PI * 2);
+        
+        const boundaryGrad = ctx.createRadialGradient(x0, y0, radius - 15, x0, y0, radius + 5);
+        boundaryGrad.addColorStop(0, 'rgba(255,255,255,0)');
+        boundaryGrad.addColorStop(0.5, isToSpace ? 'rgba(232, 184, 109, 0.7)' : 'rgba(11, 70, 40, 0.45)');
+        boundaryGrad.addColorStop(0.8, 'rgba(255,255,255,0.9)');
+        boundaryGrad.addColorStop(1, 'rgba(255,255,255,0)');
+        
+        ctx.strokeStyle = boundaryGrad;
+        ctx.lineWidth = w < 640 ? 6 : 12;
+        ctx.stroke();
       }
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
+
+      // --- OVERALL FADE OUT ENTRANCE ---
+      // Smoothly fade out the entire canvas over the last 15% of the transition
+      if (progress > 0.85) {
+        const fadeAlpha = (1 - progress) / 0.15;
+        ctx.fillStyle = isToSpace ? `rgba(2, 5, 9, ${1 - fadeAlpha})` : `rgba(250, 246, 239, ${1 - fadeAlpha})`;
+        ctx.globalAlpha = 1 - fadeAlpha;
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalAlpha = 1.0;
+      }
 
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(animate);

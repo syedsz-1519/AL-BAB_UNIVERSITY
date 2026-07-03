@@ -8,27 +8,7 @@ interface FloatingContactsProps {
 
 export default function FloatingContacts({ currentTheme }: FloatingContactsProps) {
   const [isOpen, setIsOpen] = useState(false); // Instagram options toggle
-  const [showScrollToGlobe, setShowScrollToGlobe] = useState(false);
   const isSpace = currentTheme === 'space';
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 600) {
-        setShowScrollToGlobe(true);
-      } else {
-        setShowScrollToGlobe(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToGlobe = () => {
-    const el = document.getElementById('scholarly');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
 
   const scrollToDhikr = () => {
     const el = document.getElementById('dhikr-section');
@@ -173,34 +153,6 @@ JazakAllah khair!`;
             1 Minute Dhikr (Drag me!)
           </span>
         </motion.button>
-
-        {/* CELESTIAL GLOBE REVISIT FLOATING TRIGGER - HIDDEN ON MOBILE */}
-        {showScrollToGlobe && (
-          <button
-            onClick={scrollToGlobe}
-            className={`group hidden sm:flex sm:h-12 sm:w-12 h-9.5 w-9.5 items-center justify-center rounded-full shadow-lg border backdrop-blur-md transition-all duration-500 hover:scale-110 relative animate-fade-in-up
-              ${isSpace 
-                ? 'bg-space/95 border-gold/50 text-[#E8B86D] hover:border-gold hover:shadow-[0_0_15px_rgba(201,147,58,0.55)]' 
-                : 'bg-white/95 border-[#0B4628]/35 text-[#0B4628] hover:border-[#0B4628] hover:bg-[#FAF8F5] hover:shadow-[0_4px_12px_rgba(11, 70, 40,0.15)]'
-              }
-            `}
-            title="Revisit Celestial Globe"
-          >
-            <span className={`absolute -inset-1 rounded-full border opacity-20 group-hover:opacity-40 animate-pulse duration-1000 select-none pointer-events-none
-              ${isSpace ? 'border-gold' : 'border-[#0B4628]'}
-            `} />
-            <LucideIcons.Globe className="sm:h-5.5 sm:w-5.5 h-4.5 w-4.5 animate-spin-slow" />
-            
-            <span className={`absolute right-14 whitespace-nowrap px-2.5 py-1 text-[10px] font-mono leading-none tracking-widest rounded shadow-md border pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0
-              ${isSpace 
-                ? 'bg-space border-gold/30 text-gold-light' 
-                : 'bg-[#FCFAF7] border-stone-100 text-[#0B4628] font-bold shadow-sm'
-              }
-            `}>
-              Celestial Globe
-            </span>
-          </button>
-        )}
 
         {/* INSTAGRAM HUB TRIGGER BUTTON - VISIBLE ON MOBILE & DESKTOP */}
         <button
