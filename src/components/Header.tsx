@@ -166,7 +166,7 @@ export default function Header({
             <div className={`absolute -inset-1.5 blur-md rounded-full opacity-35 group-hover:opacity-80 transition duration-300
               ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}
             `}></div>
-            <AlbabLogo className="relative h-9 w-9 sm:h-12 sm:w-12 transform group-hover:scale-110 transition-transform duration-300" />
+            <AlbabLogo className="relative h-11 w-11 sm:h-14 sm:w-14 transform group-hover:scale-110 transition-transform duration-300" />
           </div>
           <div>
             <h1 className={`font-serif font-black text-xs sm:text-base md:text-lg leading-none tracking-wide
