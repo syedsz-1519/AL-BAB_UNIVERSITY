@@ -29,6 +29,7 @@ import DhikrSection from './components/DhikrSection';
 import MobileQuickNav from './components/MobileQuickNav';
 import ScrollSpyIndicator from './components/ScrollSpyIndicator';
 import DivineDust from './components/DivineDust';
+import AlbabLogo from './components/AlbabLogo';
 import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
@@ -406,31 +407,16 @@ export default function App() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(244,239,230,0.7)_95%)] pointer-events-none" />
 
             <div className="relative z-10 flex flex-col items-center max-w-2xl w-full text-center px-4">
-              {/* Islamic Architectural Mihrab Arch Design with Star Rosette */}
+              {/* ALBAB Islamic University Official Seal */}
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 1.4, ease: "easeOut" }}
                 className="mb-6 relative flex items-center justify-center"
               >
-                {/* Mihrab Arch silhouette overlaying the star rosette */}
-                <svg className="w-32 h-32 md:w-36 md:h-36 stroke-[#0B4628] fill-[#0B4628]/5 text-[#0B4628] drop-shadow-[0_4px_25px_rgba(11,70,40,0.12)]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.2">
-                  <path d="M20,85 L20,48 C20,24 38,14 50,5 C62,14 80,24 80,48 L80,85 Z" className="stroke-[#0B4628]" />
-                  <path d="M26,85 L26,50 C26,28 39,18 50,10 C61,18 74,28 74,50 L74,85" strokeWidth="0.8" className="stroke-[#C4A35A]" strokeDasharray="3 3" />
-                  
-                  {/* Concentric 12-pointed star rosette in rich gold */}
-                  <g transform="translate(50, 48) scale(0.35)">
-                    <rect x="-25" y="-25" width="50" height="50" transform="rotate(0)" className="stroke-[#C4A35A] fill-[#C4A35A]/10" strokeWidth="1.5" />
-                    <rect x="-25" y="-25" width="50" height="50" transform="rotate(30)" className="stroke-[#C4A35A] fill-[#C4A35A]/10" strokeWidth="1.5" />
-                    <rect x="-25" y="-25" width="50" height="50" transform="rotate(60)" className="stroke-[#C4A35A] fill-[#C4A35A]/10" strokeWidth="1.5" />
-                    <circle cx="0" cy="0" r="15" strokeWidth="1" className="stroke-[#C4A35A]/50" />
-                    <circle cx="0" cy="0" r="5" className="fill-[#C4A35A]" />
-                  </g>
-                </svg>
-                {/* Floating Cap Icon in center of Mihrab */}
-                <div className="absolute top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <GraduationCap className="w-8 h-8 text-[#C4A35A] animate-pulse" />
-                </div>
+                {/* Soft radiant gold halo behind the seal */}
+                <div className="absolute w-40 h-40 md:w-44 md:h-44 rounded-full bg-[#C4A35A]/25 blur-2xl animate-pulse" style={{ animationDuration: '3.5s' }} />
+                <AlbabLogo className="relative w-32 h-32 md:w-36 md:h-36 drop-shadow-[0_10px_30px_rgba(11,70,40,0.25)]" />
               </motion.div>
 
               {/* MUSEUM-GRADE EMBELLISHED GLASS PLAQUE CONTAINER FOR OPTIMAL READABILITY */}
@@ -750,6 +736,7 @@ export default function App() {
             currentTheme={currentTheme}
             selectedCourseId={selectedCourseId}
             onSelectCourse={handleSelectCourse}
+            onEnroll={() => setAdmissionOpen(true)}
             searchText={searchText}
           />
 
