@@ -63,6 +63,25 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
   const [showCompletedOnly, setShowCompletedOnly] = useState(false);
   const [showInterestedOnly, setShowInterestedOnly] = useState(false);
 
+  // Details modal (Canonical Inspector opens on "Details" click)
+  const [showDetails, setShowDetails] = useState(false);
+
+  // Lock body scroll + Escape-to-close while the details modal is open
+  useEffect(() => {
+    if (showDetails) {
+      const original = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setShowDetails(false);
+      };
+      window.addEventListener('keydown', onKey);
+      return () => {
+        document.body.style.overflow = original;
+        window.removeEventListener('keydown', onKey);
+      };
+    }
+  }, [showDetails]);
+
   // Sync back to local storage
   useEffect(() => {
     localStorage.setItem('completedCourses', JSON.stringify(completedCourses));
@@ -425,8 +444,8 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
             </div>
           </div>
           
-          {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-6) */}
-          <div className="lg:col-span-6">
+          {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-9) */}
+          <div className="lg:col-span-9">
             {/* SUBJECT WORKSPACE FILTER BAR */}
             <div className={`mb-6 p-4 border rounded-sm transition-all duration-300
               ${isSpace 
@@ -633,13 +652,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                         key={course.id}
                         onClick={() => {
                           onSelectCourse(course);
-                          // Smoothly redirect the viewer to the Canonical Inspector detailed view panel on mobile
-                          setTimeout(() => {
-                            const el = document.getElementById('canonical-inspector-viewport');
-                            if (el && window.innerWidth < 1024) {
-                              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-                          }, 50);
+                          setShowDetails(true);
                         }}
                         role="button"
                         tabIndex={0}
@@ -724,12 +737,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onSelectCourse(course);
-                                setTimeout(() => {
-                                  const el = document.getElementById('canonical-inspector-viewport');
-                                  if (el) {
-                                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                  }
-                                }, 50);
+                                setShowDetails(true);
                               }}
                               className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider border transition-all duration-300 active:scale-95
                                 ${isSpace
@@ -751,17 +759,49 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
             )}
           </div>
 
-          {/* RIGHT: DETAILED VIEWPORT (Canonical Inspector) (lg:col-span-3) */}
-          <div className="lg:col-span-3 relative z-10" id="canonical-inspector-viewport">
-            <div 
+          {/* DETAILS MODAL: Canonical Inspector (opens from a course card's "Details" button) */}
+          <AnimatePresence>
+          {showDetails && selectedCourse && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+              onClick={() => setShowDetails(false)}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${selectedCourse?.name} details`}
+            >
+              {/* Backdrop */}
+              <div className={`absolute inset-0 backdrop-blur-sm ${isSpace ? 'bg-black/70' : 'bg-charcoal/50'}`} />
+
+              <motion.div 
               key={selectedCourseId}
-              className={`relative p-6 sm:p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 300 }}
+              className={`relative w-full max-w-2xl max-h-[88vh] overflow-y-auto p-6 sm:p-8 md:p-10 border rounded-lg shadow-2xl
                 ${isSpace 
                   ? 'bg-[#0a0f1d] border-gold/25 text-white' 
                   : 'bg-white border-stone-200 text-charcoal'
                 }
               `}
             >
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setShowDetails(false)}
+                aria-label="Close details"
+                className={`absolute top-4 right-4 z-20 h-9 w-9 flex items-center justify-center rounded-full border transition-all duration-200 active:scale-90
+                  ${isSpace ? 'border-gold/30 text-gold hover:bg-gold/10' : 'border-stone-200 text-stone-500 hover:bg-stone-100 hover:text-charcoal'}
+                `}
+              >
+                <LucideIcons.X className="h-4 w-4" />
+              </button>
+
               {/* Islamic Arabesque Star Graphic Background Layer */}
               <div className={`absolute -right-24 -bottom-24 w-80 h-80 opacity-5 transition-opacity duration-700 select-none pointer-events-none arabesque-star
                 ${isSpace ? 'bg-gold' : 'bg-crimson'}
@@ -886,8 +926,10 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                 </ul>
               </div>
 
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          )}
+          </AnimatePresence>
 
         </div>
 
