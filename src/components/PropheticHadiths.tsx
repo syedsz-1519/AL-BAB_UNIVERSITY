@@ -42,7 +42,7 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
             <div className={`absolute -inset-1.5 blur-md rounded-full opacity-35 group-hover:opacity-80 transition duration-300
               ${isSpace ? 'bg-gold' : 'bg-[#0B4628]'}
             `}></div>
-            <AlbabLogo className="relative h-14 w-14 sm:h-16 sm:w-16 transform group-hover:scale-110 transition-transform duration-300" />
+            <AlbabLogo className="relative h-16 w-16 sm:h-20 sm:w-20 transform group-hover:scale-110 transition-transform duration-300" />
           </div>
 
           <h2 className={`font-eb font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-2
