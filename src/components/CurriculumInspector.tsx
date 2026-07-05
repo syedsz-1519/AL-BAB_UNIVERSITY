@@ -425,8 +425,8 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
             </div>
           </div>
           
-          {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-5) */}
-          <div className="lg:col-span-5">
+          {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-6) */}
+          <div className="lg:col-span-6">
             {/* SUBJECT WORKSPACE FILTER BAR */}
             <div className={`mb-6 p-4 border rounded-sm transition-all duration-300
               ${isSpace 
@@ -584,7 +584,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 relative">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 relative">
                 <AnimatePresence mode="popLayout">
                   {filteredCourses.map((course, idx) => {
                     const isSelected = selectedCourseId === course.id;
@@ -701,7 +701,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                           </div>
 
                           {/* Action buttons */}
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             <button
                               type="button"
                               onClick={(e) => {
@@ -751,8 +751,8 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
             )}
           </div>
 
-          {/* RIGHT: DETAILED VIEWPORT (Canonical Inspector) (lg:col-span-4) */}
-          <div className="lg:col-span-4 relative z-10" id="canonical-inspector-viewport">
+          {/* RIGHT: DETAILED VIEWPORT (Canonical Inspector) (lg:col-span-3) */}
+          <div className="lg:col-span-3 relative z-10" id="canonical-inspector-viewport">
             <div 
               key={selectedCourseId}
               className={`relative p-6 sm:p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
