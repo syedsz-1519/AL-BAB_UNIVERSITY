@@ -10,6 +10,7 @@ interface CurriculumInspectorProps {
   currentTheme: 'parchment' | 'space';
   selectedCourseId: string;
   onSelectCourse: (course: Course) => void;
+  onEnroll?: (course: Course) => void;
   searchText: string;
 }
 
@@ -33,7 +34,7 @@ const TOGGLEABLE_SUBJECTS = [
   { id: 'humanities', name: 'Humanities & Soul', courseIds: ['psychology', 'history', 'politics', 'poetry', 'challenges', 'modernity'], icon: 'Heart' },
 ];
 
-export default function CurriculumInspector({ currentTheme, selectedCourseId, onSelectCourse, searchText }: CurriculumInspectorProps) {
+export default function CurriculumInspector({ currentTheme, selectedCourseId, onSelectCourse, onEnroll, searchText }: CurriculumInspectorProps) {
   const isSpace = currentTheme === 'space';
   const [internalSearch, setInternalSearch] = useState('');
   const [allCourses, setAllCourses] = useState<Course[]>(COURSES);
@@ -61,6 +62,25 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
 
   const [showCompletedOnly, setShowCompletedOnly] = useState(false);
   const [showInterestedOnly, setShowInterestedOnly] = useState(false);
+
+  // Details modal (Canonical Inspector opens on "Details" click)
+  const [showDetails, setShowDetails] = useState(false);
+
+  // Lock body scroll + Escape-to-close while the details modal is open
+  useEffect(() => {
+    if (showDetails) {
+      const original = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setShowDetails(false);
+      };
+      window.addEventListener('keydown', onKey);
+      return () => {
+        document.body.style.overflow = original;
+        window.removeEventListener('keydown', onKey);
+      };
+    }
+  }, [showDetails]);
 
   // Sync back to local storage
   useEffect(() => {
@@ -424,8 +444,8 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
             </div>
           </div>
           
-          {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-5) */}
-          <div className="lg:col-span-5">
+          {/* CENTER: CHANNELS/COURSES LIST (lg:col-span-9) */}
+          <div className="lg:col-span-9">
             {/* SUBJECT WORKSPACE FILTER BAR */}
             <div className={`mb-6 p-4 border rounded-sm transition-all duration-300
               ${isSpace 
@@ -583,13 +603,13 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 relative">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 relative">
                 <AnimatePresence mode="popLayout">
                   {filteredCourses.map((course, idx) => {
                     const isSelected = selectedCourseId === course.id;
 
                     return (
-                      <motion.button
+                      <motion.div
                         layout
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -632,19 +652,15 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                         key={course.id}
                         onClick={() => {
                           onSelectCourse(course);
-                          // Smoothly redirect the viewer to the Canonical Inspector detailed view panel on mobile
-                          setTimeout(() => {
-                            const el = document.getElementById('canonical-inspector-viewport');
-                            if (el && window.innerWidth < 1024) {
-                              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-                          }, 50);
+                          setShowDetails(true);
                         }}
-                        className={`group relative p-5 rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-pointer min-h-[120px] skeuo-active-click
+                        role="button"
+                        tabIndex={0}
+                        className={`group relative p-4 sm:p-5 rounded-lg text-left transition-all duration-300 flex items-center gap-4 sm:gap-5 cursor-pointer overflow-hidden skeuo-active-click
                           ${isSelected
                             ? isSpace
-                              ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 scale-[1.02] z-10'
-                              : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 scale-[1.02] z-10'
+                              ? 'skeuo-card-space border-gold text-white shadow-[0_0_25px_rgba(196,163,90,0.5)] ring-2 ring-gold/40 z-10'
+                              : 'skeuo-card-parchment border-[#C9933A] text-[#0B4628] shadow-[0_0_20px_rgba(196,163,90,0.3)] ring-2 ring-[#C9933A]/40 z-10'
                             : isSpace
                               ? 'skeuo-card-space text-stone-300 hover:text-white'
                               : 'skeuo-card-parchment text-stone-700 hover:text-charcoal'
@@ -657,40 +673,85 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                           ${isSelected ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'}
                         `} />
 
-                        <div className="flex justify-between items-start w-full">
-                          <span className={`transition-transform duration-300 group-hover:scale-105
-                            ${isSpace ? 'text-gold' : 'text-crimson'}
-                          `}>
-                            {getIcon(course.icon)}
-                          </span>
-                          <div className="flex items-center gap-1.5">
-                            {completedCourses.includes(course.id) && (
-                              <LucideIcons.CheckCircle2 
-                                className="h-3.5 w-3.5 text-emerald-500 animate-fade-in" 
-                                title="Completed Study"
-                              />
-                            )}
-                            {interestedCourses.includes(course.id) && (
-                              <LucideIcons.Bookmark 
-                                className="h-3.5 w-3.5 text-amber-500 fill-amber-500/15 animate-fade-in" 
-                                title="Interested Study"
-                              />
-                            )}
-                            <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
-                              {course.count}
-                            </span>
-                          </div>
+                        {/* Icon medallion */}
+                        <div className={`shrink-0 h-14 w-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-105 border
+                          ${isSpace
+                            ? 'bg-white/5 border-gold/25 text-gold'
+                            : 'bg-[#0B4628]/5 border-[#0B4628]/15 text-crimson'
+                          }
+                        `}>
+                          {getIcon(course.icon)}
                         </div>
 
-                        <div className="mt-3">
-                          <h3 className="font-serif font-black text-lg tracking-wide leading-tight group-hover:text-gold transition-colors">
-                            {course.name}
-                          </h3>
-                          <p className="text-xs text-stone-400 dark:text-stone-500 font-sans line-clamp-1 mt-1 font-medium">
-                            {course.branches.join(', ')}
-                          </p>
+                        {/* Content + actions */}
+                        <div className="flex-1 min-w-0 flex flex-col gap-2.5">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <h3 className="font-serif font-black text-base sm:text-lg tracking-wide leading-tight truncate group-hover:text-gold transition-colors">
+                                {course.name}
+                              </h3>
+                              <p className="text-xs text-stone-400 dark:text-stone-500 font-sans line-clamp-1 mt-0.5 font-medium">
+                                {course.branches.join(', ')}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {completedCourses.includes(course.id) && (
+                                <LucideIcons.CheckCircle2
+                                  className="h-3.5 w-3.5 text-emerald-500 animate-fade-in"
+                                  title="Completed Study"
+                                />
+                              )}
+                              {interestedCourses.includes(course.id) && (
+                                <LucideIcons.Bookmark
+                                  className="h-3.5 w-3.5 text-amber-500 fill-amber-500/15 animate-fade-in"
+                                  title="Interested Study"
+                                />
+                              )}
+                              <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
+                                {course.count}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Action buttons */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSelectCourse(course);
+                                onEnroll?.(course);
+                              }}
+                              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider transition-all duration-300 active:scale-95 shadow-sm
+                                ${isSpace
+                                  ? 'bg-gold text-space hover:bg-gold-light'
+                                  : 'bg-[#0B4628] text-[#FAF6EF] hover:bg-[#0d5432]'
+                                }
+                              `}
+                            >
+                              <LucideIcons.GraduationCap className="h-3.5 w-3.5" />
+                              Enroll
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSelectCourse(course);
+                                setShowDetails(true);
+                              }}
+                              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider border transition-all duration-300 active:scale-95
+                                ${isSpace
+                                  ? 'border-gold/40 text-gold hover:bg-gold/10'
+                                  : 'border-[#0B4628]/30 text-[#0B4628] hover:bg-[#0B4628]/5'
+                                }
+                              `}
+                            >
+                              Details
+                              <LucideIcons.ArrowRight className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
                         </div>
-                      </motion.button>
+                      </motion.div>
                     );
                   })}
                 </AnimatePresence>
@@ -698,17 +759,49 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
             )}
           </div>
 
-          {/* RIGHT: DETAILED VIEWPORT (Canonical Inspector) (lg:col-span-4) */}
-          <div className="lg:col-span-4 relative z-10" id="canonical-inspector-viewport">
-            <div 
+          {/* DETAILS MODAL: Canonical Inspector (opens from a course card's "Details" button) */}
+          <AnimatePresence>
+          {showDetails && selectedCourse && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+              onClick={() => setShowDetails(false)}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${selectedCourse?.name} details`}
+            >
+              {/* Backdrop */}
+              <div className={`absolute inset-0 backdrop-blur-sm ${isSpace ? 'bg-black/70' : 'bg-charcoal/50'}`} />
+
+              <motion.div 
               key={selectedCourseId}
-              className={`relative p-6 sm:p-8 md:p-10 border rounded-sm transition-all duration-300 shadow-md overflow-hidden min-h-[460px] animate-pulse-glow
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 300 }}
+              className={`relative w-full max-w-2xl max-h-[88vh] overflow-y-auto p-6 sm:p-8 md:p-10 border rounded-lg shadow-2xl
                 ${isSpace 
                   ? 'bg-[#0a0f1d] border-gold/25 text-white' 
                   : 'bg-white border-stone-200 text-charcoal'
                 }
               `}
             >
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setShowDetails(false)}
+                aria-label="Close details"
+                className={`absolute top-4 right-4 z-20 h-9 w-9 flex items-center justify-center rounded-full border transition-all duration-200 active:scale-90
+                  ${isSpace ? 'border-gold/30 text-gold hover:bg-gold/10' : 'border-stone-200 text-stone-500 hover:bg-stone-100 hover:text-charcoal'}
+                `}
+              >
+                <LucideIcons.X className="h-4 w-4" />
+              </button>
+
               {/* Islamic Arabesque Star Graphic Background Layer */}
               <div className={`absolute -right-24 -bottom-24 w-80 h-80 opacity-5 transition-opacity duration-700 select-none pointer-events-none arabesque-star
                 ${isSpace ? 'bg-gold' : 'bg-crimson'}
@@ -833,8 +926,10 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                 </ul>
               </div>
 
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          )}
+          </AnimatePresence>
 
         </div>
 
