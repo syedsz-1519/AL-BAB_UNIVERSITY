@@ -34,8 +34,8 @@ JazakAllah khair!`;
         
         {/* LOGO DESCRIPTION BLOCK */}
         <div className="max-w-sm">
-          <div className="flex items-center gap-4 mb-6">
-            <AlbabLogo className="h-16 w-16 shrink-0" />
+          <div className="flex items-center gap-3 mb-6">
+            <AlbabLogo className="h-14 w-14 shrink-0" />
             <div>
               <h5 className="font-serif text-xl font-bold tracking-wide text-white leading-none">Albab Islamic University</h5>
               <span className="text-[9px] tracking-widest font-mono text-gold-light uppercase block mt-1">Virtual Seminary of Understanding</span>

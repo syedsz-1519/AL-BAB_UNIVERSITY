@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { 
-  Compass, Sparkles, BookOpen, Award, Shield, Heart, ArrowUp
+  ArrowUp
 } from 'lucide-react';
 
 interface ScrollSpyIndicatorProps {
@@ -12,16 +12,15 @@ interface ScrollSpyIndicatorProps {
 interface SectionItem {
   id: string;
   label: string;
-  icon: React.ComponentType<any>;
 }
 
 const SECTIONS: SectionItem[] = [
-  { id: 'hero', label: 'Intro Banner', icon: Compass },
-  { id: 'scholarly', label: 'Celestial Globe', icon: Sparkles },
-  { id: 'editorial-mission', label: 'Scholarly Mission', icon: BookOpen },
-  { id: 'curriculum', label: 'Curriculum Search', icon: Award },
-  { id: 'islamic-pillars', label: 'Five Pillars', icon: Shield },
-  { id: 'dhikr-section', label: 'Dhikr Devotions', icon: Heart }
+  { id: 'hero', label: 'Intro Banner' },
+  { id: 'scholarly', label: 'Celestial Globe' },
+  { id: 'editorial-mission', label: 'Scholarly Mission' },
+  { id: 'curriculum', label: 'Curriculum Search' },
+  { id: 'islamic-pillars', label: 'Five Pillars' },
+  { id: 'dhikr-section', label: 'Dhikr Devotions' }
 ];
 
 export default function ScrollSpyIndicator({ currentTheme, currentSection }: ScrollSpyIndicatorProps) {
@@ -149,7 +148,6 @@ export default function ScrollSpyIndicator({ currentTheme, currentSection }: Scr
         {SECTIONS.map((section, idx) => {
           const isActive = activeSection === section.id;
           const isHovered = hoveredSection === section.id;
-          const IconComponent = section.icon;
 
           return (
             <div 
@@ -182,33 +180,7 @@ export default function ScrollSpyIndicator({ currentTheme, currentSection }: Scr
                 />
               </button>
 
-              {/* Tooltip & Icon slideout */}
-              <AnimatePresence>
-                {isHovered && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 20, scale: 0.9 }}
-                    animate={{ opacity: 1, x: -12, scale: 1 }}
-                    exit={{ opacity: 0, x: 15, scale: 0.95 }}
-                    transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                    className={`absolute right-full mr-2 py-1.5 px-3 rounded-md flex items-center gap-2 shadow-md border pointer-events-none whitespace-nowrap
-                      ${isSpace 
-                        ? 'bg-[#090D1A]/95 border-gold/25 text-white' 
-                        : 'bg-white/95 border-stone-200 text-charcoal'
-                      }
-                    `}
-                  >
-                    <IconComponent className={`h-3.5 w-3.5
-                      ${isActive 
-                        ? isSpace ? 'text-gold' : 'text-crimson'
-                        : isSpace ? 'text-zinc-400' : 'text-[#0B4628]'
-                      }
-                    `} />
-                    <span className="text-[10px] font-mono uppercase tracking-wider font-bold">
-                      {section.label}
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Tooltip & Icon slideout removed for clean styling as requested */}
             </div>
           );
         })}

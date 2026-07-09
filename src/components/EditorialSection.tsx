@@ -81,8 +81,8 @@ export default function EditorialSection({ currentTheme, onFindMore }: Editorial
 
         {/* Central emblem / Shield logo */}
         <motion.div className="my-14 relative flex justify-center" variants={itemVariants}>
-          <div className="absolute w-44 h-44 sm:w-52 sm:h-52 self-center rounded-full blur-2xl opacity-25 bg-gold" />
-          <AlbabLogo className="h-44 w-44 sm:h-52 sm:w-52 relative filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)] transition-all duration-500 hover:scale-105 cursor-pointer" />
+          <div className="absolute w-36 h-36 rounded-full blur-2xl opacity-20 bg-gold" />
+          <AlbabLogo className="h-40 w-40 relative filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)] transition-all duration-500 hover:scale-105 cursor-pointer" />
         </motion.div>
 
         {/* Subsection with vertical transition indicator */}
