@@ -29,11 +29,11 @@ export default function PropheticHadiths({ currentTheme }: PropheticHadithsProps
       `}
     >
       {/* Background arabesque-grid overlay for rich Islamic art atmosphere */}
-      <div className="absolute inset-0 opacity-[0.025] bg-repeat arabesque-grid pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.08] bg-repeat arabesque-grid pointer-events-none" />
 
       {/* Decorative Traditional Arabic Motifs in Corners */}
-      <div className="absolute top-0 left-0 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star bg-current" />
-      <div className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star bg-current" />
+      <div className="absolute top-0 left-0 w-32 h-32 opacity-[0.08] select-none pointer-events-none arabesque-star bg-current" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.08] select-none pointer-events-none arabesque-star bg-current" />
       <div className="max-w-4xl mx-auto relative z-10 text-center">
         
         {/* SECTION HEADER BLOCK */}

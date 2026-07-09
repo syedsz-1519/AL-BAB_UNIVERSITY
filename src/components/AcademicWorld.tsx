@@ -113,7 +113,8 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Refutational logic system counteracting secular challenges using classical Kalam models.',
       icon: ShieldCheck,
       tags: ['Problem of Evil Refuted', 'Formal Syllogisms', 'Rational Theology'],
-      imageUrl: aqeedahImage
+      imageUrl: aqeedahImage,
+      comingSoon: true
     },
     {
       id: 'mantiq-tutor',
@@ -157,7 +158,8 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Interpretation engine merging classical Ibn Sirin dream frameworks with modern Jungian spiritual depth psychology.',
       icon: Moon,
       tags: ['Symbol Archetypes', 'Classical Ta\'bir', 'Depth Psychology'],
-      imageUrl: 'https://images.unsplash.com/photo-1532690653146-20e786190c11?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: 'https://images.unsplash.com/photo-1532690653146-20e786190c11?auto=format&fit=crop&w=600&h=600&q=80',
+      comingSoon: true
     },
     {
       id: 'maqasid-analyzer',
@@ -168,7 +170,8 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
       summary: 'Assess morality of modern disputes against the 5 sacred protections of Shariah law.',
       icon: Scale,
       tags: ['Protected Necessities', 'Dilemma Evaluation', 'Islamic Bioethics'],
-      imageUrl: 'https://images.unsplash.com/photo-1505664194779-8bebcb95c539?auto=format&fit=crop&w=600&h=600&q=80'
+      imageUrl: 'https://images.unsplash.com/photo-1505664194779-8bebcb95c539?auto=format&fit=crop&w=600&h=600&q=80',
+      comingSoon: true
     },
     {
       id: 'scholastic-quiz',
@@ -342,7 +345,7 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                 key={tool.id}
                 variants={itemVariants}
                 layout
-                onClick={() => onNavigateToSection(tool.id)}
+                onClick={() => tool.comingSoon ? showToast("This laboratory is currently under construction. Coming soon in the next update!") : onNavigateToSection(tool.id)}
                 className={`flex flex-col md:flex-row w-full md:h-[350px] overflow-hidden rounded-md text-stone-950 dark:text-neutral-100 group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-500 relative cursor-pointer skeuo-active-click
                   ${isSpace
                     ? 'skeuo-card-space'
@@ -400,23 +403,39 @@ export default function AcademicWorld({ currentTheme, onNavigateToSection, langu
                       ))}
                     </div>
 
-                    {/* Active Laboratory Badge Bar */}
+                    {/* Active/Coming Soon Laboratory Badge Bar */}
                     <div className="pt-2 border-t border-[#0B4628]/10 dark:border-gold/10">
                       <div className={`w-full py-1.5 px-3 rounded-xs text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-widest border transition-all duration-300 flex items-center justify-between
-                        ${isSpace 
-                          ? 'border-gold/30 bg-gold/5 text-gold group-hover:bg-gold group-hover:text-space' 
-                          : 'border-[#0B4628]/20 bg-[#0B4628]/5 text-[#0B4628] group-hover:bg-[#0B4628] group-hover:text-white'
+                        ${tool.comingSoon
+                          ? 'border-amber-500/30 bg-amber-500/5 text-amber-500 hover:bg-transparent hover:text-amber-500'
+                          : isSpace 
+                            ? 'border-gold/30 bg-gold/5 text-gold group-hover:bg-gold group-hover:text-space' 
+                            : 'border-[#0B4628]/20 bg-[#0B4628]/5 text-[#0B4628] group-hover:bg-[#0B4628] group-hover:text-white'
                         }
                       `}>
-                        <span className="flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                          Enter Laboratory
-                        </span>
-                        <span className={`px-2 py-0.5 rounded-xs text-[9px] font-sans font-black tracking-normal uppercase text-white
-                          ${isSpace ? 'bg-amber-600' : 'bg-[#0B4628]'}
-                        `}>
-                          Active
-                        </span>
+                        {tool.comingSoon ? (
+                          <>
+                            <span className="flex items-center gap-1.5">
+                              <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                              Restoring Archives
+                            </span>
+                            <span className="px-2 py-0.5 rounded-xs text-[9px] font-sans font-black tracking-normal uppercase text-white bg-amber-600">
+                              Coming Soon
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="flex items-center gap-1.5">
+                              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                              Enter Laboratory
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-xs text-[9px] font-sans font-black tracking-normal uppercase text-white
+                              ${isSpace ? 'bg-amber-600' : 'bg-[#0B4628]'}
+                            `}>
+                              Active
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

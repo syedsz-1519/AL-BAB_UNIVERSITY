@@ -9,17 +9,30 @@ interface FooterProps {
 export default function Footer({ currentTheme }: FooterProps) {
   const isSpace = currentTheme === 'space';
 
-  const rawMessage = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu Adnan Bhai,
+  const rawMessage = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu Adnan Al Farooq Sir,
 
 I hope this message finds you in the best of health and faith. 
 
-I am highly interested in pursuing my higher education and would love to enroll as a student at Albab Islamic University. Please guide me regarding the enrollment process and admissions. 
+I am writing to express my sincere interest in enrolling as a student at Al-Bab Islamic University. I am highly interested in pursuing my higher education online through your esteemed institution. 
 
-JazakAllah khair!`;
+Could you please guide me regarding the official enrollment process and admissions? 
+
+JazakAllahu Khairan!`;
 
   const encodedMessage = encodeURIComponent(rawMessage);
   const whatsappUrl = `https://wa.me/917051913270?text=${encodedMessage}`;
   const emailUrl = `mailto:adnaanibnfarooq@gmail.com?subject=${encodeURIComponent("Admissions Inquiry - Albab Islamic University")}&body=${encodedMessage}`;
+
+  const handleInstagramClick = (url: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    const textToCopy = "Assalamu'alaikum Adnan Sir, I wanted to know how can I join the Al-Bab Islamic University online.";
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      alert("Inquiry message copied to clipboard! Paste it directly in the Instagram DM.");
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }).catch(() => {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    });
+  };
 
   return (
     <footer 
@@ -124,25 +137,21 @@ JazakAllah khair!`;
                   <span className="text-xs truncate">YouTube Channel</span>
                 </a>
 
-                <a 
-                  href="https://www.instagram.com/albabuniversity?igsh=Z295OXpjNGZpaWEy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-white transition-colors group"
+                <button 
+                  onClick={(e) => handleInstagramClick("https://www.instagram.com/albabuniversity?igsh=Z295OXpjNGZpaWEy", e)}
+                  className="flex items-center gap-2 hover:text-white transition-colors group cursor-pointer bg-transparent border-none text-left p-0"
                 >
                   <Instagram className="h-4 w-4 text-rose-500 group-hover:scale-110 transition-transform shrink-0" />
                   <span className="text-xs truncate">University IG</span>
-                </a>
+                </button>
 
-                <a 
-                  href="https://www.instagram.com/adnanalfarooq?igsh=MXdrY2s1OWU5Z3d4Ng=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-white transition-colors group"
+                <button 
+                  onClick={(e) => handleInstagramClick("https://www.instagram.com/adnanalfarooq?igsh=MXdrY2s1OWU5Z3d4Ng==", e)}
+                  className="flex items-center gap-2 hover:text-white transition-colors group cursor-pointer bg-transparent border-none text-left p-0"
                 >
                   <Instagram className="h-4 w-4 text-amber-500 group-hover:scale-110 transition-transform shrink-0" />
                   <span className="text-xs truncate">Founder IG</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -156,10 +165,10 @@ JazakAllah khair!`;
         <p className="text-center sm:text-left font-black">
           © 2024-2026 Albab Islamic University. All Rights Reserved. | Designed for Ulul Albab ✓
         </p>
-        <div className="flex gap-6 font-bold">
+        <div className="flex gap-6 font-bold items-center">
           <a href="https://youtube.com/@adnanalfarooq?si=VEwvOnNjSOoDR0Cm" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">YouTube</a>
-          <a href="https://www.instagram.com/albabuniversity?igsh=Z295OXpjNGZpaWEy" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Albab Islamic University IG</a>
-          <a href="https://www.instagram.com/adnanalfarooq?igsh=MXdrY2s1OWU5Z3d4Ng==" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Founder IG</a>
+          <button onClick={(e) => handleInstagramClick("https://www.instagram.com/albabuniversity?igsh=Z295OXpjNGZpaWEy", e)} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold uppercase text-[10px] tracking-widest font-mono">Albab Islamic University IG</button>
+          <button onClick={(e) => handleInstagramClick("https://www.instagram.com/adnanalfarooq?igsh=MXdrY2s1OWU5Z3d4Ng==", e)} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer font-bold uppercase text-[10px] tracking-widest font-mono">Founder IG</button>
         </div>
       </div>
     </footer>

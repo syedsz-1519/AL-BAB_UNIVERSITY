@@ -126,8 +126,8 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
       `}
     >
       {/* Decorative Traditional Arabic Motifs */}
-      <div className="absolute top-0 left-0 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star bg-current" />
-      <div className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.03] select-none pointer-events-none arabesque-star bg-current" />
+      <div className="absolute top-0 left-0 w-32 h-32 opacity-[0.08] select-none pointer-events-none arabesque-star bg-current" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.08] select-none pointer-events-none arabesque-star bg-current" />
 
       <div className="max-w-6xl mx-auto">
         
@@ -340,7 +340,7 @@ export default function FivePillarsSection({ currentTheme }: FivePillarsSectionP
                 `}
               >
                 {/* Decorative background star */}
-                <div className="absolute -right-16 -top-16 w-48 h-48 opacity-[0.02] select-none pointer-events-none arabesque-star bg-current" />
+                <div className="absolute -right-16 -top-16 w-48 h-48 opacity-[0.08] select-none pointer-events-none arabesque-star bg-current" />
 
                 <div className="space-y-6">
                   {/* Title Bar */}

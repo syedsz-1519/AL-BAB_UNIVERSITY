@@ -40,13 +40,13 @@ export default function EditorialSection({ currentTheme, onFindMore }: Editorial
       className="py-24 px-6 md:px-12 select-none border-b border-gold/25 relative overflow-hidden transition-all duration-700 bg-gradient-to-br from-[#052112] via-[#0B4628] to-[#031c0e] text-white shadow-[inset_0_4px_30px_rgba(0,0,0,0.5)] islamic-dark-green-section"
     >
       {/* Background Islamic Star pattern specifically for this green section */}
-      <div className="absolute inset-0 opacity-[0.05] bg-repeat arabesque-grid pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.10] bg-repeat arabesque-grid pointer-events-none" />
       
       {/* Soft warm gold glow in the center */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gold/15 blur-[120px] pointer-events-none" />
       
       {/* LAYER: DETAILED SVG ISLAMIC GEOMETRIC ARCHITECTURAL MANDALA FOR GREEN SECTIONS */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none opacity-[0.035] animate-slow-rotate text-gold select-none z-0">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none opacity-[0.085] animate-slow-rotate text-gold select-none z-0">
         <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.2">
           <circle cx="50" cy="50" r="48" strokeDasharray="1 1" />
           <circle cx="50" cy="50" r="42" />

@@ -10,19 +10,33 @@ export default function FloatingContacts({ currentTheme }: FloatingContactsProps
   const [isOpen, setIsOpen] = useState(false); // Instagram options toggle
   const isSpace = currentTheme === 'space';
 
-  // Customized, highly professional & respectful dual-language-vibe message
+  // Customized, highly professional & respectful message
+  const [copiedText, setCopiedText] = useState(false);
   const whatsappNumber = '917051913270';
-  const rawMessage = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu Adnan Bhai,
+  const rawMessage = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu Adnan Al Farooq Sir,
 
 I hope this message finds you in the best of health and faith. 
 
-I am highly interested in pursuing my higher education and would love to enroll as a student at Albab Islamic University. Please guide me regarding the enrollment process and admissions. 
+I am writing to express my sincere interest in enrolling as a student at Al-Bab Islamic University. I am highly interested in pursuing my higher education online through your esteemed institution. 
 
-JazakAllah khair!`;
+Could you please guide me regarding the official enrollment process and admissions? 
+
+JazakAllahu Khairan!`;
 
   const encodedMessage = encodeURIComponent(rawMessage);
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
   const emailUrl = `mailto:adnaanibnfarooq@gmail.com?subject=${encodeURIComponent("Admissions Inquiry - Albab Islamic University")}&body=${encodedMessage}`;
+
+  const handleInstagramRedirect = (url: string) => {
+    const textToCopy = "Assalamu'alaikum Adnan Sir, I wanted to know how can I join the Al-Bab Islamic University online.";
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopiedText(true);
+      setTimeout(() => setCopiedText(false), 3000);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }).catch(() => {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    });
+  };
 
   const instagramAccounts = [
     {
@@ -55,26 +69,28 @@ JazakAllah khair!`;
         >
           <div className="flex justify-between items-center pb-2 border-b border-stone-200 dark:border-stone-800">
             <span className="text-xs font-bold uppercase tracking-widest font-serif text-[#C9933A]">
-              Connect via Instagram
+              {copiedText ? 'Message Copied!' : 'Connect via Instagram'}
             </span>
             <button 
               onClick={() => setIsOpen(false)}
-              className="p-1 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors"
+              className="p-1 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors cursor-pointer"
               title="Close menu"
             >
               <LucideIcons.X className="h-3.5 w-3.5" />
             </button>
           </div>
+          {copiedText && (
+            <p className="text-[9px] text-green-500 font-mono mt-1 text-center animate-pulse leading-tight">
+              Paste message directly in the Instagram DM!
+            </p>
+          )}
           
           <div className="flex flex-col gap-2 mt-1">
             {instagramAccounts.map((acc, index) => (
-              <a
+              <button
                 key={index}
-                href={acc.url}
-                target="_blank"
-                referrerPolicy="no-referrer"
-                rel="noopener noreferrer"
-                className="group flex items-start gap-2.5 p-2 rounded-md hover:bg-stone-100 dark:hover:bg-stone-900 border border-transparent hover:border-gold/20 transition-all"
+                onClick={() => handleInstagramRedirect(acc.url)}
+                className="group flex items-start gap-2.5 p-2 rounded-md hover:bg-stone-100 dark:hover:bg-stone-900 border border-transparent hover:border-gold/20 transition-all text-left w-full cursor-pointer bg-transparent"
               >
                 <div className="flex items-center justify-center p-1.5 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white shrink-0">
                   <LucideIcons.Instagram className="h-4 w-4" />
@@ -90,7 +106,7 @@ JazakAllah khair!`;
                     {acc.desc}
                   </p>
                 </div>
-              </a>
+              </button>
             ))}
           </div>
         </div>

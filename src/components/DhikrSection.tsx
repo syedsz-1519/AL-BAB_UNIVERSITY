@@ -238,7 +238,7 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
             }
           `}>
             {/* Background design accents */}
-            <div className="absolute top-0 left-0 w-16 h-16 opacity-[0.015] select-none pointer-events-none arabesque-star bg-current" />
+            <div className="absolute top-0 left-0 w-16 h-16 opacity-[0.08] select-none pointer-events-none arabesque-star bg-current" />
             
             {/* Header selection with left/right arrows */}
             <div className="flex items-center justify-between w-full mb-4">
@@ -348,7 +348,7 @@ export default function DhikrSection({ currentTheme }: DhikrSectionProps) {
                 `}
               >
                 {/* Visual Card Accent Decor */}
-                <div className="absolute top-0 left-0 w-16 h-16 opacity-[0.015] select-none pointer-events-none arabesque-star bg-current" />
+                <div className="absolute top-0 left-0 w-16 h-16 opacity-[0.08] select-none pointer-events-none arabesque-star bg-current" />
 
                 {/* Left side: Pink/Red Heart Bubble */}
                 <div className="flex items-center gap-5 shrink-0">

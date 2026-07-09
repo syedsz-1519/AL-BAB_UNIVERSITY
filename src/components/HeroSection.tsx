@@ -32,7 +32,7 @@ export default function HeroSection({ currentTheme, onApplyNow, mouseCoords = { 
     >
       {/* LAYER 1: PARALLAX BACKGROUND WATERMARK ARABESQUE PATTERN */}
       <div 
-        className={`absolute inset-0 opacity-[0.06] pointer-events-none bg-repeat arabesque-grid transition-transform duration-300 ease-out`}
+        className={`absolute inset-0 opacity-[0.12] pointer-events-none bg-repeat arabesque-grid transition-transform duration-300 ease-out`}
         style={{
           transform: `translate(${x * 16}px, ${y * 16}px) scale(1.03)`,
         }}
@@ -99,7 +99,7 @@ export default function HeroSection({ currentTheme, onApplyNow, mouseCoords = { 
         }}
         animate={{
           rotate: [0, 360],
-          opacity: isSpace ? [0.03, 0.09, 0.03] : [0.02, 0.07, 0.02]
+          opacity: isSpace ? [0.07, 0.16, 0.07] : [0.06, 0.13, 0.06]
         }}
         transition={{
           rotate: {

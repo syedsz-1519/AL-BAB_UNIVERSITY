@@ -108,6 +108,15 @@ const COURSES_BASE: Course[] = [
     branches: ['Postmodernism Critique', 'Sovereignty & State', 'Secularization Thesis', 'Technological Ethics', 'Cultural Hegemony'],
     description: 'Deconstruct the historical, philosophical, and social architectures of the modern epoch. Investigate secularization, post-structural models, and deep ethics of technology.',
     accentColor: 'indigo-500'
+  },
+  {
+    id: 'science',
+    name: 'Science',
+    count: '5 Branches',
+    icon: 'Atom',
+    branches: ['Natural Sciences', 'Medical Sciences', 'Mathematical Sciences', 'Computer & AI Sciences', 'Research Sciences'],
+    description: 'The empirical dimension. Explore the structure of the cosmos, biological systems, mathematical foundations, computing paradigms, and critical research methodologies.',
+    accentColor: 'indigo-500'
   }
 ];
 

@@ -8,14 +8,15 @@ import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 interface AdmissionPortalProps {
   currentTheme: 'parchment' | 'space';
   onClose: () => void;
+  initialCourseId?: string;
 }
 
-export default function AdmissionPortal({ currentTheme, onClose }: AdmissionPortalProps) {
+export default function AdmissionPortal({ currentTheme, onClose, initialCourseId }: AdmissionPortalProps) {
   const isSpace = currentTheme === 'space';
   const [enrollment, setEnrollment] = useState<EnrollmentState>({
     fullName: '',
     email: '',
-    selectedCourse: 'quran',
+    selectedCourse: initialCourseId || 'quran',
     statementOfPurpose: '',
     priorKnowledge: 'beginner'
   });
@@ -98,22 +99,24 @@ export default function AdmissionPortal({ currentTheme, onClose }: AdmissionPort
   // Pre-formatted Email URL matching user spec and refined to feel highly professional & structured
   const getEmailUrl = () => {
     const subject = `Admission Covenant: ${enrollment.fullName} - Albab Islamic University`;
-    const body = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu,
+    const body = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu Adnan Al Farooq Sir,
 
-I would love to enroll and become a student at Albab Islamic University.
+I hope this email finds you in the best of health and faith.
+
+I would love to enroll in the following course: "${activeCourseName}".
 
 Here are my Admission Covenant details:
-• Scholar Name: ${enrollment.fullName}
-• Email Endpoint: ${enrollment.email}
-• Area of Pursuit: ${activeCourseName}
+• Full Name: ${enrollment.fullName}
+• Email Address: ${enrollment.email}
+• Selected Course: ${activeCourseName}
 • Prior Knowledge: ${getKnowledgeLabel(enrollment.priorKnowledge)}
 
-Statement of Sincere Purpose:
+Statement of Purpose:
 "${enrollment.statementOfPurpose}"
 
-Please guide me regarding the official enrollment steps to finalize my student status.
+Please guide me regarding the official enrollment steps to finalize my online student status at Al-Bab Islamic University.
 
-JazakAllah khair!`;
+JazakAllahu Khairan!`;
 
     return `mailto:adnaanibnfarooq@gmail.com?cc=${encodeURIComponent(enrollment.email)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
@@ -183,12 +186,22 @@ JazakAllah khair!`;
   const handleInstagramSubmit = () => {
     saveAdmissionToLocalStorage(enrollment);
     // Copy summary ledger to clipboard for easy DM paste
-    const summaryLedger = `Assalamu'alaikum, I want to enroll to Albab Islamic University!
-• Name: ${enrollment.fullName}
-• Email: ${enrollment.email}
-• Course: ${activeCourseName}
-• Knowledge: ${getKnowledgeLabel(enrollment.priorKnowledge)}
-• Purpose: ${enrollment.statementOfPurpose}`;
+    const summaryLedger = `Assalamu'alaikum wa Rahmatullahi wa Barakatuhu Adnan Al Farooq Sir,
+
+I wanted to enroll in this course: "${activeCourseName}".
+
+Here are my Admission Covenant details:
+• Full Name: ${enrollment.fullName}
+• Email Address: ${enrollment.email}
+• Selected Course: ${activeCourseName}
+• Prior Knowledge: ${getKnowledgeLabel(enrollment.priorKnowledge)}
+
+Statement of Purpose:
+"${enrollment.statementOfPurpose}"
+
+Please let me know how can I join the online program.
+
+JazakAllahu Khairan!`;
 
     navigator.clipboard.writeText(summaryLedger).then(() => {
       setCopied(true);

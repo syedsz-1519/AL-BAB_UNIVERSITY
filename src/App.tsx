@@ -33,6 +33,7 @@ import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
 import ScholasticQuiz from './components/ScholasticQuiz';
+import AlbabLogo from './components/AlbabLogo';
 
 export default function App() {
   const [isAutoCelestial, setIsAutoCelestial] = useState<boolean>(() => {
@@ -60,6 +61,12 @@ export default function App() {
   const [searchText, setSearchText] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>('landing');
   const [admissionOpen, setAdmissionOpen] = useState<boolean>(false);
+  const [admissionCourseId, setAdmissionCourseId] = useState<string | undefined>(undefined);
+
+  const handleOpenAdmission = (courseId?: string) => {
+    setAdmissionCourseId(courseId);
+    setAdmissionOpen(true);
+  };
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [currentSection, setCurrentSection] = useState<'landing' | 'academic-world' | 'portal' | 'debate' | 'quran-explorer' | 'fiqh-ruling' | 'cognitive-labs' | 'waswas-clinic' | 'mantiq-tutor' | 'nafs-assessment' | 'maqasid-analyzer' | 'aqeedah-firewall' | 'ruya-interpreter' | 'hadith' | 'scholastic-quiz'>(() => {
     if (window.location.hash === '#academic-world' || window.location.pathname === '/academic-world') {
@@ -373,14 +380,14 @@ export default function App() {
     >
       {/* AUTHENTIC ISLAMIC ARABESQUE PATTERN WATERMARK COVERING THE ENTIRE WEBSITE */}
       <div 
-        className="absolute inset-0 opacity-[0.06] dark:opacity-[0.10] bg-repeat arabesque-grid pointer-events-none z-0 transition-transform duration-300 ease-out" 
+        className="absolute inset-0 opacity-[0.12] dark:opacity-[0.20] bg-repeat arabesque-grid pointer-events-none z-0 transition-transform duration-300 ease-out" 
         style={{
           transform: `translate(${mouseCoords.x * 10}px, ${mouseCoords.y * 10}px)`,
         }}
       />
       {/* AUTHENTIC SACRED ISLAMIC CALLIGRAPHY ART FLOATING WATERMARK */}
       <div 
-        className="absolute inset-0 opacity-[0.08] dark:opacity-[0.15] bg-repeat calligraphy-grid pointer-events-none z-0 transition-transform duration-500 ease-out" 
+        className="absolute inset-0 opacity-[0.16] dark:opacity-[0.26] bg-repeat calligraphy-grid pointer-events-none z-0 transition-transform duration-500 ease-out" 
         style={{
           transform: `translate(${mouseCoords.x * -16}px, ${mouseCoords.y * -16}px) scale(1.02)`,
         }}
@@ -396,8 +403,8 @@ export default function App() {
             className="fixed inset-0 z-[20000] flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#FCFAF6] via-[#F4EFE6] to-[#FCFAF6] text-stone-900 px-6 select-none"
           >
             {/* Spiritual Geometric & Calligraphy Background Canvas */}
-            <div className="absolute inset-0 opacity-[0.08] bg-repeat arabesque-grid pointer-events-none scale-110 animate-spin-slow" />
-            <div className="absolute inset-0 opacity-[0.09] bg-repeat calligraphy-grid pointer-events-none scale-105" />
+            <div className="absolute inset-0 opacity-[0.16] bg-repeat arabesque-grid pointer-events-none scale-110 animate-spin-slow" />
+            <div className="absolute inset-0 opacity-[0.18] bg-repeat calligraphy-grid pointer-events-none scale-105" />
 
             {/* Ambient gold radiant radial glow behind the center content */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(196,163,90,0.12)_0%,transparent_70%)] pointer-events-none blur-3xl" />
@@ -445,6 +452,11 @@ export default function App() {
                 <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-[#C4A35A]/50" />
                 <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-[#C4A35A]/50" />
                 <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[#C4A35A]/50" />
+
+                {/* AL-BAB LOGO */}
+                <div className="mb-2 relative z-30 transition-transform duration-500 hover:scale-105">
+                  <AlbabLogo className="h-16 w-16 md:h-20 md:w-20" />
+                </div>
 
                 {/* Main Full Sacred Salam in Arabic calligraphy text in GREEN FONT */}
                 <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.65rem] font-bold text-stone-900 tracking-wide font-amiri leading-normal drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] select-text">
@@ -751,6 +763,7 @@ export default function App() {
             selectedCourseId={selectedCourseId}
             onSelectCourse={handleSelectCourse}
             searchText={searchText}
+            onOpenAdmission={handleOpenAdmission}
           />
 
           {/* DYNAMIC INTERACTIVE FIVE PILLARS OF ISLAM FOUNDATION */}
@@ -762,10 +775,10 @@ export default function App() {
           {/* CAMPUS HUB SECTORS CALL-TO-ACTION CARDS */}
           <section className="py-24 px-6 md:px-12 border-t border-b relative overflow-hidden text-center transition-all duration-700 bg-gradient-to-br from-[#052112] via-[#0B4628] to-[#031c0e] border-gold/25 text-white shadow-[inset_0_4px_30px_rgba(0,0,0,0.5)] islamic-dark-green-section">
             {/* Background Islamic Star pattern specifically for this green section */}
-            <div className="absolute inset-0 opacity-[0.04] bg-repeat arabesque-grid pointer-events-none" />
+            <div className="absolute inset-0 opacity-[0.10] bg-repeat arabesque-grid pointer-events-none" />
 
             {/* Ambient Islamic Architectural Geometry Background Elements (No basic shapes!) */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.035] flex items-center justify-between px-12 z-0 text-gold select-none">
+            <div className="absolute inset-0 pointer-events-none opacity-[0.085] flex items-center justify-between px-12 z-0 text-gold select-none">
               <div className="w-64 h-64 md:w-96 md:h-96 animate-slow-rotate">
                 <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.25">
                   <circle cx="50" cy="50" r="48" strokeDasharray="1 1" />
@@ -840,7 +853,11 @@ export default function App() {
       {admissionOpen && (
         <AdmissionPortal 
           currentTheme={currentTheme}
-          onClose={() => setAdmissionOpen(false)}
+          onClose={() => {
+            setAdmissionOpen(false);
+            setAdmissionCourseId(undefined);
+          }}
+          initialCourseId={admissionCourseId}
         />
       )}
 
