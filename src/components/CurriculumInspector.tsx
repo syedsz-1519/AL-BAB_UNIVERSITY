@@ -380,7 +380,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 relative items-start">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 relative items-start">
                 <AnimatePresence mode="popLayout">
                   {filteredCourses.map((course) => {
                     const isExpanded = !!expandedCourseIds[course.id];
@@ -399,7 +399,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                         }}
                         whileHover={{ y: -4, transition: { duration: 0.15 } }}
                         key={course.id}
-                        className={`group relative p-6 rounded-sm text-left transition-all duration-300 flex flex-col justify-between cursor-default border skeuo-active-click min-h-[260px]
+                        className={`group relative p-6 rounded-sm text-left transition-all duration-300 flex flex-col md:flex-row gap-6 justify-between cursor-default border skeuo-active-click
                           ${isSpace
                             ? 'skeuo-card-space border-gold/15 text-stone-300 hover:text-white bg-[#0a0f1d] shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
                             : 'skeuo-card-parchment border-stone-200 text-stone-700 hover:text-charcoal bg-white shadow-sm'
@@ -412,66 +412,74 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                           scale-y-0 group-hover:scale-y-100
                         `} />
 
-                        <div>
-                          {/* Card Header */}
-                          <div className="flex justify-between items-start w-full mb-4">
-                            <span className={`transition-transform duration-300 group-hover:scale-105
-                              ${isSpace ? 'text-gold' : 'text-crimson'}
-                            `}>
-                              {getIcon(course.icon)}
-                            </span>
-                            <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
-                              {course.count}
-                            </span>
+                        {/* Left Side: Content Section */}
+                        <div className="flex-1 flex flex-col sm:flex-row gap-4 items-start min-w-0">
+                          {/* Icon wrapper */}
+                          <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center border transition-all duration-300 group-hover:scale-105
+                            ${isSpace 
+                              ? 'bg-gold/10 border-gold/30 text-gold shadow-[0_0_10px_rgba(201,147,58,0.15)]' 
+                              : 'bg-crimson/5 border-crimson/15 text-crimson'
+                            }
+                          `}>
+                            {getIcon(course.icon)}
                           </div>
 
-                          {/* Course Title */}
-                          <h3 className="font-serif font-black text-xl tracking-wide leading-tight group-hover:text-gold transition-colors">
-                            {course.name}
-                          </h3>
+                          <div className="flex-1 min-w-0">
+                            {/* Card Header metadata */}
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[9px] uppercase tracking-widest font-mono text-stone-400 dark:text-stone-500 font-bold">
+                                {course.count}
+                              </span>
+                            </div>
 
-                          {/* Course Description */}
-                          <p className="text-xs text-stone-400 dark:text-stone-500 font-sans mt-3 font-medium leading-relaxed">
-                            {course.description}
-                          </p>
+                            {/* Course Title */}
+                            <h3 className="font-serif font-black text-xl tracking-wide leading-tight group-hover:text-gold transition-colors">
+                              {course.name}
+                            </h3>
 
-                          {/* Expandable Core Branches Study List */}
-                          <AnimatePresence initial={false}>
-                            {isExpanded && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.25, ease: 'easeInOut' }}
-                                className="overflow-hidden mt-4 pt-4 border-t border-stone-200/10"
-                              >
-                                <h4 className={`text-[10px] uppercase font-mono tracking-[0.25em] font-bold mb-3
-                                  ${isSpace ? 'text-gold-light' : 'text-crimson'}
-                                `}>
-                                  Core Branches Study
-                                </h4>
-                                <ul className="grid grid-cols-1 gap-2">
-                                  {course.branches.map((branch, idx) => (
-                                    <li key={idx} className="flex items-center gap-2.5">
-                                      <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0
-                                        ${isSpace ? 'bg-gold' : 'bg-crimson'}
-                                      `} />
-                                      <span className="text-xs font-sans font-semibold tracking-wide text-stone-600 dark:text-stone-300">
-                                        {branch}
-                                      </span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
+                            {/* Course Description */}
+                            <p className="text-xs text-stone-400 dark:text-stone-500 font-sans mt-2 font-medium leading-relaxed max-w-2xl">
+                              {course.description}
+                            </p>
+
+                            {/* Expandable Core Branches Study List */}
+                            <AnimatePresence initial={false}>
+                              {isExpanded && (
+                                <motion.div
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                                  className="overflow-hidden mt-4 pt-4 border-t border-stone-200/10"
+                                >
+                                  <h4 className={`text-[10px] uppercase font-mono tracking-[0.25em] font-bold mb-3
+                                    ${isSpace ? 'text-gold-light' : 'text-crimson'}
+                                  `}>
+                                    Core Branches Study
+                                  </h4>
+                                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    {course.branches.map((branch, idx) => (
+                                      <li key={idx} className="flex items-center gap-2.5">
+                                        <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0
+                                          ${isSpace ? 'bg-gold' : 'bg-crimson'}
+                                        `} />
+                                        <span className="text-xs font-sans font-semibold tracking-wide text-stone-600 dark:text-stone-300">
+                                          {branch}
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
                         </div>
 
-                        {/* Actions Footer */}
-                        <div className="mt-6 pt-4 border-t border-stone-200/10 flex items-center gap-3 w-full">
+                        {/* Right Side: Actions Section (Stacked vertically on desktop, row on mobile) */}
+                        <div className="flex-shrink-0 flex flex-row md:flex-col gap-3 w-full md:w-44 md:self-stretch md:justify-center border-t md:border-t-0 md:border-l border-stone-200/10 pt-4 md:pt-0 md:pl-6">
                           <button
                             onClick={(e) => toggleExpand(course.id, e)}
-                            className={`flex-1 py-2 px-3 rounded text-center text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 border flex items-center justify-center gap-1.5 cursor-pointer
+                            className={`flex-1 md:flex-none py-2.5 px-3 rounded text-center text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 border flex items-center justify-center gap-1.5 cursor-pointer
                               ${isSpace
                                 ? 'bg-transparent border-gold/20 text-gold hover:bg-gold/10 hover:border-gold/40'
                                 : 'bg-transparent border-crimson/15 text-crimson hover:bg-crimson/5 hover:border-[#8b1617]/30'
@@ -498,7 +506,7 @@ export default function CurriculumInspector({ currentTheme, selectedCourseId, on
                                 onOpenAdmission(course.id);
                               }
                             }}
-                            className={`flex-1 py-2 px-3 rounded text-center text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer
+                            className={`flex-1 md:flex-none py-2.5 px-3 rounded text-center text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer
                               ${isSpace
                                 ? 'bg-gold text-black hover:bg-gold-light shadow-[0_4px_12px_rgba(201,147,58,0.2)] hover:shadow-[0_4px_16px_rgba(201,147,58,0.35)] font-extrabold'
                                 : 'bg-crimson text-white hover:bg-crimson-dark shadow-[0_4px_12px_rgba(139,22,23,0.15)] hover:shadow-[0_4px_16px_rgba(139,22,23,0.25)] font-extrabold'
