@@ -224,7 +224,7 @@ export default function DivineDust({ currentTheme }: DivineDustProps) {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-10 overflow-hidden select-none"
-      style={{ mixBlendMode: isSpace ? 'screen' : 'screen', opacity: isSpace ? 0.75 : 0.45 }}
+      style={{ mixBlendMode: isSpace ? 'screen' : 'multiply', opacity: isSpace ? 0.75 : 0.7 }}
     />
   );
 }
