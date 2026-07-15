@@ -504,25 +504,46 @@ footer a:hover,
   scrollbar-width: none;  /* Firefox */
 }
 
-/* FUTURISTIC ISLAMIC GRID & VECTOR NEBULA BACKGROUNDS */
+/* Keyframes for slow-shifting ambient lighting glows in the background */
+@keyframes ambientGlowSpace {
+  0%, 100% {
+    background-position: 50% 0%, 10% 80%, 0 0, 0 0;
+  }
+  50% {
+    background-position: 45% 10%, 15% 75%, 0 0, 0 0;
+  }
+}
+
+@keyframes ambientGlowParchment {
+  0%, 100% {
+    background-position: 50% 0%, 90% 90%, 0 0, 0 0;
+  }
+  50% {
+    background-position: 55% 5%, 85% 95%, 0 0, 0 0;
+  }
+}
+
+/* FUTURISTIC ISLAMIC GRID & VECTOR NEBULA BACKGROUNDS WITH ANIMATED GLOWS */
 .futuristic-islamic-grid-space {
   background-color: #020509;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 10% 80%, rgba(196, 163, 90, 0.1) 0%, transparent 40%),
-    linear-gradient(to right, rgba(196, 163, 90, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(196, 163, 90, 0.03) 1px, transparent 1px);
+    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.35) 0%, transparent 50%),
+    radial-gradient(circle at 10% 80%, rgba(196, 163, 90, 0.12) 0%, transparent 40%),
+    linear-gradient(to right, rgba(196, 163, 90, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(196, 163, 90, 0.035) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+  animation: ambientGlowSpace 25s ease-in-out infinite;
 }
 
 .futuristic-islamic-grid-parchment {
   background-color: #FAF6EF;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.06) 0%, transparent 60%),
-    radial-gradient(circle at 90% 90%, rgba(196, 163, 90, 0.04) 0%, transparent 40%),
-    linear-gradient(to right, rgba(11, 70, 40, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(11, 70, 40, 0.02) 1px, transparent 1px);
+    radial-gradient(circle at 50% 0%, rgba(11, 70, 40, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 90% 90%, rgba(196, 163, 90, 0.05) 0%, transparent 40%),
+    linear-gradient(to right, rgba(11, 70, 40, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11, 70, 40, 0.025) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  animation: ambientGlowParchment 30s ease-in-out infinite;
 }
 
 /* Interactive Click feedback simulation */

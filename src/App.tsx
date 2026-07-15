@@ -34,7 +34,6 @@ import { Language } from './i18n';
 import { Course } from './types';
 import { COURSES } from './data';
 import ScholasticQuiz from './components/ScholasticQuiz';
-import AlbabLogo from './components/AlbabLogo';
 
 export default function App() {
   const [isAutoCelestial, setIsAutoCelestial] = useState<boolean>(() => {
@@ -748,7 +747,6 @@ export default function App() {
             currentTheme={currentTheme}
             selectedCourseId={selectedCourseId}
             onSelectCourse={handleSelectCourse}
-            onEnroll={() => setAdmissionOpen(true)}
             searchText={searchText}
             onOpenAdmission={handleOpenAdmission}
           />
